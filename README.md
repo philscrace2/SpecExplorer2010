@@ -67,7 +67,7 @@ Also, if you want to read an introduction to Model Based testing please read a b
 
 https://www.red-gate.com/simple-talk/blogs/4712/
 
-Appendix A.
+## Appendix A.
 
 1. Checked the 'Spec Explorer' menu appears in the menu bar
 
