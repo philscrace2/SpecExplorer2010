@@ -1,4 +1,4 @@
-#Spec Explorer Lives (support for VS2013, VS2015, VS2017 and VS2019)
+# Spec Explorer Lives (support for VS2013, VS2015, VS2017 and VS2019)
 
 One of the most powerful tools in a Software Test Engineers arsenal gets refreshed by the Engineer 1 making it work in VS2013, VS2015, VS2017 AND... VS2019!!!
 
