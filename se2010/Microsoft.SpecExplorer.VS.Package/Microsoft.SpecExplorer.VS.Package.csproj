@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\Microsoft\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Package.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BE492BCB-27DA-429D-8070-3376ABDD1C65}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Microsoft.SpecExplorer.VS.Package</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <ApplicationVersion>2.2.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Microsoft.SpecExplorer</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ActionMachines">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ActionMachines.Cord">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.Cord.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Core">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.VS.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrt">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.Xrt.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System" />
+    <Reference Include="Microsoft.VisualStudio.Shell.10.0">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package_notfull\Microsoft.VisualStudio.Shell.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package_notfull\Microsoft.VisualStudio.Shell.Immutable.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
+    <Reference Include="EnvDTE" />
+    <Reference Include="System.Core" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="EnvDTE80" />
+    <Reference Include="Microsoft.VisualStudio.Language.Intellisense">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package_notfull\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Microsoft.SpecExplorer.ObjectModel" />
+    <Reference Include="VSLangProj80" />
+    <Reference Include="Microsoft.Xrt.Runtime" />
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0" />
+    <Reference Include="System.Design" />
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
+    <Reference Include="Microsoft.VisualStudio.VSHelp80" />
+    <Reference Include="System.Xml" />
+    <Reference Include="VSLangProj" />
+    <Reference Include="Microsoft.SpecExplorer.Runtime" />
+    <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SeVersion.cs" />
+    <Compile Include="MachineExecuteItem.cs" />
+    <Compile Include="TaskTypes.cs" />
+    <Compile Include="ExplorationWorker.cs" />
+    <Compile Include="PackageExtensionMethods.cs" />
+    <Compile Include="FileNames.cs" />
+    <Compile Include="GlobalService.cs" />
+    <Compile Include="Resources.cs" />
+    <Compile Include="VS\ActionDeclaration.cs" />
+    <Compile Include="VS\VocabularyVisitor.cs" />
+    <Compile Include="VS\ActionDeclarationBuilder.cs" />
+    <Compile Include="VS\ActionSelectionControl.cs" />
+    <Compile Include="VS\ActionSelectionControlModel.cs" />
+    <Compile Include="VS\ICordSyntaxElementInfo.cs" />
+    <Compile Include="VS\ActionSelectionItem.cs" />
+    <Compile Include="VS\AddActionWizardController.cs" />
+    <Compile Include="VS\ItemNameInputValidator.cs" />
+    <Compile Include="VS\AddActionWizardData.cs" />
+    <Compile Include="VS\AssistedProcedureReportWindow.cs" />
+    <Compile Include="VS\AssistedProcedureWizardWindow.cs" />
+    <Compile Include="VS\EnvDTEUtils.cs" />
+    <Compile Include="VS\PackageScriptsManipulator.cs" />
+    <Compile Include="VS\ScriptManipulationReport.cs" />
+    <Compile Include="VS\RuleDeclarationWizardController.cs" />
+    <Compile Include="VS\ActionConfigClauseResolver.cs" />
+    <Compile Include="VS\SourceBindingTypeProvider.cs" />
+    <Compile Include="VS\RuleDeclarationWizardData.cs" />
+    <Compile Include="VS\GenericSelectionControl.cs" />
+    <Compile Include="VS\ConfigInfo.cs" />
+    <Compile Include="VS\ScriptInfo.cs" />
+    <Compile Include="VS\ProjectInfo.cs" />
+    <Compile Include="VS\CordSyntaxElementBuilder.cs" />
+    <Compile Include="VS\GenericUserControlWindow.cs" />
+    <Compile Include="VS\TypeBindingSelectionWindow.cs" />
+    <Compile Include="VS\NullableBooleanConverter.cs" />
+    <Compile Include="VS\TypeBindingSelectionControlModel.cs" />
+    <Compile Include="VS\TypeMapControl.cs" />
+    <Compile Include="VS\TypeMapUnit.cs" />
+    <Compile Include="VS\CodeElementItem.cs" />
+    <Compile Include="VS\CodeElementItemType.cs" />
+    <Compile Include="VS\CodeElementViewer.cs" />
+    <Compile Include="VS\CodeElementViewerModel.cs" />
+    <Compile Include="VS\CodeElementAndContainerPair.cs" />
+    <Compile Include="VS\CodeElementExpandOptions.cs" />
+    <Compile Include="VS\CordCompletionProvider.cs" />
+    <Compile Include="VS\ExplorationManagerToolWindow.cs" />
+    <Compile Include="VS\ExtensionManager.cs" />
+    <Compile Include="VS\CordDocument.cs" />
+    <Compile Include="VS\SpecExplorerPackage.cs" />
+    <Compile Include="VS\IAssistedProcedure.cs" />
+    <Compile Include="VS\AddActionAssistedProcedure.cs" />
+    <Compile Include="VS\DeclareRuleAssistedProcedure.cs" />
+    <Compile Include="VS\ProcedureType.cs" />
+    <Compile Include="VS\CodeElementTypeResolver.cs" />
+    <Compile Include="VS\ProjectUtils.cs" />
+    <Compile Include="VS\SummaryDocumentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="VS\SummaryDocumentFactory.cs" />
+    <Compile Include="VS\SolutionBuildEventArgs.cs" />
+    <Compile Include="VS\ProvideSolutionProps.cs" />
+    <Compile Include="VS\SummaryDocument.cs" />
+    <Compile Include="VS\ViewDocument.cs" />
+    <Compile Include="VS\ViewDocumentFactory.cs" />
+    <Compile Include="VS\StateBrowserToolWindow.cs" />
+    <Compile Include="VS\StateComparisonView.cs" />
+    <Compile Include="VS\StepBrowserToolWindow.cs" />
+    <Compile Include="VS\SafeNativeMethods.cs" />
+    <Compile Include="VS\EditorFactory.cs" />
+    <Compile Include="VS\GuidList.cs" />
+    <Compile Include="VS\PkgCmdIDList.cs" />
+    <Compile Include="VS\WorkflowToolWindow.cs" />
+    <Compile Include="ErrorReporting\ErrorReportBuilder.cs" />
+    <Compile Include="ErrorReporting\WER_REGISTER_FILE_TYPE.cs" />
+    <Compile Include="ErrorReporting\WER_REPORT_TYPE.cs" />
+    <Compile Include="ErrorReporting\WER_REPORT_INFORMATION.cs" />
+    <Compile Include="ErrorReporting\WER_CONSENT.cs" />
+    <Compile Include="ErrorReporting\WER_SUBMIT_RESULT.cs" />
+    <Compile Include="ErrorReporting\WER_REPORT_UI.cs" />
+    <Compile Include="ErrorReporting\NativeMethods.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="assistedprocedures\images\classicon.gif" />
+    <Resource Include="assistedprocedures\images\eventicon.gif" />
+    <Resource Include="assistedprocedures\images\foldericon.gif" />
+    <Resource Include="assistedprocedures\images\info.ico" />
+    <Resource Include="assistedprocedures\images\interfaceicon.gif" />
+    <Resource Include="assistedprocedures\images\methodicon.gif" />
+    <Resource Include="assistedprocedures\images\namespaceicon.gif" />
+    <Resource Include="assistedprocedures\images\staticicon.gif" />
+    <Resource Include="assistedprocedures\images\warning.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx" />
+    <EmbeddedResource Include="SpecExplorer.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="assistedprocedures\actionselectioncontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\assistedprocedurereportwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\assistedprocedurewizardwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\codeelementviewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\genericselectioncontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\genericusercontrolwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\typebindingselectionwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\typemapcontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

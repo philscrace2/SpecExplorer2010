@@ -1,0 +1,35 @@
+<UserControl x:Class="Microsoft.SpecExplorer.VS.TypeMapControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Name="typeMapControl">
+  <ListView ItemsSource="{Binding ElementName=typeMapControl, Path=TypeMap}">
+    <FrameworkElement.Resources>
+      <Style TargetType="{x:Type Button}">
+        <Style.Triggers>
+          <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}, Path=IsMouseOver}"
+                       Value="False">
+            <Setter Property="UIElement.Visibility" Value="Hidden"/>
+          </DataTrigger>
+        </Style.Triggers>
+      </Style>
+      <Style TargetType="{x:Type ListViewItem}">
+        <Setter Property="Control.BorderBrush" Value="LightGray"/>
+      </Style>
+    </FrameworkElement.Resources>
+    <ListView.View>
+      <GridView>
+        <GridViewColumn Header="Implementation Type" Width="210" DisplayMemberBinding="{Binding ImplementationTypeText}"/>
+        <GridViewColumn Header="Model Type">
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <Grid Width="245" ToolTip="{Binding Path=ModelClassText}">
+                <TextBlock Text="{Binding Path=ModelClassText}"/>
+                <Button HorizontalAlignment="Right" Content="..." Width="35" Tag="{Binding SelfInstance}"/>
+              </Grid>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+      </GridView>
+    </ListView.View>
+  </ListView>
+</UserControl>
