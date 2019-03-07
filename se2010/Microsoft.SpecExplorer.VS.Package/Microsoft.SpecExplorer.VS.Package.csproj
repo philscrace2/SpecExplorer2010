@@ -34,16 +34,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.ActionMachines">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ActionMachines.Cord">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.Cord.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.Cord.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.Core">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.VS.Common">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xrt">
       <HintPath>..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.Xrt.dll</HintPath>

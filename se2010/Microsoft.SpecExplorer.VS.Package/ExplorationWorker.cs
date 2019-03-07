@@ -86,11 +86,11 @@ namespace Microsoft.SpecExplorer
           this.runningMachine = current;
           this.runningMachineExecuteItem = new MachineExecuteItem()
           {
-            Project = current.get_Container().get_Name(),
-            Machine = current.get_Name(),
+            Project = current.Container.Name,
+            Machine = current.Name,
             Details = string.Empty
           };
-          if (this.taskType == TaskTypes.GeneratingTestCode && string.Compare("true", current.get_TestEnabled()) != 0)
+          if (this.taskType == TaskTypes.GeneratingTestCode && string.Compare("true", current.TestEnabled) != 0)
           {
             this.AppendRuningMachineSummary("Machine is not testable.");
             this.HandleIgnoredMachine(this.runningMachineExecuteItem);
@@ -115,7 +115,7 @@ namespace Microsoft.SpecExplorer
       if (this.explorer != null)
       {
         this.explorer.Abort();
-        ExplorationResult explorationResult = this.explorer.get_ExplorationResult();
+        ExplorationResult explorationResult = this.explorer.ExplorationResult;
         if (this.needSaveExplorationResult)
         {
           if (explorationResult != null && !string.IsNullOrEmpty(this.explorationResultFilePath))
@@ -139,18 +139,18 @@ namespace Microsoft.SpecExplorer
             Machine m = enumerator.Current;
             if (!this.sucessfullyExecutedMachines.Any<MachineExecuteItem>((Func<MachineExecuteItem, bool>) (item =>
             {
-              if (item.Project == m.get_Container().get_Name())
-                return item.Machine == m.get_Name();
+              if (item.Project == m.Container.Name)
+                return item.Machine == m.Name;
               return false;
             })) && !this.ignoredExecutedMachines.Any<MachineExecuteItem>((Func<MachineExecuteItem, bool>) (item =>
             {
-              if (item.Project == m.get_Container().get_Name())
-                return item.Machine == m.get_Name();
+              if (item.Project == m.Container.Name)
+                return item.Machine == m.Name;
               return false;
             })) && !this.failedExecutedMachines.Any<MachineExecuteItem>((Func<MachineExecuteItem, bool>) (item =>
             {
-              if (item.Project == m.get_Container().get_Name())
-                return item.Machine == m.get_Name();
+              if (item.Project == m.Container.Name)
+                return item.Machine == m.Name;
               return false;
             })))
             {
@@ -162,8 +162,8 @@ namespace Microsoft.SpecExplorer
               else
                 this.HandleAbortedToExecuteMachine(new MachineExecuteItem()
                 {
-                  Project = m.get_Container().get_Name(),
-                  Machine = m.get_Name(),
+                  Project = m.Container.Name,
+                  Machine = m.Name,
                   Details = "Not Started."
                 });
             }
@@ -199,7 +199,7 @@ namespace Microsoft.SpecExplorer
           case TaskTypes.RunningPostProcessors:
             if (isAborted)
             {
-              message = string.Format(Resources.PostProcessorAborted, (object) this.postProcessorHelper.get_CurrentPostProcesser());
+              message = string.Format(Resources.PostProcessorAborted, (object) this.postProcessorHelper.CurrentPostProcesser);
               break;
             }
             break;
@@ -236,9 +236,9 @@ namespace Microsoft.SpecExplorer
     private void ExecuteMachine(Machine machine)
     {
       ExplorationWorker.ProjectUnit projectUnit;
-      if (!this.compiledProjects.TryGetValue(machine.get_Container().get_UniqueName(), out projectUnit))
+      if (!this.compiledProjects.TryGetValue(machine.Container.UniqueName, out projectUnit))
       {
-        string str = string.Format(Resources.SkippingNoProjectMachineFormat, (object) machine.get_Name());
+        string str = string.Format(Resources.SkippingNoProjectMachineFormat, (object) machine.Name);
         this.control.ProgressMessage(str);
         this.package.ProgressMessage((VerbosityLevel) 0, str);
         this.AppendRuningMachineSummary(str);
@@ -246,7 +246,7 @@ namespace Microsoft.SpecExplorer
       }
       else if (projectUnit.BuildFailed)
       {
-        string str = string.Format(Resources.SkippingFailedProjectMachineFormat, (object) machine.get_Name(), (object) projectUnit.Project[]);
+        string str = string.Format(Resources.SkippingFailedProjectMachineFormat, (object) machine.Name, (object) projectUnit.Project[]);
         this.control.ProgressMessage(str);
         this.package.ProgressMessage((VerbosityLevel) 0, str);
         this.AppendRuningMachineSummary(str);
@@ -272,10 +272,10 @@ namespace Microsoft.SpecExplorer
     private void ExecuteExploration(Machine machine, ExplorationWorker.ProjectUnit projectUnit)
     {
       string str1 = Path.Combine(Path.GetDirectoryName(projectUnit.Project.FullName), "ExplorationResults");
-      this.explorationResultFilePath = Path.Combine(str1, machine.get_Name() + ".seexpl");
+      this.explorationResultFilePath = Path.Combine(str1, machine.Name + ".seexpl");
       if (!this.reExplore && !ExplorationUtility.NeedsReExploration(projectUnit.LatestStamp, this.explorationResultFilePath))
       {
-        string str2 = string.Format(Resources.MachineResultUpToDateFormat, (object) machine.get_Name());
+        string str2 = string.Format(Resources.MachineResultUpToDateFormat, (object) machine.Name);
         this.control.ProgressMessage(str2);
         this.package.ProgressMessage((VerbosityLevel) 0, str2);
         this.AppendRuningMachineSummary(str2);
@@ -299,37 +299,37 @@ namespace Microsoft.SpecExplorer
       else
       {
         ICordDesignTimeManager designTimeForProject = this.package.GetDesignTimeForProject(projectUnit.Project);
-        this.InitializeExplorer(projectUnit.References, projectUnit.Scripts, str1, machine.get_Name(), designTimeForProject.GetMachineSwitches(machine.get_Name()), (string) null);
+        this.InitializeExplorer(projectUnit.References, projectUnit.Scripts, str1, machine.Name, designTimeForProject.GetMachineSwitches(machine.Name), (string) null);
         this.startTime = DateTime.Now;
         this.progressTimer = new Timer(new TimerCallback(this.UpdateExplorationProgress), (object) null, 1000, 1000);
-        string message1 = string.Format(Resources.ValidatingMachineFormat, (object) machine.get_Name());
+        string message1 = string.Format(Resources.ValidatingMachineFormat, (object) machine.Name);
         this.control.ProgressMessage(message1);
         this.package.ProgressMessage((VerbosityLevel) 0, message1);
         this.explorer.StartBuilding().WaitOne();
-        if (this.explorer.get_State() == 3)
+        if (this.explorer.State == 3)
         {
-          string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.get_Name());
+          string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.Name);
           this.control.ProgressMessage(message2);
           this.package.ProgressMessage((VerbosityLevel) 0, message2);
-          string message3 = string.Format(Resources.ExploringMachineFormat, (object) machine.get_Name());
+          string message3 = string.Format(Resources.ExploringMachineFormat, (object) machine.Name);
           this.control.ProgressMessage(message3);
           this.package.ProgressMessage((VerbosityLevel) 0, message3);
           this.progressData = new ExplorationStatistics();
           this.needSaveExplorationResult = true;
           this.explorer.StartExploration().WaitOne();
-          if (this.explorer.get_State() == 6)
+          if (this.explorer.State == 6)
           {
             if (this.progressTimer != null)
             {
               this.progressTimer.Dispose();
               this.progressTimer = (Timer) null;
             }
-            string str2 = string.Format(Resources.ExplorationMachineSucceededFormat, (object) machine.get_Name());
+            string str2 = string.Format(Resources.ExplorationMachineSucceededFormat, (object) machine.Name);
             this.control.ProgressMessage(str2);
             this.package.ProgressMessage((VerbosityLevel) 0, str2);
             this.AppendRuningMachineSummary(str2);
             this.UpdateExplorationProgress((object) null);
-            ExplorationResult explorationResult = this.explorer.get_ExplorationResult();
+            ExplorationResult explorationResult = this.explorer.ExplorationResult;
             if (explorationResult != null)
             {
               explorationResult.Extensions.Signature = projectUnit.LatestStamp;
@@ -341,7 +341,7 @@ namespace Microsoft.SpecExplorer
             }
             else
             {
-              string str3 = string.Format(Resources.InvalidMachineExplorationResultFormat, (object) machine.get_Name());
+              string str3 = string.Format(Resources.InvalidMachineExplorationResultFormat, (object) machine.Name);
               this.control.ProgressMessage(str3);
               this.package.ProgressMessage((VerbosityLevel) 0, str3);
               this.AppendRuningMachineSummary(str3);
@@ -351,7 +351,7 @@ namespace Microsoft.SpecExplorer
           }
           else
           {
-            string str2 = string.Format(Resources.ExplorationMachineFailedFormat, (object) machine.get_Name());
+            string str2 = string.Format(Resources.ExplorationMachineFailedFormat, (object) machine.Name);
             this.control.ProgressMessage(str2);
             this.package.ProgressMessage((VerbosityLevel) 0, str2);
             this.AppendRuningMachineSummary(str2);
@@ -361,7 +361,7 @@ namespace Microsoft.SpecExplorer
         }
         else
         {
-          string str2 = string.Format(Resources.ValidationMachineFailedFormat, (object) machine.get_Name());
+          string str2 = string.Format(Resources.ValidationMachineFailedFormat, (object) machine.Name);
           this.control.ProgressMessage(str2);
           this.package.ProgressMessage((VerbosityLevel) 0, str2);
           this.AppendRuningMachineSummary(str2);
@@ -382,31 +382,31 @@ namespace Microsoft.SpecExplorer
 
     private void ExecuteOnTheFlyTest(Machine machine, ExplorationWorker.ProjectUnit projectUnit)
     {
-      string str1 = Path.Combine(Path.GetDirectoryName(projectUnit.Project.FullName), "TestResults", machine.get_Name(), DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss"));
+      string str1 = Path.Combine(Path.GetDirectoryName(projectUnit.Project.FullName), "TestResults", machine.Name, DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss"));
       this.onlineTestingLogfilePath = (string) null;
       ICordDesignTimeManager designTimeForProject = this.package.GetDesignTimeForProject(projectUnit.Project);
-      this.InitializeExplorer(projectUnit.References, projectUnit.Scripts, str1, machine.get_Name(), designTimeForProject.GetMachineSwitches(machine.get_Name()), this.replayFilePath);
-      string message1 = string.Format(Resources.ValidatingMachineFormat, (object) machine.get_Name());
+      this.InitializeExplorer(projectUnit.References, projectUnit.Scripts, str1, machine.Name, designTimeForProject.GetMachineSwitches(machine.Name), this.replayFilePath);
+      string message1 = string.Format(Resources.ValidatingMachineFormat, (object) machine.Name);
       this.control.ProgressMessage(message1);
       this.package.ProgressMessage((VerbosityLevel) 0, message1);
       this.explorer.StartBuilding().WaitOne();
-      if (this.explorer.get_State() == 3)
+      if (this.explorer.State == 3)
       {
-        string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.get_Name());
+        string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.Name);
         this.control.ProgressMessage(message2);
         this.package.ProgressMessage((VerbosityLevel) 0, message2);
-        string message3 = string.Format(Resources.ExploringMachineFormat, (object) machine.get_Name());
+        string message3 = string.Format(Resources.ExploringMachineFormat, (object) machine.Name);
         this.control.ProgressMessage(message3);
         this.package.ProgressMessage((VerbosityLevel) 0, message3);
         this.progressData = new ExplorationStatistics();
-        this.onlineTestingLogfilePath = Path.Combine(str1, machine.get_Name() + ".log");
+        this.onlineTestingLogfilePath = Path.Combine(str1, machine.Name + ".log");
         this.explorer.StartExploration().WaitOne();
         this.AppendRuningMachineSummary(string.Format("The log file is saved to: <a href=\"_file:///{0}\">{0}</a>", (object) this.onlineTestingLogfilePath));
         this.HandleFinishedToExecuteMachine(this.runningMachineExecuteItem);
       }
       else
       {
-        string str2 = string.Format(Resources.ValidationMachineFailedFormat, (object) machine.get_Name());
+        string str2 = string.Format(Resources.ValidationMachineFailedFormat, (object) machine.Name);
         this.control.ProgressMessage(str2);
         this.package.ProgressMessage((VerbosityLevel) 0, str2);
         this.AppendRuningMachineSummary(str2);
@@ -443,14 +443,14 @@ namespace Microsoft.SpecExplorer
       switch ((int) explorationMode)
       {
         case 0:
-          this.explorer.add_ExplorationStatisticsProgress((EventHandler<ExplorationStatisticsEventArgs>) ((sender, args) => this.progressData = args.get_Statistics()));
+          this.explorer.add_ExplorationStatisticsProgress((EventHandler<ExplorationStatisticsEventArgs>) ((sender, args) => this.progressData = args.Statistics));
           break;
         case 1:
         case 2:
           this.explorer.add_ExplorationResultUpdated((EventHandler<ExplorationResultEventArgs>) ((sender, args) =>
           {
-            string resultPath = Path.Combine(outputDir, args.get_ExplorationResult().TransitionSystem.Name + ".seexpl");
-            this.SaveExplorationResult(args.get_ExplorationResult(), resultPath, true);
+            string resultPath = Path.Combine(outputDir, args.ExplorationResult.TransitionSystem.Name + ".seexpl");
+            this.SaveExplorationResult(args.ExplorationResult, resultPath, true);
           }));
           break;
       }
@@ -542,8 +542,8 @@ namespace Microsoft.SpecExplorer
       if (this.progressData == null)
         return;
       string progressDurationFormat = ExtensionMethods.ToProgressDurationFormat(DateTime.Now - this.startTime);
-      this.control.ProgressMessage(string.Format("{0} {1} seconds, {2}", this.progressData.get_Finished() ? (object) Resources.ExplorationFinished : (object) Resources.ExplorationInProgress, (object) progressDurationFormat, (object) ((object) this.progressData).ToString()));
-      if (!this.progressData.get_Finished())
+      this.control.ProgressMessage(string.Format("{0} {1} seconds, {2}", this.progressData.Finished ? (object) Resources.ExplorationFinished : (object) Resources.ExplorationInProgress, (object) progressDurationFormat, (object) ((object) this.progressData).ToString()));
+      if (!this.progressData.Finished)
         return;
       this.progressData = (ExplorationStatistics) null;
     }
@@ -561,7 +561,7 @@ namespace Microsoft.SpecExplorer
           this.HandleFinishedToExecuteMachine(this.runningMachineExecuteItem);
           break;
         case TaskTypes.GeneratingTestCode:
-          if (this.GenerateTestCode(machine.get_Name(), transitionSystem, projectUnit.Project.FileName))
+          if (this.GenerateTestCode(machine.Name, transitionSystem, projectUnit.Project.FileName))
           {
             this.HandleFinishedToExecuteMachine(this.runningMachineExecuteItem);
             break;
@@ -622,7 +622,7 @@ namespace Microsoft.SpecExplorer
       if (string.IsNullOrEmpty(path2_2))
         path2_2 = string.Format("{0}.cs", (object) transitionSystem.Name);
       string fullPath2 = Path.GetFullPath(Path.Combine(fullPath1, path2_2));
-      string contents = (!Convert.ToBoolean(transitionSystem.GetSwitch("generatedynamictest")) ? (TestCodeGenerateBase) new StaticTestCodeGenerator(this.package.Session.get_Host(), transitionSystem) : (TestCodeGenerateBase) new DynamicTraversalTestCodeGenerator(this.package.Session.get_Host(), transitionSystem)).Generate(machineName);
+      string contents = (!Convert.ToBoolean(transitionSystem.GetSwitch("generatedynamictest")) ? (TestCodeGenerateBase) new StaticTestCodeGenerator(this.package.Session.Host, transitionSystem) : (TestCodeGenerateBase) new DynamicTraversalTestCodeGenerator(this.package.Session.Host, transitionSystem)).Generate(machineName);
       if (!string.IsNullOrEmpty(contents))
       {
         try
@@ -676,7 +676,7 @@ namespace Microsoft.SpecExplorer
     {
       if (this.postProcessors == null || this.postProcessors.Count<string>() <= 0)
         return;
-      string str = Path.Combine(this.package.Session.get_InstallDir(), Resources.ExtensionDirectoryName);
+      string str = Path.Combine(this.package.Session.InstallDir, Resources.ExtensionDirectoryName);
       Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
       dictionary1["WorkingDirectory"] = (object) Path.GetDirectoryName(projectFullName);
       Dictionary<string, Type> source;
@@ -836,7 +836,7 @@ namespace Microsoft.SpecExplorer
       {
         while (((IEnumerator) enumerator).MoveNext())
         {
-          string uniqueName = enumerator.Current.get_Container().get_UniqueName();
+          string uniqueName = enumerator.Current.Container.UniqueName;
           if (!this.compiledProjects.ContainsKey(uniqueName))
           {
             Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == uniqueName));
