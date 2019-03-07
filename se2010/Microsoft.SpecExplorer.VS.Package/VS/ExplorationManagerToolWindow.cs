@@ -111,7 +111,7 @@ namespace Microsoft.SpecExplorer.VS
 
     private void InitializePostProcessors()
     {
-      if (PostProcessorHelper.LoadCustomizedPostProcessingTypes(Path.Combine(this.package.Session.get_InstallDir(), Microsoft.SpecExplorer.Resources.ExtensionDirectoryName), (IHost) this.package, ref this.postProcessorTypeMap, ref this.postProcessorDisplayNameMap))
+      if (PostProcessorHelper.LoadCustomizedPostProcessingTypes(Path.Combine(this.package.Session.InstallDir, Microsoft.SpecExplorer.Resources.ExtensionDirectoryName), (IHost) this.package, ref this.postProcessorTypeMap, ref this.postProcessorDisplayNameMap))
         return;
       this.postProcessorTypeMap = new Dictionary<string, System.Type>();
       this.postProcessorDisplayNameMap = new Dictionary<string, string>();
@@ -129,7 +129,7 @@ namespace Microsoft.SpecExplorer.VS
       IVsWindowFrame propertyWindowFrame = this.PropertyWindowFrame;
       if (propertyWindowFrame == null || propertyWindowFrame.IsVisible() != 0)
         return;
-      this.TrackSelectedMachines(e.get_Machines());
+      this.TrackSelectedMachines(e.Machines);
     }
 
     private void OnShowProperties(object sender, MachineEventArgs e)
@@ -138,7 +138,7 @@ namespace Microsoft.SpecExplorer.VS
       if (propertyWindowFrame == null)
         return;
       this.package.AssertOk(propertyWindowFrame.Show());
-      this.TrackSelectedMachines(e.get_Machines());
+      this.TrackSelectedMachines(e.Machines);
     }
 
     private void TrackSelectedMachines(IList<Machine> machines)
@@ -165,14 +165,14 @@ namespace Microsoft.SpecExplorer.VS
     private MachinePropertyTypeDescriptor GetPropertyOfMachine(
       Machine machine)
     {
-      Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == machine.get_Container().get_UniqueName()));
+      Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == machine.Container.UniqueName));
       if (project != null)
       {
         ICordDesignTimeManager designTimeManager = this.package.CordScopeManager.GetCordDesignTimeManager(project.UniqueName);
         this.package.Assert(designTimeManager != null);
         if (designTimeManager != null)
         {
-          IDictionary<string, string> machineSwitches = designTimeManager.GetMachineSwitches(machine.get_Name());
+          IDictionary<string, string> machineSwitches = designTimeManager.GetMachineSwitches(machine.Name);
           List<MachinePropertyDescriptor> propertyDescriptorList = new List<MachinePropertyDescriptor>();
           IOptionSetManager requiredService = (IOptionSetManager) this.package.CoreServices.GetRequiredService<IOptionSetManager>();
           foreach (PropertyDescriptor property in requiredService.GetProperties((Visibility) 2))
@@ -181,13 +181,13 @@ namespace Microsoft.SpecExplorer.VS
             if (!machineSwitches.TryGetValue(property.Name.ToLower(), out str))
             {
               object obj;
-              str = !requiredService.TryGetDefaultValue(property, ref obj) || obj == null ? string.Empty : obj.ToString();
+              str = !requiredService.TryGetDefaultValue(property, out obj) || obj == null ? string.Empty : obj.ToString();
             }
             else if (str == null)
               str = string.Empty;
             propertyDescriptorList.Add(new MachinePropertyDescriptor(property, (object) str));
           }
-          return new MachinePropertyTypeDescriptor(machine.get_Name(), new PropertyDescriptorCollection((PropertyDescriptor[]) propertyDescriptorList.ToArray()));
+          return new MachinePropertyTypeDescriptor(machine.Name, new PropertyDescriptorCollection((PropertyDescriptor[]) propertyDescriptorList.ToArray()));
         }
       }
       return (MachinePropertyTypeDescriptor) null;
@@ -280,24 +280,24 @@ namespace Microsoft.SpecExplorer.VS
 
     private void OnNavigateToMachine(object sender, MachineEventArgs e)
     {
-      Machine machine = e.get_Machines()[0];
-      Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == machine.get_Container().get_UniqueName()));
+      Machine machine = e.Machines[0];
+      Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == machine.Container.UniqueName));
       if (project != null)
       {
         ICordDesignTimeManager designTimeManager = this.package.CordScopeManager.GetCordDesignTimeManager(project.UniqueName);
         if (designTimeManager != null)
         {
-          MachineDefinition machineDefinition = ((IEnumerable<MachineDefinition>) designTimeManager.get_AllMachines()).FirstOrDefault<MachineDefinition>((Func<MachineDefinition, bool>) (m => (string) m.Name == machine.get_Name()));
+          MachineDefinition machineDefinition = ((IEnumerable<MachineDefinition>) designTimeManager.AllMachines).FirstOrDefault<MachineDefinition>((Func<MachineDefinition, bool>) (m => (string) m.Name == machine.Name));
           if (machineDefinition != null)
           {
-            int line = ((SyntaxElement) machineDefinition).get_Location().get_StartLine() > 0 ? ((SyntaxElement) machineDefinition).get_Location().get_StartLine() - 1 : ((SyntaxElement) machineDefinition).get_Location().get_StartLine();
-            int column = ((SyntaxElement) machineDefinition).get_Location().get_StartColumn() > 0 ? ((SyntaxElement) machineDefinition).get_Location().get_StartColumn() - 1 : ((SyntaxElement) machineDefinition).get_Location().get_StartColumn();
-            this.package.NavigateTo(((SyntaxElement) machineDefinition).get_Location().get_FileName(), line, column);
+            int line = ((SyntaxElement) machineDefinition).Location.StartLine > 0 ? ((SyntaxElement) machineDefinition).Location.StartLine - 1 : ((SyntaxElement) machineDefinition).Location.StartLine;
+            int column = ((SyntaxElement) machineDefinition).Location.StartColumn > 0 ? ((SyntaxElement) machineDefinition).Location.StartColumn - 1 : ((SyntaxElement) machineDefinition).Location.StartColumn;
+            this.package.NavigateTo(((SyntaxElement) machineDefinition).Location.FileName, line, column);
             return;
           }
         }
       }
-      this.package.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Cannot navigate to machine '{0}'.", (object) machine.get_Name()));
+      this.package.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Cannot navigate to machine '{0}'.", (object) machine.Name));
     }
 
     private void OnExplore(object sender, MachineEventArgs e)
@@ -340,7 +340,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         this.status = ExplorationManagerToolWindow.OperationStatus.Running;
         this.control.StartOperation();
-        ExplorationWorker explorationWorker = new ExplorationWorker(this.package, this.control, e.get_Machines(), e.get_ReExplore(), this.vsFileChangeEx, taskType, e.get_PostProcessors(), replayFilePath);
+        ExplorationWorker explorationWorker = new ExplorationWorker(this.package, this.control, e.Machines, e.ReExplore, this.vsFileChangeEx, taskType, e.PostProcessors, replayFilePath);
         try
         {
           explorationWorker.Execute();

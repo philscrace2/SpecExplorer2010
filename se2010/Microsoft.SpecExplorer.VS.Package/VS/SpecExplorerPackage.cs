@@ -12,9 +12,8 @@ using Microsoft.SpecExplorer.ErrorReporting;
 using Microsoft.SpecExplorer.Runtime.Testing;
 using Microsoft.SpecExplorer.Viewer;
 using Microsoft.SpecExplorer.VS.Common;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.VSHelp;
@@ -193,7 +192,7 @@ namespace Microsoft.SpecExplorer.VS
       }
       if (!flag)
         return;
-      this.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Project {0} was created by previous version of {1}. \r\nThe project file has been converted. Please save it and reopen your solution. \r\nFor more information, please check release notes", (object) project[], (object) Microsoft.SpecExplorer.Resources.SpecExplorer));
+      this.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Project {0} was created by previous version of {1}. \r\nThe project file has been converted. Please save it and reopen your solution. \r\nFor more information, please check release notes", (object) project, (object) Microsoft.SpecExplorer.Resources.SpecExplorer));
     }
 
     private bool CheckAndConvertProjectItem(ProjectItem projectItem)
@@ -205,12 +204,12 @@ namespace Microsoft.SpecExplorer.VS
         Guid guid = new Guid(projectItem.Kind);
         if (guid == VSConstants.GUID_ItemType_PhysicalFile)
         {
-          if (FileNames.HasScriptExtension(projectItem[]) && projectItem.Properties != null)
+          if (FileNames.HasScriptExtension(projectItem) && projectItem.Properties != null)
           {
             Property property = projectItem.Properties.Item((object) str);
-            if (property != null && property[] != null && !string.IsNullOrEmpty(property[].ToString()))
+            if (property != null && property != null && !string.IsNullOrEmpty(property.ToString()))
             {
-              property[] = (object) string.Empty;
+              property = (object) string.Empty;
               flag = true;
             }
           }
@@ -271,7 +270,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       if (!this.FilterProjectKind(project))
         return;
-      bool flag = !this.CordScopeManager.get_AllScopes().Contains(project.UniqueName);
+      bool flag = !this.CordScopeManager.AllScopes.Contains(project.UniqueName);
       ICordDesignTimeManager cdt = this.CordScopeManager.RegisterCordDesignTimeManager(project.UniqueName);
       if (flag)
       {
@@ -294,7 +293,7 @@ namespace Microsoft.SpecExplorer.VS
         kind = (DiagnosisKind) 2;
       else if (error.Kind == 2)
         kind = (DiagnosisKind) 1;
-      this.DiagMessage(kind, (string) error.Description, (object) new TextLocation((string) error.FileName, (short) ((Location) error.Location).get_StartLine(), (short) ((Location) error.Location).get_StartColumn()), (bool) error.IsParsingError);
+      this.DiagMessage(kind, (string) error.Description, (object) new TextLocation((string) error.FileName, (short) ((Location) error.Location).StartLine(), (short) ((Location) error.Location).StartColumn()), (bool) error.IsParsingError);
     }
 
     internal void RegisterCordDocumentToDesignTimeManager(
@@ -306,7 +305,7 @@ namespace Microsoft.SpecExplorer.VS
         return;
       if (getContentFromBuffer)
       {
-        if (timeForCordDocument.get_ManagedScripts().Contains(doc.FileName))
+        if (timeForCordDocument.ManagedScripts().Contains(doc.FileName))
           return;
         timeForCordDocument.RegisterScript(doc.FileName, (Func<string>) (() => doc.GetBufferContent()));
       }
@@ -321,7 +320,7 @@ namespace Microsoft.SpecExplorer.VS
       if (cdt == null)
         return;
       string content = this.GetScriptContent(scriptPath);
-      if (content == null || cdt.get_ManagedScripts().Contains(scriptPath))
+      if (content == null || cdt.ManagedScripts().Contains(scriptPath))
         return;
       cdt.RegisterScript(scriptPath, (Func<string>) (() => content));
     }
@@ -372,7 +371,7 @@ namespace Microsoft.SpecExplorer.VS
 
     private void UnregisterAllProjectsFromCordScopeManager()
     {
-      foreach (string str in this.CordScopeManager.get_AllScopes().ToArray<string>())
+      foreach (string str in this.CordScopeManager.AllScopes.ToArray<string>())
       {
         ICordDesignTimeManager designTimeManager = this.CordScopeManager.GetCordDesignTimeManager(str);
         if (designTimeManager != null)
@@ -393,7 +392,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         CultureInfo currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
         CultureInfo cultureInfo = new CultureInfo("en-US");
-        using (IEnumerator<string> enumerator = requiredService.get_AllScopes().GetEnumerator())
+        using (IEnumerator<string> enumerator = requiredService.AllScopes.GetEnumerator())
         {
           while (enumerator.MoveNext())
           {
@@ -404,7 +403,7 @@ namespace Microsoft.SpecExplorer.VS
               ICordDesignTimeManager designTimeManager = requiredService.GetCordDesignTimeManager(scope);
               if (designTimeManager != null)
               {
-                if (designTimeManager.get_ManagedScripts().Count > 0)
+                if (designTimeManager.ManagedScripts().Count > 0)
                 {
                   try
                   {
@@ -589,9 +588,9 @@ namespace Microsoft.SpecExplorer.VS
       if (location is TextLocation)
       {
         TextLocation textLocation = (TextLocation) location;
-        fileName = ((TextLocation) ref textLocation).get_FileName() ?? Microsoft.SpecExplorer.Resources.SpecExplorer;
-        line = (int) ((TextLocation) ref textLocation).get_FirstLine();
-        column = (int) ((TextLocation) ref textLocation).get_FirstColumn();
+        fileName = ((TextLocation) ref textLocation).FileName() ?? Microsoft.SpecExplorer.Resources.SpecExplorer;
+        line = (int) ((TextLocation) ref textLocation).FirstLine();
+        column = (int) ((TextLocation) ref textLocation).FirstColumn();
       }
       else
         fileName = location == null ? Microsoft.SpecExplorer.Resources.SpecExplorer : location.ToString() ?? Microsoft.SpecExplorer.Resources.SpecExplorer;
@@ -656,19 +655,19 @@ namespace Microsoft.SpecExplorer.VS
         CodeModel codeModel = containingProject.CodeModel;
         if (codeModel == null)
           return false;
-        CodeType codeType = codeModel.CodeTypeFromFullName(member.get_TypeName());
-        if (member.get_Kind() == null)
+        CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName());
+        if (member.Kind() == null)
         {
           if (codeType == null)
             return false;
           location = this.MakeLocation(codeType as CodeElement);
           return true;
         }
-        if (member.get_Kind() == 2)
+        if (member.Kind() == 2)
         {
           foreach (CodeElement allMember in codeType.GetAllMembers())
           {
-            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember[] == member.get_Name())
+            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member.Name())
             {
               location = this.MakeLocation(allMember);
               return true;
@@ -676,15 +675,15 @@ namespace Microsoft.SpecExplorer.VS
           }
           return false;
         }
-        if (member.get_Kind() == 1)
+        if (member.Kind == 1)
         {
-          string[] array = member.get_ParameterTypes().ToArray<string>();
+          string[] array = member.ParameterTypes.ToArray<string>();
           foreach (CodeElement allMember in codeType.GetAllMembers())
           {
             if (allMember.Kind == vsCMElement.vsCMElementFunction)
             {
               CodeFunction codeFunction = allMember as CodeFunction;
-              if (allMember[] == member.get_Name() && codeFunction != null)
+              if (allMember == member.Name && codeFunction != null)
               {
                 int length = array.Length;
                 int num = 0;
@@ -711,11 +710,11 @@ namespace Microsoft.SpecExplorer.VS
           }
           return false;
         }
-        if (member.get_Kind() != 3)
+        if (member.Kind != 3)
           return false;
         foreach (CodeElement allMember in codeType.GetAllMembers())
         {
-          if (allMember.Kind == vsCMElement.vsCMElementProperty && allMember[] == member.get_Name())
+          if (allMember.Kind == vsCMElement.vsCMElementProperty && allMember == member.Name)
           {
             location = this.MakeLocation(allMember);
             return true;
@@ -778,7 +777,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         try
         {
-          CodeType codeType = codeModel.CodeTypeFromFullName(member.get_TypeName());
+          CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName());
           if (codeType != null)
           {
             if (codeType.ProjectItem != null)
@@ -817,7 +816,7 @@ namespace Microsoft.SpecExplorer.VS
       if (this.session == null)
       {
         Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost) this);
-        session.get_Application().get_Setup().Add((IComponent) new CordCompletionProvider(this));
+        session.Application().get_Setup().Add((IComponent) new CordCompletionProvider(this));
         this.session = (ISession) session;
         ((IServiceContainer) this).AddService(typeof (SGlobalService), (object) new GlobalService((ComponentBase) session), true);
         if (this.SessionInitialized != null)
@@ -1383,7 +1382,7 @@ namespace Microsoft.SpecExplorer.VS
           while (enumerator.MoveNext())
           {
             ProjectItem item = (ProjectItem) enumerator.Current;
-            string name = item[];
+            string name = item;
             if (FileNames.HasCSharpExtension(name))
               yield return item;
             foreach (ProjectItem authoredCsharpDocument in this.GetAuthoredCSharpDocuments(item.ProjectItems))
@@ -1405,7 +1404,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         SolutionConfiguration2 activeConfiguration = this.DTE.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
         this.Assert(activeConfiguration != null);
-        this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration[] + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
+        this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
       }
       catch (COMException ex)
       {
@@ -1419,8 +1418,8 @@ namespace Microsoft.SpecExplorer.VS
     {
       this.Assert(project != null);
       List<string> stringList = new List<string>();
-      string str1 = project.Properties.Item((object) "FullPath")[] as string;
-      string str2 = project.Properties.Item((object) "OutputFileName")[] as string;
+      string str1 = project.Properties.Item((object) "FullPath") as string;
+      string str2 = project.Properties.Item((object) "OutputFileName") as string;
       string str3 = project.ConfigurationManager.ActiveConfiguration.Properties.Item((object) "OutputPath")[] as string;
       string str4 = string.Format("{0}\\{1}\\{2}", (object) str1, (object) str3, (object) str2);
       stringList.Add(str4);
@@ -1450,7 +1449,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       foreach (ProjectItem projectItem in items)
       {
-        if (FileNames.HasScriptExtension(projectItem[]))
+        if (FileNames.HasScriptExtension(projectItem))
         {
           string str = projectItem.get_FileNames((short) 0);
           scripts.Add(str);
@@ -1509,7 +1508,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       string fromProjectItems = this.ComputePathFromProjectItems(project.ProjectItems, keyItem);
       if (!string.IsNullOrEmpty(fromProjectItems))
-        return project[] + "\\" + fromProjectItems;
+        return project + "\\" + fromProjectItems;
       return (string) null;
     }
 
@@ -1520,10 +1519,10 @@ namespace Microsoft.SpecExplorer.VS
         foreach (ProjectItem projectItem in itemCollection)
         {
           if (projectItem == keyItem)
-            return projectItem[];
+            return projectItem;
           string fromProjectItems = this.ComputePathFromProjectItems(projectItem.ProjectItems, keyItem);
           if (!string.IsNullOrEmpty(fromProjectItems))
-            return projectItem[] + "\\" + fromProjectItems;
+            return projectItem + "\\" + fromProjectItems;
         }
       }
       return (string) null;
@@ -1648,7 +1647,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         Tuple<string, string> key = new Tuple<string, string>(oldFileName.ToLower(), newFileName.ToLower());
         string str;
-        if (!this.projectRenameQueries.TryGetValue(key, out str) || this.CordScopeManager == null || (this.CordScopeManager.get_AllScopes() == null || !this.CordScopeManager.get_AllScopes().Contains(oldFileName)))
+        if (!this.projectRenameQueries.TryGetValue(key, out str) || this.CordScopeManager == null || (this.CordScopeManager.AllScopes == null || !this.CordScopeManager.AllScopes.Contains(oldFileName)))
           return;
         this.CordScopeManager.ChangeRegistrationKey(str, uniqueName);
         this.projectRenameQueries.Remove(key);
@@ -1898,7 +1897,7 @@ namespace Microsoft.SpecExplorer.VS
           OutputWindow outputWindow = this.DTE.Windows.Item((object) "{34E76E81-EE4A-11D0-AE2E-00A0C90FFFC3}").Object as OutputWindow;
           foreach (OutputWindowPane outputWindowPane in outputWindow.OutputWindowPanes)
           {
-            if (outputWindowPane[] == Microsoft.SpecExplorer.Resources.SpecExplorer)
+            if (outputWindowPane == Microsoft.SpecExplorer.Resources.SpecExplorer)
             {
               this.specExplorerPane = outputWindowPane;
               break;
@@ -1920,7 +1919,7 @@ namespace Microsoft.SpecExplorer.VS
           OutputWindow outputWindow = this.DTE.Windows.Item((object) "{34E76E81-EE4A-11D0-AE2E-00A0C90FFFC3}").Object as OutputWindow;
           foreach (OutputWindowPane outputWindowPane in outputWindow.OutputWindowPanes)
           {
-            if (outputWindowPane[] == "Debug")
+            if (outputWindowPane == "Debug")
             {
               this.debugPane = outputWindowPane;
               break;

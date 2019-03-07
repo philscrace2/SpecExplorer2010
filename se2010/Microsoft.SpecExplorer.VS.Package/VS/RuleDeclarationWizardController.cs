@@ -235,9 +235,9 @@ namespace Microsoft.SpecExplorer.VS
     private void LoadConfigs()
     {
       this.configSelection.ItemList.Clear();
-      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.get_AllScopes())
+      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes)
       {
-        using (IEnumerator<Config> enumerator = ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).get_AllConfigurations()).GetEnumerator())
+        using (IEnumerator<Config> enumerator = ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).AllConfigurations).GetEnumerator())
         {
           while (((IEnumerator) enumerator).MoveNext())
           {
@@ -248,7 +248,7 @@ namespace Microsoft.SpecExplorer.VS
                 return cl is ConfigClause.DeclareMethod;
               return true;
             })))
-              this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, ((SyntaxElement) current).get_Location().get_FileName(), (string) current.Name));
+              this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, ((SyntaxElement) current).Location().get_FileName(), (string) current.Name));
           }
         }
       }
@@ -258,7 +258,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       if (!configChanged)
         return;
-      this.actionSelection.ControlModel.LoadActions((IEnumerable<ConfigClause>) ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(this.WizardData.ConfigInfo.ContainerProject).get_AllConfigurations()).FirstOrDefault<Config>((Func<Config, bool>) (confName => (string) confName.Name == this.WizardData.ConfigInfo.ConfigName)).Clauses);
+      this.actionSelection.ControlModel.LoadActions((IEnumerable<ConfigClause>) ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(this.WizardData.ConfigInfo.ContainerProject).AllConfigurations()).FirstOrDefault<Config>((Func<Config, bool>) (confName => (string) confName.Name == this.WizardData.ConfigInfo.ConfigName)).Clauses);
     }
 
     private void LoadCodeElementsFromProjectFiles()

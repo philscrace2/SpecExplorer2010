@@ -6,7 +6,7 @@
 
 using EnvDTE;
 using Microsoft.ActionMachines.Cord;
-using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 
@@ -38,7 +38,7 @@ namespace Microsoft.SpecExplorer.VS
         if (allRealProject != null && allRealProject.UniqueName != null)
         {
           ICordDesignTimeManager designTimeManager = scopeManager.GetCordDesignTimeManager(allRealProject.UniqueName);
-          if (designTimeManager != null && designTimeManager.get_ManagedScripts().Count > 0)
+          if (designTimeManager != null && designTimeManager.ManagedScripts.Count > 0)
             projectList.Add(allRealProject);
         }
       }
@@ -80,7 +80,7 @@ namespace Microsoft.SpecExplorer.VS
       Guid guid = new Guid(projectItem.Kind);
       if (guid == VSConstants.GUID_ItemType_PhysicalFile)
       {
-        string strA = projectItem.get_FileNames((short) 1);
+        string strA = projectItem.FileNames((short) 1);
         if (strA != null && string.Compare(strA, filePath, true) == 0)
           return true;
       }

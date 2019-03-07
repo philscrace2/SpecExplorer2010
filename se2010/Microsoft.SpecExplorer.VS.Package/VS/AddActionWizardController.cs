@@ -103,14 +103,14 @@ namespace Microsoft.SpecExplorer.VS
     private void LoadConfigs()
     {
       this.configSelection.ItemList.Clear();
-      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.get_AllScopes())
+      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes)
       {
-        using (IEnumerator<Config> enumerator = ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).get_AllConfigurations()).GetEnumerator())
+        using (IEnumerator<Config> enumerator = ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).AllConfigurations).GetEnumerator())
         {
           while (((IEnumerator) enumerator).MoveNext())
           {
             Config current = enumerator.Current;
-            this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, ((SyntaxElement) current).get_Location().get_FileName(), (string) current.Name));
+            this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, ((SyntaxElement) current).Location().get_FileName(), (string) current.Name));
           }
         }
       }
@@ -120,9 +120,9 @@ namespace Microsoft.SpecExplorer.VS
     private void LoadScripts()
     {
       this.configCreation.ItemList.Clear();
-      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.get_AllScopes())
+      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes)
       {
-        foreach (string managedScript in (IEnumerable<string>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).get_ManagedScripts())
+        foreach (string managedScript in (IEnumerable<string>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).ManagedScripts)
           this.configCreation.ItemList.Add((ICordSyntaxElementInfo) new ScriptInfo(allScope, managedScript));
       }
       this.configCreation.ItemList.Add((ICordSyntaxElementInfo) new ScriptInfo());
@@ -131,7 +131,7 @@ namespace Microsoft.SpecExplorer.VS
     private void LoadProjects()
     {
       this.scriptCreation.ItemList.Clear();
-      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.get_AllScopes())
+      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes())
         this.scriptCreation.ItemList.Add((ICordSyntaxElementInfo) new ProjectInfo(allScope));
     }
 

@@ -115,7 +115,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       get
       {
-        return this.UserControl.get_ControlModel().get_SelectedGuidance().get_Id();
+        return this.UserControl.ControlModel.SelectedGuidance.Id;
       }
     }
 
@@ -125,7 +125,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         if (this.GuidanceLoader == null)
           return string.Empty;
-        return GuidanceUsageInfo.PackMultipleGuidanceUsageToString(this.GuidanceLoader.get_LoadedGuidanceList());
+        return GuidanceUsageInfo.PackMultipleGuidanceUsageToString(this.GuidanceLoader.LoadedGuidanceList());
       }
     }
 
@@ -133,28 +133,28 @@ namespace Microsoft.SpecExplorer.VS
       object sender,
       AssistedProcedureRequestEventArgs e)
     {
-      this.sePackage.ExecuteSEVSCommand(e.get_ProcedureId());
+      this.sePackage.ExecuteSEVSCommand(e.ProcedureId);
     }
 
     private void LoadGuidanceControl()
     {
-      IEnumerable<IGuidance> loadedGuidanceList = ((IGuidanceLoader) this.sePackage.CoreServices.GetRequiredService<IGuidanceLoader>()).get_LoadedGuidanceList();
+      IEnumerable<IGuidance> loadedGuidanceList = ((IGuidanceLoader) this.sePackage.CoreServices.GetRequiredService<IGuidanceLoader>()).LoadedGuidanceList;
       using (IEnumerator<IGuidance> enumerator = loadedGuidanceList.GetEnumerator())
       {
         while (((IEnumerator) enumerator).MoveNext())
-          this.UserControl.get_ControlModel().get_GuidanceList().Add(enumerator.Current);
+          this.UserControl.ControlModel.GuidanceList.Add(enumerator.Current);
       }
-      IGuidance iguidance = this.sePackage.LastUsedGuidance != null ? loadedGuidanceList.FirstOrDefault<IGuidance>((Func<IGuidance, bool>) (gd => gd.get_Id() == this.sePackage.LastUsedGuidance)) : (IGuidance) null;
+      IGuidance iguidance = this.sePackage.LastUsedGuidance != null ? loadedGuidanceList.FirstOrDefault<IGuidance>((Func<IGuidance, bool>) (gd => gd.Id == this.sePackage.LastUsedGuidance)) : (IGuidance) null;
       if (iguidance != null)
-        this.UserControl.get_ControlModel().set_SelectedGuidance(iguidance);
-      this.UserControl.get_ControlModel().add_AssistedProcedureRequested(new EventHandler<AssistedProcedureRequestEventArgs>(this.AssistedProcedureRequestCallBack));
+        this.UserControl.ControlModel.set_SelectedGuidance(iguidance);
+      this.UserControl.ControlModel.add_AssistedProcedureRequested(new EventHandler<AssistedProcedureRequestEventArgs>(this.AssistedProcedureRequestCallBack));
     }
 
     private void LoadGuidanceFiles()
     {
       try
       {
-        foreach (string file in Directory.GetFiles(Path.Combine(this.sePackage.Session.get_InstallDir(), Microsoft.SpecExplorer.Resources.WorkflowsDirectory), Microsoft.SpecExplorer.Resources.WorkflowFileExtension, SearchOption.AllDirectories))
+        foreach (string file in Directory.GetFiles(Path.Combine(this.sePackage.Session.InstallDir, Microsoft.SpecExplorer.Resources.WorkflowsDirectory), Microsoft.SpecExplorer.Resources.WorkflowFileExtension, SearchOption.AllDirectories))
         {
           try
           {

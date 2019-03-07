@@ -44,12 +44,12 @@ namespace Microsoft.SpecExplorer.VS
     {
       Hash32Builder hash32Builder = (Hash32Builder) null;
       if (this.ConfigName != null)
-        ((Hash32Builder) ref hash32Builder).Add(this.ConfigName.GetHashCode());
+        ((Hash32Builder) hash32Builder).Add(this.ConfigName.GetHashCode());
       if (this.ContainerScript != null)
-        ((Hash32Builder) ref hash32Builder).Add(this.ContainerScript.GetHashCode());
+        ((Hash32Builder) hash32Builder).Add(this.ContainerScript.GetHashCode());
       if (this.ContainerProject != null)
-        ((Hash32Builder) ref hash32Builder).Add(this.ContainerProject.GetHashCode());
-      return ((Hash32Builder) ref hash32Builder).get_Result();
+        ((Hash32Builder) hash32Builder).Add(this.ContainerProject.GetHashCode());
+      return ((Hash32Builder) hash32Builder).Result;
     }
   }
 }

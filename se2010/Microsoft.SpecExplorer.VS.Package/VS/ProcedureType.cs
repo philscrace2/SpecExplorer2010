@@ -31,18 +31,18 @@ namespace Microsoft.SpecExplorer.VS
     }
 
     public ProcedureType(IType type)
-      : this(type.get_IsAddressType() || type.get_IsArrayType() ? ((IMember) type.get_ElementType()).get_FullName() : ((IMember) type).get_FullName(), ((IMember) type).get_ShortName(), type.get_IsAdapter())
+      : this(type.IsAddressType || type.IsArrayType ? ((IMember) type.ElementType).FullName : ((IMember) type).FullName, ((IMember) type).ShortName, type.IsAdapter)
     {
     }
 
     public override int GetHashCode()
     {
       Hash32Builder hash32Builder = (Hash32Builder) null;
-      ((Hash32Builder) ref hash32Builder).Add(typeof (ProcedureType).GetHashCode());
-      ((Hash32Builder) ref hash32Builder).Add(this.FullName.GetHashCode());
-      ((Hash32Builder) ref hash32Builder).Add(this.ShortName.GetHashCode());
-      ((Hash32Builder) ref hash32Builder).Add(this.IsAdapter.GetHashCode());
-      return ((Hash32Builder) ref hash32Builder).get_Result();
+      ((Hash32Builder) hash32Builder).Add(typeof (ProcedureType).GetHashCode());
+      ((Hash32Builder) hash32Builder).Add(this.FullName.GetHashCode());
+      ((Hash32Builder) hash32Builder).Add(this.ShortName.GetHashCode());
+      ((Hash32Builder) hash32Builder).Add(this.IsAdapter.GetHashCode());
+      return ((Hash32Builder) hash32Builder).Result;
     }
 
     public override bool Equals(object obj)

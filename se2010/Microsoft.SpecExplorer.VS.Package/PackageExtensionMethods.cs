@@ -131,8 +131,8 @@ namespace Microsoft.SpecExplorer
 
     public static bool IsValid(this CodeNamespace codeNamespace)
     {
-      if (codeNamespace != null && !codeNamespace[].Equals("System"))
-        return !codeNamespace[].Equals("MS");
+      if (codeNamespace != null && !codeNamespace.Equals("System"))
+        return !codeNamespace.Equals("MS");
       return false;
     }
   }

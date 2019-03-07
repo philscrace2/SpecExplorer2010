@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Type = Microsoft.ActionMachines.Cord.Type;
 
 namespace Microsoft.SpecExplorer
 {
@@ -246,7 +247,7 @@ namespace Microsoft.SpecExplorer
       }
       else if (projectUnit.BuildFailed)
       {
-        string str = string.Format(Resources.SkippingFailedProjectMachineFormat, (object) machine.Name, (object) projectUnit.Project[]);
+        string str = string.Format(Resources.SkippingFailedProjectMachineFormat, (object) machine.Name, (object) projectUnit.Project);
         this.control.ProgressMessage(str);
         this.package.ProgressMessage((VerbosityLevel) 0, str);
         this.AppendRuningMachineSummary(str);
@@ -842,7 +843,7 @@ namespace Microsoft.SpecExplorer
             Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == uniqueName));
             if (project != null)
             {
-              string message1 = string.Format(Resources.BuildingProjectFormat, (object) project[]);
+              string message1 = string.Format(Resources.BuildingProjectFormat, (object) project);
               this.control.ProgressMessage(message1);
               this.package.ProgressMessage((VerbosityLevel) 0, message1);
               if (this.package.BuildProject(project))
@@ -859,13 +860,13 @@ namespace Microsoft.SpecExplorer
                   BuildFailed = false
                 };
                 this.compiledProjects.Add(uniqueName, projectUnit);
-                string message2 = string.Format(Resources.BuildProjectSucceededFormat, (object) project[]);
+                string message2 = string.Format(Resources.BuildProjectSucceededFormat, (object) project);
                 this.control.ProgressMessage(message2);
                 this.package.ProgressMessage((VerbosityLevel) 0, message2);
               }
               else
               {
-                string message2 = string.Format(Resources.BuildProjectFailedFormat, (object) project[]);
+                string message2 = string.Format(Resources.BuildProjectFailedFormat, (object) project);
                 this.control.ProgressMessage(message2);
                 this.package.ProgressMessage((VerbosityLevel) 0, message2);
                 this.compiledProjects.Add(uniqueName, new ExplorationWorker.ProjectUnit()

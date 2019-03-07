@@ -64,7 +64,7 @@ namespace Microsoft.SpecExplorer.VS
     private void OnBrowseStep(object sender, StepBrowserEventArgs e)
     {
       StepBrowserToolWindow toolWindow = this.package.FindToolWindow(typeof (StepBrowserToolWindow), 0, true) as StepBrowserToolWindow;
-      toolWindow.LoadSteps(e.get_BrowserEdges(), e.get_StepLabel());
+      toolWindow.LoadSteps(e.BrowserEdges, e.StepLabel);
       IVsWindowFrame frame = toolWindow.Frame as IVsWindowFrame;
       if (frame == null)
         return;
@@ -75,7 +75,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       StateBrowserToolWindow toolWindow = this.package.FindToolWindow(typeof (StateBrowserToolWindow), 0, true) as StateBrowserToolWindow;
       toolWindow.SetHost((IHost) this.package);
-      toolWindow.LoadStates(this.fileName, e.get_States(), e.get_ShouldDisplayLeftTree(), e.get_StateLabel());
+      toolWindow.LoadStates(this.fileName, e.States, e.ShouldDisplayLeftTree, e.StateLabel);
       IVsWindowFrame frame = toolWindow.Frame as IVsWindowFrame;
       if (frame == null)
         return;
@@ -87,12 +87,12 @@ namespace Microsoft.SpecExplorer.VS
       ExplorationResultLoader explorationResultLoader = new ExplorationResultLoader(this.fileName);
       try
       {
-        StateEntity state1 = explorationResultLoader.LoadState(e.get_Left().Label);
-        StateEntity state2 = explorationResultLoader.LoadState(e.get_Right().Label);
+        StateEntity state1 = explorationResultLoader.LoadState(e.Left.Label);
+        StateEntity state2 = explorationResultLoader.LoadState(e.Right.Label);
         SharedEntitySet sharedEntities = explorationResultLoader.LoadSharedEntities();
         StateComparisonView toolWindow = this.package.FindToolWindow(typeof (StateComparisonView), 0, true) as StateComparisonView;
         toolWindow.Show();
-        toolWindow.ShowDiff(e.get_Left().Label, this.BuildStateString(sharedEntities, state1), e.get_Right().Label, this.BuildStateString(sharedEntities, state2), e.get_CompareLabel());
+        toolWindow.ShowDiff(e.Left().Label, this.BuildStateString(sharedEntities, state1), e.Right.Label, this.BuildStateString(sharedEntities, state2), e.CompareLabel);
       }
       catch (ExplorationResultLoadingException ex)
       {

@@ -12,6 +12,7 @@ using Microsoft.Modeling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Type = Microsoft.ActionMachines.Cord.Type;
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -89,7 +90,7 @@ namespace Microsoft.SpecExplorer.VS
       Parameter[] parameters = this.CreateParameters(codeType.Parameters, true);
       string str = EnvDTEUtils.ShortenTypeName(container.FullName, this.importedNamespaces, this.containerProject);
       InstantiatedName instantiatedName = new InstantiatedName((Location) Location.None, (InstantiatedName) null, str, (Type[]) null);
-      if (type == null || !((Type) type).get_IsVoid() || parameters == null)
+      if (type == null || !((Type) type).IsVoid() || parameters == null)
         return (MethodDescriptor) null;
       return new MethodDescriptor(new InstantiatedName((Location) Location.None, instantiatedName, codeEvent[], (Type[]) null), codeEvent.IsShared, parameters, (Type) type, (ActionKind) 4, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
     }

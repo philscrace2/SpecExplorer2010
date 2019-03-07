@@ -12,6 +12,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using Type = Microsoft.ActionMachines.Cord.Type;
+
 namespace Microsoft.SpecExplorer.VS
 {
   internal class VocabularyVisitor : SyntaxVisitor
@@ -63,7 +65,7 @@ namespace Microsoft.SpecExplorer.VS
           while (((IEnumerator) enumerator).MoveNext())
           {
             ConfigClause.IncludeConfig baseVoc = enumerator.Current;
-            Config config = ((IEnumerable<Config>) this.ast.Configs).FirstOrDefault<Config>((Func<Config, bool>) (c => (string) c.Name == ((ConfigReference) baseVoc.Vocabulary).get_Name()));
+            Config config = ((IEnumerable<Config>) this.ast.Configs).FirstOrDefault<Config>((Func<Config, bool>) (c => (string) c.Name == ((ConfigReference) baseVoc.Vocabulary).Name));
             if (config != null)
             {
               ((SyntaxElement) config).Accept((SyntaxVisitor) this);

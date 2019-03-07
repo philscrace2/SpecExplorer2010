@@ -16,6 +16,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Type = Microsoft.ActionMachines.Cord.Type;
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -138,21 +139,21 @@ namespace Microsoft.SpecExplorer.VS
           {
             if (current is ConfigClause.ImportAllFromScope)
             {
-              IType type = ((IEnumerable<IType>) ((Type) (current as ConfigClause.ImportAllFromScope).FromType).get_ResolvedTypes()).First<IType>();
+              IType type = ((IEnumerable<IType>) ((Type) (current as ConfigClause.ImportAllFromScope).FromType).ResolvedTypes).First<IType>();
               ProcedureType procedureType = this.GetProcedureType(type);
-              if (type.get_IsAdapter())
+              if (type.IsAdapter)
                 adapterTypes.Add(procedureType);
-              foreach (IMethod declaredMethod in type.get_DeclaredMethods())
+              foreach (IMethod declaredMethod in type.DeclaredMethods)
               {
-                if ((declaredMethod.get_AssociationReferences() == null || declaredMethod.get_AssociationReferences().Length <= 0 || (declaredMethod.get_AssociationReferences()[0].Kind == null || declaredMethod.get_AssociationReferences()[0].Kind == 1)) && (!declaredMethod.get_IsConstructor() || !declaredMethod.get_IsStatic()))
+                if ((declaredMethod.AssociationReferences == null || declaredMethod.AssociationReferences.Length <= 0 || (declaredMethod.AssociationReferences[0].Kind == null || declaredMethod.AssociationReferences[0].Kind == 1)) && (!declaredMethod.IsConstructor || !declaredMethod.IsStatic))
                 {
                   MethodDescriptor method2 = this.BuildMethodDescriptor(declaredMethod, type);
                   this.CollectMethodDescriptor(methodDescriptorDict, procedureType, method2);
                 }
               }
-              foreach (IAssociation declaredAssociation in type.get_DeclaredAssociations())
+              foreach (IAssociation declaredAssociation in type.DeclaredAssociations)
               {
-                if (declaredAssociation.get_Kind() == 1)
+                if (declaredAssociation.Kind == 1)
                 {
                   MethodDescriptor method2 = this.BuildMethodDescriptor(declaredAssociation, type);
                   this.CollectMethodDescriptor(methodDescriptorDict, procedureType, method2);
@@ -270,16 +271,16 @@ namespace Microsoft.SpecExplorer.VS
               string parameterTypeName;
               if (current.RepresentationType != null)
               {
-                str = this.BuildParameterName(((IMember) current.RepresentationType).get_ShortName(), parameters);
+                str = this.BuildParameterName(((IMember) current.RepresentationType).ShortName, parameters);
                 parameterTypeName = this.GetParameterTypeName((IType) current.RepresentationType, typeBindingClassCache);
               }
               else
               {
                 this.package.Assert(((InstantiatedName) current.MethodName).Prefix != null, "method.MethodName.Prefix cannot be null");
                 str = this.BuildParameterName((string) ((InstantiatedName) ((InstantiatedName) current.MethodName).Prefix).Name, parameters);
-                if (((ICollection<IType>) ((InstantiatedName) ((InstantiatedName) current.MethodName).Prefix).get_ResolvedTypes()).Count == 1)
+                if (((ICollection<IType>) ((InstantiatedName) ((InstantiatedName) current.MethodName).Prefix).ResolvedTypes).Count == 1)
                 {
-                  parameterTypeName = this.GetParameterTypeName(((IEnumerable<IType>) ((InstantiatedName) ((InstantiatedName) current.MethodName).Prefix).get_ResolvedTypes()).First<IType>(), typeBindingClassCache);
+                  parameterTypeName = this.GetParameterTypeName(((IEnumerable<IType>) ((InstantiatedName) ((InstantiatedName) current.MethodName).Prefix).ResolvedTypes).First<IType>(), typeBindingClassCache);
                 }
                 else
                 {
@@ -290,7 +291,7 @@ namespace Microsoft.SpecExplorer.VS
               KeyValuePair<string, string> keyValuePair = new KeyValuePair<string, string>(str, parameterTypeName);
               parameters.Insert(0, keyValuePair);
             }
-            string ruleAttributeLabel = this.GetRuleAttributeLabel(methodName1, parameters, parametersKind, false, typeBindingClassCache.Values.Contains<CodeClass>(codeClass), isStatic1, !((Type) current.ResultType).get_IsVoid(), str);
+            string ruleAttributeLabel = this.GetRuleAttributeLabel(methodName1, parameters, parametersKind, false, typeBindingClassCache.Values.Contains<CodeClass>(codeClass), isStatic1, !((Type) current.ResultType).IsVoid(), str);
             bool isStatic2 = isStatic1 || codeClass2.IsShared;
             this.AddFunction(codeClass, methodName2, (Type) current.ResultType, parameters, parametersKind, isStatic2, typeBindingClassCache, ruleAttributeLabel, shortenTypeName);
           }
@@ -312,22 +313,22 @@ namespace Microsoft.SpecExplorer.VS
       Type type,
       Dictionary<ProcedureType, CodeClass> typeBindingClassCache)
     {
-      if (type.get_IsVoid())
+      if (type.IsVoid)
         return (object) "void";
-      IType type1 = ((IEnumerable<IType>) type.get_ResolvedTypes()).First<IType>();
+      IType type1 = ((IEnumerable<IType>) type.ResolvedTypes).First<IType>();
       CodeClass codeClass;
       if (!typeBindingClassCache.TryGetValue(this.GetProcedureType(type1), out codeClass))
-        return (object) ((IMember) type1).get_FullName();
-      return (object) codeClass[];
+        return (object) ((IMember) type1).FullName;
+      return (object) codeClass;
     }
 
     private ProcedureType GetMethodDeclaringType(MethodDescriptor method)
     {
       if (method.MethodName == null)
-        return this.GetProcedureType(((IEnumerable<IType>) ((Type) method.ResultType).get_ResolvedTypes()).First<IType>());
-      if (((ICollection<IType>) ((InstantiatedName) ((InstantiatedName) method.MethodName).Prefix).get_ResolvedTypes()).Count == 0)
+        return this.GetProcedureType(((IEnumerable<IType>) ((Type) method.ResultType).ResolvedTypes()).First<IType>());
+      if (((ICollection<IType>) ((InstantiatedName) ((InstantiatedName) method.MethodName).Prefix).ResolvedTypes).Count == 0)
         return new ProcedureType((string) ((InstantiatedName) ((InstantiatedName) method.MethodName).Prefix).Name, (string) ((InstantiatedName) ((InstantiatedName) method.MethodName).Prefix).Name);
-      return this.GetProcedureType(((IEnumerable<IType>) ((InstantiatedName) ((InstantiatedName) method.MethodName).Prefix).get_ResolvedTypes()).First<IType>());
+      return this.GetProcedureType(((IEnumerable<IType>) ((InstantiatedName) ((InstantiatedName) method.MethodName).Prefix).ResolvedTypes).First<IType>());
     }
 
     private ProcedureType GetProcedureType(IType type)
@@ -344,7 +345,7 @@ namespace Microsoft.SpecExplorer.VS
     private string GetMethodName(MethodDescriptor method)
     {
       if (method.MethodName == null)
-        return ((IMember) ((IEnumerable<IType>) ((Type) method.ResultType).get_ResolvedTypes()).First<IType>()).get_ShortName();
+        return ((IMember) ((IEnumerable<IType>) ((Type) method.ResultType).ResolvedTypes()).First<IType>()).ShortName();
       return (string) ((InstantiatedName) method.MethodName).Name;
     }
 
@@ -371,14 +372,14 @@ namespace Microsoft.SpecExplorer.VS
               {
                 flag = true;
                 if (current2.MethodName == null)
-                  itypeSet.Add(((IEnumerable<IType>) ((Type) current2.ResultType).get_ResolvedTypes()).First<IType>());
-                else if (((ICollection<IType>) ((InstantiatedName) ((InstantiatedName) current2.MethodName).Prefix).get_ResolvedTypes()).Count == 1)
-                  itypeSet.Add(((IEnumerable<IType>) ((InstantiatedName) ((InstantiatedName) current2.MethodName).Prefix).get_ResolvedTypes()).First<IType>());
+                  itypeSet.Add(((IEnumerable<IType>) ((Type) current2.ResultType).ResolvedTypes()).First<IType>());
+                else if (((ICollection<IType>) ((InstantiatedName) ((InstantiatedName) current2.MethodName).Prefix).ResolvedTypes()).Count == 1)
+                  itypeSet.Add(((IEnumerable<IType>) ((InstantiatedName) ((InstantiatedName) current2.MethodName).Prefix).ResolvedTypes()).First<IType>());
               }
               if (current2.MethodName != null)
               {
-                if (!((Type) current2.ResultType).get_IsVoid())
-                  itypeSet.Add(((IEnumerable<IType>) ((Type) current2.ResultType).get_ResolvedTypes()).First<IType>());
+                if (!((Type) current2.ResultType).IsVoid())
+                  itypeSet.Add(((IEnumerable<IType>) ((Type) current2.ResultType).ResolvedTypes()).First<IType>());
                 foreach (Parameter parameter in (Parameter[]) current2.Parameters)
                   itypeSet.Add((IType) parameter.ResolvedType);
               }
@@ -400,7 +401,7 @@ namespace Microsoft.SpecExplorer.VS
               IType current2 = enumerator2.Current;
               if (this.IsNeedTypeBinding(current2))
               {
-                if (existBindingTypes.TryGetValue(((IMember) current2).get_FullName(), out codeClass))
+                if (existBindingTypes.TryGetValue(((IMember) current2).FullName(), out codeClass))
                   existTypeBindings[this.GetProcedureType(current2)] = codeClass;
                 else
                   procedureTypeSet.Add(this.GetProcedureType(current2));
@@ -409,7 +410,7 @@ namespace Microsoft.SpecExplorer.VS
           }
           if (this.IsNeedTypeBinding(current1))
           {
-            if (existBindingTypes.TryGetValue(((IMember) current1).get_FullName(), out codeClass))
+            if (existBindingTypes.TryGetValue(((IMember) current1).FullName, out codeClass))
               existTypeBindings[this.GetProcedureType(current1)] = codeClass;
             else
               procedureTypeSet.Add(this.GetProcedureType(current1));
@@ -431,8 +432,8 @@ namespace Microsoft.SpecExplorer.VS
 
     private bool IsNeedTypeBinding(IType type)
     {
-      if (type.get_Category() == 4 && !type.get_IsCompoundValue() && !type.get_IsNative())
-        return string.Compare(((IMember) type).get_FullName(), "System.Object", true) != 0;
+      if (type.Category == 4 && !type.IsCompoundValue && !type.IsNative)
+        return string.Compare(((IMember) type).FullName, "System.Object", true) != 0;
       return false;
     }
 
@@ -588,12 +589,12 @@ namespace Microsoft.SpecExplorer.VS
         typeFullName = codeClass.FullName;
         if (typeFullName.IndexOf('<') > 0)
         {
-          this.package.Session.get_Host().NotificationDialog("Fail", "Type binding do not support generic type");
+          this.package.Session.Host.NotificationDialog("Fail", "Type binding do not support generic type");
           return typeFullName;
         }
       }
       else
-        typeFullName = type.get_IsAddressType() || type.get_IsArrayType() ? ((IMember) type.get_ElementType()).get_FullName() : ((IMember) type).get_FullName();
+        typeFullName = type.IsAddressType || type.IsArrayType ? ((IMember) type.ElementType).FullName : ((IMember) type).FullName;
       return this.GetAliasNameForGenericType(typeFullName, typeBindingClassCache, false);
     }
 
@@ -723,8 +724,8 @@ namespace Microsoft.SpecExplorer.VS
 
     private string GetDescriptiveLocalName(ILocal local)
     {
-      string str = local.get_Name();
-      int length = str.LastIndexOf("_p" + (object) local.get_Index());
+      string str = local.Name();
+      int length = str.LastIndexOf("_p" + (object) local.Index());
       if (length >= 0)
         str = str.Substring(0, length);
       return str;
@@ -752,11 +753,11 @@ namespace Microsoft.SpecExplorer.VS
     private MethodDescriptor BuildMethodDescriptor(IMethod method, IType type)
     {
       InstantiatedName instantiatedName = (InstantiatedName) null;
-      if (!method.get_IsConstructor())
-        instantiatedName = this.BuildMethodInstantiatedName(((IMember) method).get_ShortName(), type);
-      bool isStatic = method.get_IsStatic();
-      Type type1 = !method.get_IsConstructor() ? this.BuildReturnType(method.get_ResultType(), method.get_ResultIsVoid()) : this.BuildReturnType(type, false);
-      return new MethodDescriptor(instantiatedName, isStatic, this.BuildParameters(method.get_Parameters()), type1, (ActionKind) 11, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
+      if (!method.IsConstructor)
+        instantiatedName = this.BuildMethodInstantiatedName(((IMember) method).ShortName, type);
+      bool isStatic = method.IsStatic;
+      Type type1 = !method.IsConstructor ? this.BuildReturnType(method.ResultType, method.ResultIsVoid) : this.BuildReturnType(type, false);
+      return new MethodDescriptor(instantiatedName, isStatic, this.BuildParameters(method.Parameters), type1, (ActionKind) 11, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
     }
 
     private InstantiatedName BuildMethodInstantiatedName(
@@ -764,7 +765,7 @@ namespace Microsoft.SpecExplorer.VS
       IType type)
     {
       InstantiatedName instantiatedName1 = (InstantiatedName) null;
-      string str = ((IMember) type).get_FullName();
+      string str = ((IMember) type).FullName;
       int length = str.LastIndexOf(".");
       if (length > 0)
       {
@@ -776,7 +777,7 @@ namespace Microsoft.SpecExplorer.VS
       List<IType> itypeList1 = new List<IType>();
       itypeList1.Add(type);
       List<IType> itypeList2 = itypeList1;
-      instantiatedName3.set_ResolvedTypes((IList<IType>) itypeList2);
+      instantiatedName3.ResolvedTypes((IList<IType>) itypeList2);
       return new InstantiatedName((Location) Location.None, instantiatedName2, shortName, (Type[]) null);
     }
 
@@ -784,12 +785,12 @@ namespace Microsoft.SpecExplorer.VS
       IAssociation association,
       IType type)
     {
-      return new MethodDescriptor(this.BuildMethodInstantiatedName(((IMember) association).get_ShortName(), type), association.get_IsStatic(), this.BuildParameters(association.get_FireMethod().get_Parameters()), this.BuildReturnType(association.get_FireMethod().get_ResultType(), association.get_FireMethod().get_ResultIsVoid()), (ActionKind) 4, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
+      return new MethodDescriptor(this.BuildMethodInstantiatedName(((IMember) association).ShortName, type), association.IsStatic, this.BuildParameters(association.FireMethod.Parameters()), this.BuildReturnType(association.FireMethod.ResultType, association.FireMethod.ResultIsVoid()), (ActionKind) 4, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
     }
 
     private Type BuildReturnType(IType type, bool isVoid)
     {
-      Type type1 = (Type) new Type.Simple(!isVoid ? new InstantiatedName((Location) Location.None, (InstantiatedName) null, ((IMember) type).get_FullName(), (Type[]) null) : new InstantiatedName((Location) Location.None, (InstantiatedName) null, "void", (Type[]) null));
+      Type type1 = (Type) new Type.Simple(!isVoid ? new InstantiatedName((Location) Location.None, (InstantiatedName) null, ((IMember) type).FullName(), (Type[]) null) : new InstantiatedName((Location) Location.None, (InstantiatedName) null, "void", (Type[]) null));
       Type type2 = type1;
       List<IType> itypeList1 = new List<IType>();
       itypeList1.Add(type);
@@ -803,15 +804,15 @@ namespace Microsoft.SpecExplorer.VS
       List<Parameter> parameterList = new List<Parameter>();
       foreach (ILocal local in locals)
       {
-        if (!(local.get_Name() == "this"))
+        if (!(local.Name == "this"))
         {
           string descriptiveLocalName = this.GetDescriptiveLocalName(local);
-          IType itype = local.get_Type();
+          IType itype = local.Type;
           ParameterKind parameterKind = (ParameterKind) 2;
-          if (itype.get_IsAddressType())
-            parameterKind = !local.get_IsOut() ? (ParameterKind) 8 : (ParameterKind) 4;
-          if (itype.get_IsAddressType() || itype.get_IsArrayType())
-            itype = itype.get_ElementType();
+          if (itype.IsAddressType)
+            parameterKind = !local.IsOut ? (ParameterKind) 8 : (ParameterKind) 4;
+          if (itype.IsAddressType || itype.IsArrayType)
+            itype = itype.ElementType;
           parameterList.Add(new Parameter((Location) Location.None, parameterKind, (Type) null, descriptiveLocalName)
           {
             ResolvedType = (__Null) itype
@@ -915,12 +916,12 @@ namespace Microsoft.SpecExplorer.VS
     private void AddTypeBindingAttribute(CodeClass addedClass, string attribute)
     {
       if ((addedClass as CodeClass2).IsShared)
-        this.package.Session.get_Host().DiagMessage((DiagnosisKind) 1, string.Format("type binding to a static class will result in validation failure: class {0}", (object) addedClass.FullName), (object) null);
+        this.package.Session.Host.DiagMessage((DiagnosisKind) 1, string.Format("type binding to a static class will result in validation failure: class {0}", (object) addedClass.FullName), (object) null);
       foreach (CodeElement attribute1 in addedClass.Attributes)
       {
         if ((attribute1 as CodeAttribute)[] == "TypeBinding")
         {
-          this.package.Session.get_Host().DiagMessage((DiagnosisKind) 1, string.Format("The type binding {0} has already been added", (object) attribute), (object) null);
+          this.package.Session.Host.DiagMessage((DiagnosisKind) 1, string.Format("The type binding {0} has already been added", (object) attribute), (object) null);
           return;
         }
       }

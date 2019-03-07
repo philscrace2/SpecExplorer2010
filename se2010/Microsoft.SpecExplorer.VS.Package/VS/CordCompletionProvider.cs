@@ -52,7 +52,7 @@ namespace Microsoft.SpecExplorer.VS
               return false;
             })))
             {
-              completionSet.Add(new Completion(codeClass[], codeClass[], "class " + codeClass.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
+              completionSet.Add(new Completion(codeClass, codeClass[], "class " + codeClass.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
               break;
             }
             break;
@@ -87,7 +87,7 @@ namespace Microsoft.SpecExplorer.VS
               return false;
             })))
             {
-              completionSet.Add(new Completion(codeInterface[], codeInterface[], "interface " + codeInterface.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
+              completionSet.Add(new Completion(codeInterface, codeInterface[], "interface " + codeInterface.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
               break;
             }
             break;
@@ -114,7 +114,7 @@ namespace Microsoft.SpecExplorer.VS
             CodeNamespace codeNamespace = codeElement as CodeNamespace;
             if (codeNamespace != null)
             {
-              completionSet.Add(new Completion(codeNamespace[], codeNamespace[], "namespace " + codeNamespace[], (ImageSource) CompletionResources.NamespaceCompletionIcon, "Namespace"));
+              completionSet.Add(new Completion(codeNamespace[], codeNamespace[], "namespace " + codeNamespace, (ImageSource) CompletionResources.NamespaceCompletionIcon, "Namespace"));
               if (codeNamespace.Members != null)
               {
                 foreach (CodeElement member in codeNamespace.Members)
@@ -126,7 +126,7 @@ namespace Microsoft.SpecExplorer.VS
           {
             CodeClass2 codeClass2 = codeElement as CodeClass2;
             if (codeClass2 != null)
-              completionSet.Add(new Completion(codeClass2[], codeClass2[], "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
+              completionSet.Add(new Completion(codeClass2, codeClass2[], "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
           }
           else if (codeElement.Kind == vsCMElement.vsCMElementInterface)
           {
@@ -395,8 +395,8 @@ namespace Microsoft.SpecExplorer.VS
       {
         List<ConfigClause.IncludeConfig> includeConfigList = new List<ConfigClause.IncludeConfig>();
         foreach (ConfigReference vocabulary in (ConfigReference[]) machine.Vocabularies)
-          includeConfigList.Add(new ConfigClause.IncludeConfig(new ConfigReference(vocabulary.get_Name(), ((SyntaxElement) machine).get_Location())));
-        Config config = new Config((Documentary) null, ((SyntaxElement) machine).get_Location(), "", (IEnumerable<ConfigClause>) includeConfigList);
+          includeConfigList.Add(new ConfigClause.IncludeConfig(new ConfigReference(vocabulary.Name, ((SyntaxElement) machine).Location)));
+        Config config = new Config((Documentary) null, ((SyntaxElement) machine).Location, "", (IEnumerable<ConfigClause>) includeConfigList);
         VocabularyVisitor vocabularyVisitor = new VocabularyVisitor(ast, (IList<Namespace>) ast.GlobalNamespaces, project);
         ((SyntaxVisitor) vocabularyVisitor).VisitVocabulary(config);
         foreach (ActionDeclaration actionDeclaration in vocabularyVisitor.ImportActions.Except<ActionDeclaration>(vocabularyVisitor.ExcludedActions))

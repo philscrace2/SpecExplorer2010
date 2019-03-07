@@ -77,7 +77,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         this.package.ProgressMessage((VerbosityLevel) 0, Resources.ValidationFailed);
         this.package.MakeErrorListVisible();
-        this.package.Session.get_Host().NotificationDialog("Assisted Procedure Launch Failed", "Failed Launching Add Action Assisted Procedure, due to Validation failure. Kindly go through the Error List for details");
+        this.package.Session.Host.NotificationDialog("Assisted Procedure Launch Failed", "Failed Launching Add Action Assisted Procedure, due to Validation failure. Kindly go through the Error List for details");
       }
       this.isValidating = false;
       this.package.AssertOk(this.package.SolutionBuildManager.UnadviseUpdateSolutionEvents(this.pdwCookie));
@@ -110,12 +110,12 @@ namespace Microsoft.SpecExplorer.VS
     {
       if (string.IsNullOrEmpty(newConfigName) || !Regex.IsMatch(newConfigName, "^([_a-zA-Z][_a-zA-Z0-9]*)$"))
         return "Invalid identifier pattern for config name";
-      if (CordUtils.get_CordKeywords().Contains(newConfigName))
+      if (CordUtils.CordKeywords.Contains(newConfigName))
         return "Configuration name cannot be a Cord Keyword.";
       if (containerProject == null)
         return (string) null;
       ICordDesignTimeManager designTimeManager = this.package.CordScopeManager.GetCordDesignTimeManager(containerProject);
-      if (designTimeManager == null || !((IEnumerable<Config>) designTimeManager.get_AllConfigurations()).Any<Config>((Func<Config, bool>) (config => (string) config.Name == newConfigName)))
+      if (designTimeManager == null || !((IEnumerable<Config>) designTimeManager.AllConfigurations).Any<Config>((Func<Config, bool>) (config => (string) config.Name == newConfigName)))
         return (string) null;
       return "config " + newConfigName + " already exists in project " + containerProject;
     }
