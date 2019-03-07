@@ -13,8 +13,8 @@ using Microsoft.SpecExplorer.Runtime.Testing;
 using Microsoft.SpecExplorer.Viewer;
 using Microsoft.SpecExplorer.VS.Common;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.VSHelp;
 using Microsoft.VisualStudio.VSHelp80;
@@ -34,6 +34,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using VSLangProj80;
+using Microsoft.VisualStudio;
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -209,7 +210,7 @@ namespace Microsoft.SpecExplorer.VS
             Property property = projectItem.Properties.Item((object) str);
             if (property != null && property != null && !string.IsNullOrEmpty(property.ToString()))
             {
-              property = (object) string.Empty;
+              property = (object)string.Empty;
               flag = true;
             }
           }
@@ -293,7 +294,7 @@ namespace Microsoft.SpecExplorer.VS
         kind = (DiagnosisKind) 2;
       else if (error.Kind == 2)
         kind = (DiagnosisKind) 1;
-      this.DiagMessage(kind, (string) error.Description, (object) new TextLocation((string) error.FileName, (short) ((Location) error.Location).StartLine(), (short) ((Location) error.Location).StartColumn()), (bool) error.IsParsingError);
+      this.DiagMessage(kind, (string) error.Description, (object) new TextLocation((string) error.FileName, (short) ((Location) error.Location).StartLine, (short) ((Location) error.Location).StartColumn), (bool) error.IsParsingError);
     }
 
     internal void RegisterCordDocumentToDesignTimeManager(
@@ -305,7 +306,7 @@ namespace Microsoft.SpecExplorer.VS
         return;
       if (getContentFromBuffer)
       {
-        if (timeForCordDocument.ManagedScripts().Contains(doc.FileName))
+        if (timeForCordDocument.ManagedScripts.Contains(doc.FileName))
           return;
         timeForCordDocument.RegisterScript(doc.FileName, (Func<string>) (() => doc.GetBufferContent()));
       }
@@ -320,7 +321,7 @@ namespace Microsoft.SpecExplorer.VS
       if (cdt == null)
         return;
       string content = this.GetScriptContent(scriptPath);
-      if (content == null || cdt.ManagedScripts().Contains(scriptPath))
+      if (content == null || cdt.ManagedScripts.Contains(scriptPath))
         return;
       cdt.RegisterScript(scriptPath, (Func<string>) (() => content));
     }
@@ -403,7 +404,7 @@ namespace Microsoft.SpecExplorer.VS
               ICordDesignTimeManager designTimeManager = requiredService.GetCordDesignTimeManager(scope);
               if (designTimeManager != null)
               {
-                if (designTimeManager.ManagedScripts().Count > 0)
+                if (designTimeManager.ManagedScripts.Count > 0)
                 {
                   try
                   {
@@ -588,9 +589,9 @@ namespace Microsoft.SpecExplorer.VS
       if (location is TextLocation)
       {
         TextLocation textLocation = (TextLocation) location;
-        fileName = ((TextLocation) ref textLocation).FileName() ?? Microsoft.SpecExplorer.Resources.SpecExplorer;
-        line = (int) ((TextLocation) ref textLocation).FirstLine();
-        column = (int) ((TextLocation) ref textLocation).FirstColumn();
+        fileName = ((TextLocation) textLocation).FileName ?? Microsoft.SpecExplorer.Resources.SpecExplorer;
+        line = (int) ((TextLocation) textLocation).FirstLine;
+        column = (int) ((TextLocation) textLocation).FirstColumn;
       }
       else
         fileName = location == null ? Microsoft.SpecExplorer.Resources.SpecExplorer : location.ToString() ?? Microsoft.SpecExplorer.Resources.SpecExplorer;
@@ -655,19 +656,19 @@ namespace Microsoft.SpecExplorer.VS
         CodeModel codeModel = containingProject.CodeModel;
         if (codeModel == null)
           return false;
-        CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName());
-        if (member.Kind() == null)
+        CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName);
+        if (member.Kind == null)
         {
           if (codeType == null)
             return false;
           location = this.MakeLocation(codeType as CodeElement);
           return true;
         }
-        if (member.Kind() == 2)
+        if (member.Kind == 2)
         {
           foreach (CodeElement allMember in codeType.GetAllMembers())
           {
-            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member.Name())
+            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member.Name)
             {
               location = this.MakeLocation(allMember);
               return true;
@@ -816,7 +817,7 @@ namespace Microsoft.SpecExplorer.VS
       if (this.session == null)
       {
         Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost) this);
-        session.Application().get_Setup().Add((IComponent) new CordCompletionProvider(this));
+        session.Application.Setup.Add((IComponent) new CordCompletionProvider(this));
         this.session = (ISession) session;
         ((IServiceContainer) this).AddService(typeof (SGlobalService), (object) new GlobalService((ComponentBase) session), true);
         if (this.SessionInitialized != null)
@@ -1844,7 +1845,7 @@ namespace Microsoft.SpecExplorer.VS
       if (!(locator is TextLocation))
         return this.MakeTextSpan(0, 0);
       TextLocation textLocation = (TextLocation) locator;
-      return this.MakeTextSpan((int) ((TextLocation) ref textLocation).get_FirstLine() - 1, (int) ((TextLocation) ref textLocation).get_FirstColumn() - 1);
+      return this.MakeTextSpan((int) ((TextLocation) textLocation).FirstLine - 1, (int) ((TextLocation) textLocation).FirstColumn - 1);
     }
 
     internal void MakeErrorListVisible()

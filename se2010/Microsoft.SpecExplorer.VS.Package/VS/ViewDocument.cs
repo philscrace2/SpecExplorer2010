@@ -92,7 +92,7 @@ namespace Microsoft.SpecExplorer.VS
         SharedEntitySet sharedEntities = explorationResultLoader.LoadSharedEntities();
         StateComparisonView toolWindow = this.package.FindToolWindow(typeof (StateComparisonView), 0, true) as StateComparisonView;
         toolWindow.Show();
-        toolWindow.ShowDiff(e.Left().Label, this.BuildStateString(sharedEntities, state1), e.Right.Label, this.BuildStateString(sharedEntities, state2), e.CompareLabel);
+        toolWindow.ShowDiff(e.Left(.Label, this.BuildStateString(sharedEntities, state1), e.Right.Label, this.BuildStateString(sharedEntities, state2), e.CompareLabel);
       }
       catch (ExplorationResultLoadingException ex)
       {

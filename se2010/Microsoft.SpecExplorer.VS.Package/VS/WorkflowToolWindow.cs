@@ -125,7 +125,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         if (this.GuidanceLoader == null)
           return string.Empty;
-        return GuidanceUsageInfo.PackMultipleGuidanceUsageToString(this.GuidanceLoader.LoadedGuidanceList());
+        return GuidanceUsageInfo.PackMultipleGuidanceUsageToString(this.GuidanceLoader.LoadedGuidanceList);
       }
     }
 

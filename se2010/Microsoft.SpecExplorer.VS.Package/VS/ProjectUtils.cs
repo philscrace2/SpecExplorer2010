@@ -7,6 +7,7 @@
 using EnvDTE;
 using Microsoft.ActionMachines.Cord;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio;
 using System;
 using System.Collections.Generic;
 
