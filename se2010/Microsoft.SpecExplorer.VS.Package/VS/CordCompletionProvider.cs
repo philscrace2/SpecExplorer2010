@@ -23,8 +23,7 @@ namespace Microsoft.SpecExplorer.VS
     private SpecExplorerPackage package;
 
     internal CordCompletionProvider(SpecExplorerPackage package)
-    {
-      this.\u002Ector();
+    {      
       if (package == null)
         throw new ArgumentNullException(nameof (package));
       this.package = package;
@@ -52,7 +51,7 @@ namespace Microsoft.SpecExplorer.VS
               return false;
             })))
             {
-              completionSet.Add(new Completion(codeClass, codeClass[], "class " + codeClass.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
+              completionSet.Add(new Completion(codeClass.FullName, codeClass.Name, "class " + codeClass.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
               break;
             }
             break;
@@ -87,7 +86,7 @@ namespace Microsoft.SpecExplorer.VS
               return false;
             })))
             {
-              completionSet.Add(new Completion(codeInterface, codeInterface[], "interface " + codeInterface.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
+              completionSet.Add(new Completion(codeInterface.FullName, codeInterface.Name, "interface " + codeInterface.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
               break;
             }
             break;
@@ -114,7 +113,7 @@ namespace Microsoft.SpecExplorer.VS
             CodeNamespace codeNamespace = codeElement as CodeNamespace;
             if (codeNamespace != null)
             {
-              completionSet.Add(new Completion(codeNamespace[], codeNamespace[], "namespace " + codeNamespace, (ImageSource) CompletionResources.NamespaceCompletionIcon, "Namespace"));
+              completionSet.Add(new Completion(codeNamespace.FullName, codeNamespace.Name, "namespace " + codeNamespace, (ImageSource) CompletionResources.NamespaceCompletionIcon, "Namespace"));
               if (codeNamespace.Members != null)
               {
                 foreach (CodeElement member in codeNamespace.Members)
@@ -126,13 +125,13 @@ namespace Microsoft.SpecExplorer.VS
           {
             CodeClass2 codeClass2 = codeElement as CodeClass2;
             if (codeClass2 != null)
-              completionSet.Add(new Completion(codeClass2, codeClass2[], "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
+              completionSet.Add(new Completion(codeClass2.FullName, codeClass2.Name, "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
           }
           else if (codeElement.Kind == vsCMElement.vsCMElementInterface)
           {
             CodeInterface2 codeInterface2 = codeElement as CodeInterface2;
             if (codeInterface2 != null)
-              completionSet.Add(new Completion(codeInterface2[], codeInterface2[], "interface " + codeInterface2.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
+              completionSet.Add(new Completion(codeInterface2.FullName, codeInterface2.Name, "interface " + codeInterface2.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
           }
         }
       }
@@ -262,7 +261,7 @@ namespace Microsoft.SpecExplorer.VS
                 CodeClass2 codeClass2 = allMember as CodeClass2;
                 if (codeClass2 != null)
                 {
-                  completionSet.Add(new Completion(codeClass2[], codeClass2[], "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
+                  completionSet.Add(new Completion(codeClass2.FullName, codeClass2.Name, "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
                   continue;
                 }
                 continue;
@@ -270,7 +269,7 @@ namespace Microsoft.SpecExplorer.VS
                 CodeFunction2 codeFunction2 = allMember as CodeFunction2;
                 if (codeFunction2 != null && includeMembersOfType)
                 {
-                  completionSet.Add(new Completion(codeFunction2[], codeFunction2[], codeFunction2.FullName, (ImageSource) CompletionResources.MethodCompletionIcon, "Method"));
+                  completionSet.Add(new Completion(codeFunction2.FullName, codeFunction2.Name, codeFunction2.FullName, (ImageSource) CompletionResources.MethodCompletionIcon, "Method"));
                   continue;
                 }
                 continue;
@@ -278,7 +277,7 @@ namespace Microsoft.SpecExplorer.VS
                 CodeEvent codeEvent = allMember as CodeEvent;
                 if (codeEvent != null && includeMembersOfType)
                 {
-                  completionSet.Add(new Completion(codeEvent[], codeEvent[], codeEvent.FullName, (ImageSource) CompletionResources.EventCompletionIcon, "Event"));
+                  completionSet.Add(new Completion(codeEvent.FullName, codeEvent.Name, codeEvent.FullName, (ImageSource) CompletionResources.EventCompletionIcon, "Event"));
                   continue;
                 }
                 continue;
@@ -330,7 +329,7 @@ namespace Microsoft.SpecExplorer.VS
                 CodeClass2 codeClass2 = member as CodeClass2;
                 if (codeClass2 != null)
                 {
-                  completionSet.Add(new Completion(codeClass2[], codeClass2[], "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
+                  completionSet.Add(new Completion(codeClass2.FullName, codeClass2.Name, "class " + codeClass2.FullName, (ImageSource) CompletionResources.ClassCompletionIcon, "Class"));
                   continue;
                 }
                 continue;
@@ -338,7 +337,7 @@ namespace Microsoft.SpecExplorer.VS
                 CodeNamespace codeNamespace1 = member as CodeNamespace;
                 if (codeNamespace1 != null)
                 {
-                  completionSet.Add(new Completion(codeNamespace1[], codeNamespace1[], "namespace " + codeNamespace1[], (ImageSource) CompletionResources.NamespaceCompletionIcon, "Namespace"));
+                  completionSet.Add(new Completion(codeNamespace1.FullName, codeNamespace1.Name, "namespace " + codeNamespace1.FullName, (ImageSource) CompletionResources.NamespaceCompletionIcon, "Namespace"));
                   continue;
                 }
                 continue;
@@ -346,7 +345,7 @@ namespace Microsoft.SpecExplorer.VS
                 CodeInterface2 codeInterface2 = member as CodeInterface2;
                 if (codeInterface2 != null)
                 {
-                  completionSet.Add(new Completion(codeInterface2[], codeInterface2[], "interface " + codeInterface2.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
+                  completionSet.Add(new Completion(codeInterface2.FullName, codeInterface2.Name, "interface " + codeInterface2.FullName, (ImageSource) CompletionResources.InterfaceCompletionIcon, "Interface"));
                   continue;
                 }
                 continue;

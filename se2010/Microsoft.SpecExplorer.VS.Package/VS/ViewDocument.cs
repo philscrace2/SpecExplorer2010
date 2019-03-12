@@ -43,10 +43,10 @@ namespace Microsoft.SpecExplorer.VS
 
     private void AddEventHandlers()
     {
-      this.viewDocumentControl.add_BrowseStates(new EventHandler<StatesBrowserEventArgs>(this.OnBrowseStates));
-      this.viewDocumentControl.add_BrowseStep(new EventHandler<StepBrowserEventArgs>(this.OnBrowseStep));
-      this.viewDocumentControl.add_CompareStates(new EventHandler<CompareStateEventArgs>(this.OnCompareStates));
-      this.viewDocumentControl.add_InvokeViewDefinitionManager(new EventHandler(this.OnInvokeViewDefinitionManager));
+      this.viewDocumentControl.BrowseStates += new EventHandler<StatesBrowserEventArgs>(this.OnBrowseStates);
+      this.viewDocumentControl.BrowseStep += new EventHandler<StepBrowserEventArgs>(this.OnBrowseStep);
+      this.viewDocumentControl.CompareStates += new EventHandler<CompareStateEventArgs>(this.OnCompareStates);
+      this.viewDocumentControl.InvokeViewDefinitionManager += new EventHandler(this.OnInvokeViewDefinitionManager);
       ViewDocumentControl viewDocumentControl = this.viewDocumentControl;
       viewDocumentControl.FullScreen = (__Null) Delegate.Combine((Delegate) viewDocumentControl.FullScreen, (Delegate) ((sender, args) =>
       {
@@ -150,8 +150,8 @@ namespace Microsoft.SpecExplorer.VS
       {
         ExplorationResultLoader explorationResultLoader = new ExplorationResultLoader(pszMkDocument);
         TransitionSystem transitionSystem;
-        this.viewDocumentControl.set_TransitionSystem(transitionSystem = explorationResultLoader.LoadTransitionSystem());
-        this.transitionSystem = transitionSystem;
+        this.viewDocumentControl.TransitionSystem = explorationResultLoader.LoadTransitionSystem();
+        
         int num1;
         int num2;
         int num3;
@@ -159,7 +159,7 @@ namespace Microsoft.SpecExplorer.VS
         int num5;
         int num6;
         int num7;
-        this.viewDocumentControl.GetTransitionSystemStatus(ref num1, ref num2, ref num3, ref num4, ref num5, ref num6, ref num7);
+        this.viewDocumentControl.GetTransitionSystemStatus(out num1, out num2, out num3, out num4, out num5, out num6, out num7);
         this.package.ProgressMessage((VerbosityLevel) 0, string.Format("Loaded exploration result '{0}' from '{1}'.", (object) this.transitionSystem.Name, (object) this.fileName));
         this.package.ProgressMessage((VerbosityLevel) 0, string.Format("'{0}' includes {1} states, {2} steps, {3} requirements, {4} errors, {5} non-accepting end states, {6} bounds hit.", (object) this.transitionSystem.Name, (object) num2, (object) num6, (object) num7, (object) num3, (object) num4, (object) num5));
         this.fileName = pszMkDocument;
@@ -299,7 +299,7 @@ namespace Microsoft.SpecExplorer.VS
       IVsUIHierarchy hierarchy;
       uint itemID;
       IVsWindowFrame windowFrame;
-      if (!VsShellUtilities.IsDocumentOpen((System.IServiceProvider) this.package, this.fileName, Guid.Empty, out hierarchy, out itemID, out windowFrame))
+      if (!VsShellUtilities.IsDocumentOpen(this.package, this.fileName, Guid.Empty, out hierarchy, out itemID, out windowFrame))
         return;
       object pvar;
       ErrorHandler.ThrowOnFailure(windowFrame.GetProperty(-3010, out pvar));

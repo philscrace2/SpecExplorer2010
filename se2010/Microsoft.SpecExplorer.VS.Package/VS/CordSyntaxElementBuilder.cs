@@ -74,7 +74,7 @@ namespace Microsoft.SpecExplorer.VS
       else
       {
         type = this.CreateType(codeFunction.Type);
-        instantiatedName2 = new InstantiatedName((Location) Location.None, instantiatedName1, codeFunction[], (Type[]) null);
+        instantiatedName2 = new InstantiatedName((Location) Location.None, instantiatedName1, codeFunction.FullName, (Type[]) null);
       }
       if (parameters == null || type == null)
         return (MethodDescriptor) null;
@@ -92,7 +92,7 @@ namespace Microsoft.SpecExplorer.VS
       InstantiatedName instantiatedName = new InstantiatedName((Location) Location.None, (InstantiatedName) null, str, (Type[]) null);
       if (type == null || !((Type) type).IsVoid || parameters == null)
         return (MethodDescriptor) null;
-      return new MethodDescriptor(new InstantiatedName((Location) Location.None, instantiatedName, codeEvent[], (Type[]) null), codeEvent.IsShared, parameters, (Type) type, (ActionKind) 4, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
+      return new MethodDescriptor(new InstantiatedName((Location) Location.None, instantiatedName, codeEvent.FullName, (Type[]) null), codeEvent.IsShared, parameters, (Type) type, (ActionKind) 4, (ParameterDomainDefinition[]) null, (CodeBlock[]) null);
     }
 
     public Parameter[] CreateParameters(CodeElements parametersCol, bool isForEvent)
@@ -134,7 +134,7 @@ namespace Microsoft.SpecExplorer.VS
       }
       Type type = (Type) this.CreateType(param.Type);
       if (type != null)
-        return new Parameter(none, parameterKind, type, param[]);
+        return new Parameter(type, parameterKind, type, param.FullName);
       return (Parameter) null;
     }
 

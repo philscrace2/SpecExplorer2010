@@ -237,8 +237,8 @@ namespace Microsoft.SpecExplorer.VS
 
     private void InitializeScriptDesignTime()
     {
-      this.CordScopeManager.add_BeforeParseScript(new EventHandler<ScriptParseEventArgs>(this.OnBeforeParseScript));
-      this.CordScopeManager.add_ScopeChanged(new EventHandler<ScopeChangeEventArgs>(this.OnScopeChanged));
+      this.CordScopeManager.BeforeParseScript += new EventHandler<ScriptParseEventArgs>(this.OnBeforeParseScript);
+      this.CordScopeManager.ScopeChanged += new EventHandler<ScopeChangeEventArgs>(this.OnScopeChanged);
     }
 
     private void OnBeforeParseScript(object sender, ScriptParseEventArgs e)
@@ -275,8 +275,8 @@ namespace Microsoft.SpecExplorer.VS
       ICordDesignTimeManager cdt = this.CordScopeManager.RegisterCordDesignTimeManager(project.UniqueName);
       if (flag)
       {
-        cdt.add_ReportError(new EventHandler<ErrorReport>(this.OnReportError));
-        cdt.add_ScriptChanged(new EventHandler<ScriptChangeEventArgs>(this.OnScriptChanged));
+        cdt.ReportError += new EventHandler<ErrorReport>(this.OnReportError);        
+        cdt.ScriptChanged += new EventHandler<ScriptChangeEventArgs>(this.OnScriptChanged);
       }
       foreach (string scriptPath in (IEnumerable<string>) ProjectUtils.GetDocumentsInProject(project, ".cord"))
         this.RegisterScriptToCordDesignTimeManager(cdt, scriptPath);
@@ -365,8 +365,8 @@ namespace Microsoft.SpecExplorer.VS
       ICordDesignTimeManager designTimeManager = this.CordScopeManager.GetCordDesignTimeManager(project.UniqueName);
       if (designTimeManager == null)
         return;
-      designTimeManager.remove_ReportError(new EventHandler<ErrorReport>(this.OnReportError));
-      designTimeManager.remove_ScriptChanged(new EventHandler<ScriptChangeEventArgs>(this.OnScriptChanged));
+      designTimeManager.ReportError -= new EventHandler<ErrorReport>(this.OnReportError);
+      designTimeManager.ScriptChanged -= new EventHandler<ScriptChangeEventArgs>(this.OnScriptChanged);
       this.CordScopeManager.UnregisterCordDesignTimeManager(project.UniqueName);
     }
 
@@ -377,8 +377,8 @@ namespace Microsoft.SpecExplorer.VS
         ICordDesignTimeManager designTimeManager = this.CordScopeManager.GetCordDesignTimeManager(str);
         if (designTimeManager != null)
         {
-          designTimeManager.remove_ReportError(new EventHandler<ErrorReport>(this.OnReportError));
-          designTimeManager.remove_ScriptChanged(new EventHandler<ScriptChangeEventArgs>(this.OnScriptChanged));
+          designTimeManager.ReportError -= new EventHandler<ErrorReport>(this.OnReportError);
+          designTimeManager.ScriptChanged -= new EventHandler<ScriptChangeEventArgs>(this.OnScriptChanged);
           this.CordScopeManager.UnregisterCordDesignTimeManager(str);
         }
       }
@@ -497,7 +497,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: method pointer
-      return (EventHandler) ((sender, args) => this.RunProtected(new ProtectedAction((object) new SpecExplorerPackage.\u003C\u003Ec__DisplayClasse.\u003C\u003Ec__DisplayClass10()
+      return (EventHandler) ((sender, args) => this.RunProtected(new ProtectedAction((object) new SpecExplorerPackage())
       {
         CS\u0024\u003C\u003E8__localsf = this,
         sender = sender,
@@ -809,7 +809,7 @@ namespace Microsoft.SpecExplorer.VS
 
     public bool TryGetExtensionData(string key, object inputValue, out object outputValue)
     {
-      return this.extensionManager.TyrGetExtensionData(key, inputValue, ref outputValue);
+      return this.extensionManager.TyrGetExtensionData(key, inputValue, out outputValue);
     }
 
     private void InitializeSession()
@@ -1198,7 +1198,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       using (ViewDefinitionManagerForm definitionManagerForm = new ViewDefinitionManagerForm((IHost) this, this.CoreServices == null ? (IViewDefinitionManager) new ViewDefinitionManager((IHost) this) : (IViewDefinitionManager) this.CoreServices.GetService<IViewDefinitionManager>(), this.GetViewDefinitionFileName()))
       {
-        definitionManagerForm.add_ShowHelp(new EventHandler(this.ShowViewDefinitionHelp));
+        definitionManagerForm.ShowHelp += new EventHandler(this.ShowViewDefinitionHelp);
         int num = (int) ((Form) definitionManagerForm).ShowDialog();
       }
     }
@@ -1419,8 +1419,8 @@ namespace Microsoft.SpecExplorer.VS
     {
       this.Assert(project != null);
       List<string> stringList = new List<string>();
-      string str1 = project.Properties.Item((object) "FullPath") as string;
-      string str2 = project.Properties.Item((object) "OutputFileName") as string;
+      string str1 = project.Properties.Item("FullPath").ToString();
+      string str2 = project.Properties.Item("OutputFileName").ToString();
       string str3 = project.ConfigurationManager.ActiveConfiguration.Properties.Item((object) "OutputPath")[] as string;
       string str4 = string.Format("{0}\\{1}\\{2}", (object) str1, (object) str3, (object) str2);
       stringList.Add(str4);

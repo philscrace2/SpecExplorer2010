@@ -128,7 +128,7 @@ namespace Microsoft.SpecExplorer.VS
             Guid guid = new Guid(projectItem.Kind);
             if (guid == VSConstants.GUID_ItemType_PhysicalFile)
             {
-              string str1 = projectItem[];
+              string str1 = projectItem.Name;
               string str2 = projectItem.get_FileNames((short) 0);
               if (!string.IsNullOrEmpty(str1) && str1.EndsWith(fileExtension, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(str2))
                 stringList.Add(str2);

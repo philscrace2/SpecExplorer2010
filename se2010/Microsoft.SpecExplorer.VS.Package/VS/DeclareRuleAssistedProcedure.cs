@@ -18,6 +18,7 @@ using System.Linq;
 using System.Text;
 using Type = Microsoft.ActionMachines.Cord.Type;
 
+
 namespace Microsoft.SpecExplorer.VS
 {
   internal class DeclareRuleAssistedProcedure : IAssistedProcedure
@@ -207,7 +208,7 @@ namespace Microsoft.SpecExplorer.VS
       string tempName = namePrefix;
       for (int index = 1; index <= 1000000000; ++index)
       {
-        if (!codeNamespace.Members.OfType<CodeType>().Any<CodeType>((Func<CodeType, bool>) (elem => elem[] == tempName)))
+        if (!codeNamespace.Members.OfType<CodeType>().Any<CodeType>((Func<CodeType, bool>) (elem => elem.Name == tempName)))
           return tempName;
         tempName = namePrefix + (object) index;
       }
@@ -263,7 +264,7 @@ namespace Microsoft.SpecExplorer.VS
           }
           else if (attributes == null || this.IsNeedAddingRuleForAction(attributes, allFunctions, typeBindingClassCache, allMethodNames, current, false, ref methodName2))
           {
-            bool isStatic1 = isAdapter || (int) current.IsStatic != 0;
+            bool isStatic1 = isAdapter || current.IsStatic;
             string str = (string) null;
             CodeClass2 codeClass2 = codeClass as CodeClass2;
             if (!isStatic1 && codeClass2.IsShared)
@@ -517,7 +518,7 @@ namespace Microsoft.SpecExplorer.VS
       MethodDescriptor method,
       string methodName)
     {
-      foreach (CodeFunction codeFunction in allFunctions.Where<CodeFunction>((Func<CodeFunction, bool>) (f => f[] == methodName)))
+      foreach (CodeFunction codeFunction in allFunctions.Where<CodeFunction>((Func<CodeFunction, bool>) (f => f.Name == methodName)))
       {
         if (this.HasSameParameters(codeFunction.Parameters, (Parameter[]) method.Parameters, typeBindingClassCache))
           return true;
@@ -639,7 +640,7 @@ namespace Microsoft.SpecExplorer.VS
           return keyValuePair.Value.FullName;
       }
       if (useCSharpAlias)
-        name = ExtensionMethods.CollapsePrimitiveType(name);
+        name = Microsoft.Xrt.ExtensionMethods.CollapsePrimitiveType(name);
       return name;
     }
 
@@ -655,22 +656,22 @@ namespace Microsoft.SpecExplorer.VS
           if (attribute.Kind == vsCMElement.vsCMElementAttribute)
           {
             CodeAttribute2 codeAttribute2 = attribute as CodeAttribute2;
-            if (codeAttribute2[] == "Action")
-              attributes[this.GetAttributeValueFromMethodName(codeAttribute2.Value, allFunction[])] = allFunction;
-            else if ("Rule" == codeAttribute2[])
+            if (codeAttribute2.Name == "Action")
+              attributes[this.GetAttributeValueFromMethodName(codeAttribute2.Value, allFunction.Name)] = allFunction;
+            else if ("Rule" == codeAttribute2.Name)
             {
               if (codeAttribute2.Arguments.Count == 0)
               {
-                attributes[this.GetAttributeValueFromMethodName("", allFunction[])] = allFunction;
+                attributes[this.GetAttributeValueFromMethodName("", allFunction.Name)] = allFunction;
               }
               else
               {
                 foreach (CodeElement codeElement in codeAttribute2.Arguments)
                 {
                   CodeAttributeArgument attributeArgument = codeElement as CodeAttributeArgument;
-                  if (attributeArgument[] == "Action")
+                  if (attributeArgument.Name == "Action")
                   {
-                    attributes[this.GetAttributeValueFromMethodName(attributeArgument.Value, allFunction[])] = allFunction;
+                    attributes[this.GetAttributeValueFromMethodName(attributeArgument.Value, allFunction.Name)] = allFunction;
                     break;
                   }
                 }
@@ -686,7 +687,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       HashSet<string> stringSet = new HashSet<string>();
       foreach (CodeFunction allFunction in allFunctions)
-        stringSet.Add(allFunction[]);
+        stringSet.Add(allFunction.Name);
       return stringSet;
     }
 
@@ -795,7 +796,7 @@ namespace Microsoft.SpecExplorer.VS
       List<IType> itypeList1 = new List<IType>();
       itypeList1.Add(type);
       List<IType> itypeList2 = itypeList1;
-      type2.set_ResolvedTypes((IList<IType>) itypeList2);
+            type2.ResolvedTypes = itypeList2;
       return type1;
     }
 
@@ -919,7 +920,7 @@ namespace Microsoft.SpecExplorer.VS
         this.package.Session.Host.DiagMessage((DiagnosisKind) 1, string.Format("type binding to a static class will result in validation failure: class {0}", (object) addedClass.FullName), (object) null);
       foreach (CodeElement attribute1 in addedClass.Attributes)
       {
-        if ((attribute1 as CodeAttribute)[] == "TypeBinding")
+        if ((attribute1 as CodeAttribute).Name == "TypeBinding")
         {
           this.package.Session.Host.DiagMessage((DiagnosisKind) 1, string.Format("The type binding {0} has already been added", (object) attribute), (object) null);
           return;

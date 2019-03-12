@@ -444,15 +444,15 @@ namespace Microsoft.SpecExplorer
       switch ((int) explorationMode)
       {
         case 0:
-          this.explorer.add_ExplorationStatisticsProgress((EventHandler<ExplorationStatisticsEventArgs>) ((sender, args) => this.progressData = args.Statistics));
+          this.explorer.ExplorationStatisticsProgress +=(EventHandler<ExplorationStatisticsEventArgs>) ((sender, args) => this.progressData = args.Statistics);
           break;
         case 1:
         case 2:
-          this.explorer.add_ExplorationResultUpdated((EventHandler<ExplorationResultEventArgs>) ((sender, args) =>
+          this.explorer.ExplorationResultUpdated += (EventHandler<ExplorationResultEventArgs>) ((sender, args) =>
           {
             string resultPath = Path.Combine(outputDir, args.ExplorationResult.TransitionSystem.Name + ".seexpl");
             this.SaveExplorationResult(args.ExplorationResult, resultPath, true);
-          }));
+          });
           break;
       }
     }

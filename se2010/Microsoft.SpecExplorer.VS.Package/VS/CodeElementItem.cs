@@ -165,11 +165,11 @@ namespace Microsoft.SpecExplorer.VS
         case CodeElementItemType.Class:
         case CodeElementItemType.Interface:
           if (!enableFullName)
-            return this.RootElement[];
+            return this.RootElement.Name;
           return this.RootElement.FullName;
         case CodeElementItemType.Event:
           CodeEvent rootElement1 = this.RootElement as CodeEvent;
-          return string.Format("{0} {1}", (object) rootElement1.Type.AsString, enableFullName ? (object) rootElement1.FullName : (object) rootElement1[]);
+          return string.Format("{0} {1}", (object) rootElement1.Type.AsString, enableFullName ? (object) rootElement1.FullName : (object) rootElement1.Name);
         case CodeElementItemType.Function:
           CodeFunction rootElement2 = this.RootElement as CodeFunction;
           return rootElement2.get_Prototype((rootElement2.FunctionKind == vsCMFunction.vsCMFunctionConstructor || rootElement2.FunctionKind == vsCMFunction.vsCMFunctionDestructor ? 0 : 128) | 16 | 8 | (enableFullName ? 1 : 0));

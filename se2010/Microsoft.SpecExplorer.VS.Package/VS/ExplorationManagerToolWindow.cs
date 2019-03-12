@@ -21,6 +21,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using Visibility = Microsoft.Xrt.Visibility;
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -96,22 +97,22 @@ namespace Microsoft.SpecExplorer.VS
 
     private void RegisterEventHandlers()
     {
-      this.control.add_Validate(new EventHandler(this.OnValidate));
+      this.control.Validate += new EventHandler(this.OnValidate);
       this.package.SolutionBuildFinished += new EventHandler<SolutionBuildEventArgs>(this.OnSolutionBuildFinished);
-      this.control.add_AbortOperation(new EventHandler(this.OnAbortOperating));
-      this.control.add_NavigateToMachine(new EventHandler<MachineEventArgs>(this.OnNavigateToMachine));
-      this.control.add_Explore(new EventHandler<MachineEventArgs>(this.OnExplore));
-      this.control.add_OnTheFlyTest(new EventHandler<MachineEventArgs>(this.OnOnTheFly));
-      this.control.add_OnTheFlyTestReplay(new EventHandler<MachineEventArgs>(this.OnOnTheFlyReplay));
-      this.control.add_GenerateTestCode(new EventHandler<MachineEventArgs>(this.OnGenerateTestCode));
-      this.control.add_ExecutePostProcessing(new EventHandler<MachineEventArgs>(this.OnExcutePostProcessing));
-      this.control.add_ShowProperties(new EventHandler<MachineEventArgs>(this.OnShowProperties));
-      this.control.add_ChangeSelectedMachine(new EventHandler<MachineEventArgs>(this.OnChangeSelectedMachine));
+      this.control.AbortOperation += new EventHandler(this.OnAbortOperating);
+      this.control.NavigateToMachine +=new EventHandler<MachineEventArgs>(this.OnNavigateToMachine);
+      this.control.Explore += new EventHandler<MachineEventArgs>(this.OnExplore);
+      this.control.OnTheFlyTest += new EventHandler<MachineEventArgs>(this.OnOnTheFly);
+      this.control.OnTheFlyTestReplay += new EventHandler<MachineEventArgs>(this.OnOnTheFlyReplay);
+      this.control.GenerateTestCode += new EventHandler<MachineEventArgs>(this.OnGenerateTestCode);
+      this.control.ExecutePostProcessing += new EventHandler<MachineEventArgs>(this.OnExcutePostProcessing);
+      this.control.ShowProperties += new EventHandler<MachineEventArgs>(this.OnShowProperties);
+      this.control.ChangeSelectedMachine += new EventHandler<MachineEventArgs>(this.OnChangeSelectedMachine);
     }
 
     private void InitializePostProcessors()
     {
-      if (PostProcessorHelper.LoadCustomizedPostProcessingTypes(Path.Combine(this.package.Session.InstallDir, Microsoft.SpecExplorer.Resources.ExtensionDirectoryName), (IHost) this.package, ref this.postProcessorTypeMap, ref this.postProcessorDisplayNameMap))
+      if (PostProcessorHelper.LoadCustomizedPostProcessingTypes(Path.Combine(this.package.Session.InstallDir, Microsoft.SpecExplorer.Resources.ExtensionDirectoryName), (IHost) this.package, out this.postProcessorTypeMap, out this.postProcessorDisplayNameMap))
         return;
       this.postProcessorTypeMap = new Dictionary<string, System.Type>();
       this.postProcessorDisplayNameMap = new Dictionary<string, string>();

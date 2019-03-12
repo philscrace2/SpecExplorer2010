@@ -146,8 +146,8 @@ namespace Microsoft.SpecExplorer.VS
       }
       IGuidance iguidance = this.sePackage.LastUsedGuidance != null ? loadedGuidanceList.FirstOrDefault<IGuidance>((Func<IGuidance, bool>) (gd => gd.Id == this.sePackage.LastUsedGuidance)) : (IGuidance) null;
       if (iguidance != null)
-        this.UserControl.ControlModel.set_SelectedGuidance(iguidance);
-      this.UserControl.ControlModel.add_AssistedProcedureRequested(new EventHandler<AssistedProcedureRequestEventArgs>(this.AssistedProcedureRequestCallBack));
+        this.UserControl.ControlModel.SelectedGuidance = iguidance;
+      this.UserControl.ControlModel.AssistedProcedureRequested += new EventHandler<AssistedProcedureRequestEventArgs>(this.AssistedProcedureRequestCallBack);
     }
 
     private void LoadGuidanceFiles()
