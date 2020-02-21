@@ -15,7 +15,7 @@ using System.Windows.Markup;
 namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public class CodeElementViewer : UserControl, IComponentConnector
+  public partial class CodeElementViewer : UserControl, IComponentConnector
   {
     internal CodeElementViewerModel viewerModel;
     private bool _contentLoaded;

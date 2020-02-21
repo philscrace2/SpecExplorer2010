@@ -11,6 +11,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Type = Microsoft.ActionMachines.Cord.Type;
+
+
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -23,7 +26,7 @@ namespace Microsoft.SpecExplorer.VS
     internal CodeElementTypeResolver(IList<Namespace> imports, Project project)
     {
       if (project == null)
-        throw new ArgumentNullException(nameof (project));
+        throw new ArgumentNullException(project.Name);
       this.project = project;
       this.imports = imports;
     }
@@ -31,7 +34,7 @@ namespace Microsoft.SpecExplorer.VS
     internal CodeElement ResolveTypeUnique(Type type)
     {
       if (type == null)
-        throw new ArgumentNullException(nameof (type));
+        throw new ArgumentNullException(type.ToString());
       IList<CodeElement> source = this.ResolveType(type);
       if (source != null && source.Count == 1)
         return source.First<CodeElement>();
@@ -41,7 +44,7 @@ namespace Microsoft.SpecExplorer.VS
     internal IList<CodeElement> ResolveType(Type type)
     {
       if (type == null)
-        throw new ArgumentNullException(nameof (type));
+        throw new ArgumentNullException(type.ToString());
       this.candidates.Clear();
       foreach (CodeElement codeElement in this.project.CodeModel.CodeElements)
         this.ResolveType(type, codeElement);
@@ -83,7 +86,7 @@ namespace Microsoft.SpecExplorer.VS
           }
           finally
           {
-            (enumerator1 as IDisposable)?.Dispose();
+            (enumerator1 as IDisposable).Dispose();
           }
         case vsCMElement.vsCMElementInterface:
           CodeInterface2 codeInterface2 = element as CodeInterface2;

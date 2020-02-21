@@ -131,8 +131,7 @@ namespace Microsoft.SpecExplorer.VS
       }
       try
       {
-        using (File.CreateText(str))
-          ;
+        File.CreateText(str);
         projectByUniqueName.ProjectItems.AddFromFile(str);
         return str;
       }
@@ -205,12 +204,12 @@ namespace Microsoft.SpecExplorer.VS
         Guid guid = new Guid(projectItem.Kind);
         if (guid == VSConstants.GUID_ItemType_PhysicalFile)
         {
-          if (FileNames.HasScriptExtension(projectItem) && projectItem.Properties != null)
+          if (FileNames.HasScriptExtension(projectItem.Name) && projectItem.Properties != null)
           {
             Property property = projectItem.Properties.Item((object) str);
             if (property != null && property != null && !string.IsNullOrEmpty(property.ToString()))
             {
-              property = (object)string.Empty;
+              property = string.Empty;
               flag = true;
             }
           }
@@ -290,9 +289,9 @@ namespace Microsoft.SpecExplorer.VS
     private void OnReportError(object sender, ErrorReport error)
     {
       DiagnosisKind kind = (DiagnosisKind) 0;
-      if (error.Kind == 3)
+      if (error.Kind.Equals(3))
         kind = (DiagnosisKind) 2;
-      else if (error.Kind == 2)
+      else if (error.Kind.Equals(2))
         kind = (DiagnosisKind) 1;
       this.DiagMessage(kind, (string) error.Description, (object) new TextLocation((string) error.FileName, (short) ((Location) error.Location).StartLine, (short) ((Location) error.Location).StartColumn), (bool) error.IsParsingError);
     }
@@ -352,12 +351,12 @@ namespace Microsoft.SpecExplorer.VS
 
     internal void UnregisterCordDocumentFromDesignTimeManager(CordDocument doc)
     {
-      this.GetDesignTimeForCordDocument(doc)?.UnregisterScript(doc.FileName);
+      this.GetDesignTimeForCordDocument(doc).UnregisterScript(doc.FileName);
     }
 
     private void UnregisterScriptFromCordDesignTimeManager(string scope, string path)
     {
-      this.CordScopeManager.GetCordDesignTimeManager(scope)?.UnregisterScript(path);
+      this.CordScopeManager.GetCordDesignTimeManager(scope).UnregisterScript(path);
     }
 
     private void UnregisterProjectFromCordScopeManager(Project project)
@@ -497,12 +496,14 @@ namespace Microsoft.SpecExplorer.VS
     {
       // ISSUE: object of a compiler-generated type is created
       // ISSUE: method pointer
-      return (EventHandler) ((sender, args) => this.RunProtected(new ProtectedAction((object) new SpecExplorerPackage())
-      {
-        CS\u0024\u003C\u003E8__localsf = this,
-        sender = sender,
-        args = args
-      }, __methodptr(\u003CProtect\u003Eb__d))));
+      //return (EventHandler) ((sender, args) => this.RunProtected(new ProtectedAction((object) new SpecExplorerPackage())
+      //{
+      //  CS\u0024\u003C\u003E8__localsf = this,
+      //  sender = sender,
+      //  args = args
+      //}, __methodptr(\u003CProtect\u003Eb__d))));
+
+        return handler;
     }
 
     public void Assert(bool condition, string message)
@@ -582,7 +583,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       if (this.errorsSuppressed > 0)
         return;
-      string str = kind == null ? "error: " : (kind == 1 ? "warning: " : "hint: ");
+      string str = kind == null ? "error: " : (kind.Equals(1) ? "warning: " : "hint: ");
       int line = 0;
       int column = 0;
       string fileName;
@@ -664,11 +665,11 @@ namespace Microsoft.SpecExplorer.VS
           location = this.MakeLocation(codeType as CodeElement);
           return true;
         }
-        if (member.Kind == 2)
+        if (member.Kind.Equals(2))
         {
           foreach (CodeElement allMember in codeType.GetAllMembers())
           {
-            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member.Name)
+            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member)
             {
               location = this.MakeLocation(allMember);
               return true;
@@ -676,7 +677,7 @@ namespace Microsoft.SpecExplorer.VS
           }
           return false;
         }
-        if (member.Kind == 1)
+        if (member.Kind.Equals(1))
         {
           string[] array = member.ParameterTypes.ToArray<string>();
           foreach (CodeElement allMember in codeType.GetAllMembers())
@@ -684,7 +685,7 @@ namespace Microsoft.SpecExplorer.VS
             if (allMember.Kind == vsCMElement.vsCMElementFunction)
             {
               CodeFunction codeFunction = allMember as CodeFunction;
-              if (allMember == member.Name && codeFunction != null)
+              if (allMember == member && codeFunction != null)
               {
                 int length = array.Length;
                 int num = 0;
@@ -715,7 +716,7 @@ namespace Microsoft.SpecExplorer.VS
           return false;
         foreach (CodeElement allMember in codeType.GetAllMembers())
         {
-          if (allMember.Kind == vsCMElement.vsCMElementProperty && allMember == member.Name)
+          if (allMember.Kind == vsCMElement.vsCMElementProperty && allMember == member)
           {
             location = this.MakeLocation(allMember);
             return true;
@@ -734,11 +735,11 @@ namespace Microsoft.SpecExplorer.VS
     public void NavigateTo(string fileName, int line, int column)
     {
       if (string.IsNullOrEmpty(fileName))
-        throw new ArgumentException("File name cannot be null or empty.", nameof (fileName));
+        throw new ArgumentException("File name cannot be null or empty.", fileName);
       if (line < 0)
-        throw new ArgumentException("line number cannot be negative integer.", nameof (line));
+        throw new ArgumentException("line number cannot be negative integer.", line.ToString());
       if (column < 0)
-        throw new ArgumentException("column number cannot be negative integer.", nameof (column));
+        throw new ArgumentException("column number cannot be negative integer.", column.ToString());
       Guid logicalView = VSConstants.LOGVIEWID_TextView;
       IVsUIHierarchy hierarchy;
       uint itemID;
@@ -778,7 +779,7 @@ namespace Microsoft.SpecExplorer.VS
       {
         try
         {
-          CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName());
+          CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName);
           if (codeType != null)
           {
             if (codeType.ProjectItem != null)
@@ -830,7 +831,7 @@ namespace Microsoft.SpecExplorer.VS
     private void DisposeSession()
     {
       ((IServiceContainer) this).RemoveService(typeof (SGlobalService));
-      (this.session as IDisposable)?.Dispose();
+      (this.session as IDisposable).Dispose();
       this.session = (ISession) null;
       if (this.SessionDisposed == null)
         return;
@@ -1205,7 +1206,7 @@ namespace Microsoft.SpecExplorer.VS
 
     private void ShowViewDefinitionHelp(object sender, EventArgs e)
     {
-      ((Help2) this.GetService(typeof (SVsHelp)))?.DisplayTopicFromF1Keyword("microsoft.specexplorer.viewerdefinitiondialog");
+      ((Help2) this.GetService(typeof (SVsHelp))).DisplayTopicFromF1Keyword("microsoft.specexplorer.viewerdefinitiondialog");
     }
 
     public int OnAfterCloseSolution(object pUnkReserved)
@@ -1316,14 +1317,14 @@ namespace Microsoft.SpecExplorer.VS
     private Project ToDteProject(IVsProject project)
     {
       if (project == null)
-        throw new ArgumentNullException(nameof (project));
+        throw new ArgumentNullException(project.ToString());
       return this.ToDteProject(project as IVsHierarchy);
     }
 
     internal IVsHierarchy ToHierarchy(Project project)
     {
       if (project == null)
-        throw new ArgumentNullException(nameof (project));
+        throw new ArgumentNullException(project.Name);
       string g = (string) null;
       using (XmlReader xmlReader = XmlReader.Create(project.FileName))
       {
@@ -1383,7 +1384,7 @@ namespace Microsoft.SpecExplorer.VS
           while (enumerator.MoveNext())
           {
             ProjectItem item = (ProjectItem) enumerator.Current;
-            string name = item;
+            string name = item.Name;
             if (FileNames.HasCSharpExtension(name))
               yield return item;
             foreach (ProjectItem authoredCsharpDocument in this.GetAuthoredCSharpDocuments(item.ProjectItems))
@@ -1393,7 +1394,7 @@ namespace Microsoft.SpecExplorer.VS
         finally
         {
           IDisposable disposable = enumerator as IDisposable;
-          disposable?.Dispose();
+          disposable.Dispose();
         }
       }
     }
@@ -1421,7 +1422,7 @@ namespace Microsoft.SpecExplorer.VS
       List<string> stringList = new List<string>();
       string str1 = project.Properties.Item("FullPath").ToString();
       string str2 = project.Properties.Item("OutputFileName").ToString();
-      string str3 = project.ConfigurationManager.ActiveConfiguration.Properties.Item((object) "OutputPath")[] as string;
+      string str3 = project.ConfigurationManager.ActiveConfiguration.Properties.Item((object) "OutputPath").ToString();
       string str4 = string.Format("{0}\\{1}\\{2}", (object) str1, (object) str3, (object) str2);
       stringList.Add(str4);
       this.ProgressMessage((VerbosityLevel) 2, string.Format("referencing {0}", (object) str4));
@@ -1450,7 +1451,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       foreach (ProjectItem projectItem in items)
       {
-        if (FileNames.HasScriptExtension(projectItem))
+        if (FileNames.HasScriptExtension(projectItem.Name))
         {
           string str = projectItem.get_FileNames((short) 0);
           scripts.Add(str);
@@ -1520,7 +1521,7 @@ namespace Microsoft.SpecExplorer.VS
         foreach (ProjectItem projectItem in itemCollection)
         {
           if (projectItem == keyItem)
-            return projectItem;
+            return projectItem.Name;
           string fromProjectItems = this.ComputePathFromProjectItems(projectItem.ProjectItems, keyItem);
           if (!string.IsNullOrEmpty(fromProjectItems))
             return projectItem + "\\" + fromProjectItems;
@@ -1898,7 +1899,7 @@ namespace Microsoft.SpecExplorer.VS
           OutputWindow outputWindow = this.DTE.Windows.Item((object) "{34E76E81-EE4A-11D0-AE2E-00A0C90FFFC3}").Object as OutputWindow;
           foreach (OutputWindowPane outputWindowPane in outputWindow.OutputWindowPanes)
           {
-            if (outputWindowPane == Microsoft.SpecExplorer.Resources.SpecExplorer)
+            if (outputWindowPane.Name == Microsoft.SpecExplorer.Resources.SpecExplorer)
             {
               this.specExplorerPane = outputWindowPane;
               break;
@@ -1920,7 +1921,7 @@ namespace Microsoft.SpecExplorer.VS
           OutputWindow outputWindow = this.DTE.Windows.Item((object) "{34E76E81-EE4A-11D0-AE2E-00A0C90FFFC3}").Object as OutputWindow;
           foreach (OutputWindowPane outputWindowPane in outputWindow.OutputWindowPanes)
           {
-            if (outputWindowPane == "Debug")
+            if (outputWindowPane.Name == "Debug")
             {
               this.debugPane = outputWindowPane;
               break;
@@ -2301,9 +2302,9 @@ namespace Microsoft.SpecExplorer.VS
         string message)
       {
         if (package == null)
-          throw new ArgumentNullException(nameof (package));
+          throw new ArgumentNullException(package.ToString());
         if (fileName == null)
-          throw new ArgumentNullException(nameof (fileName));
+          throw new ArgumentNullException(fileName.ToString());
         this.package = package;
         this.IsParsingError = isParsingError;
         switch ((int) kind)

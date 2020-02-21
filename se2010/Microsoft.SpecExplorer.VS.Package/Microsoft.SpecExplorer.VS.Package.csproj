@@ -193,53 +193,8 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="assistedprocedures\images\classicon.gif" />
-    <Resource Include="assistedprocedures\images\eventicon.gif" />
-    <Resource Include="assistedprocedures\images\foldericon.gif" />
-    <Resource Include="assistedprocedures\images\info.ico" />
-    <Resource Include="assistedprocedures\images\interfaceicon.gif" />
-    <Resource Include="assistedprocedures\images\methodicon.gif" />
-    <Resource Include="assistedprocedures\images\namespaceicon.gif" />
-    <Resource Include="assistedprocedures\images\staticicon.gif" />
-    <Resource Include="assistedprocedures\images\warning.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources.resx" />
     <EmbeddedResource Include="SpecExplorer.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="assistedprocedures\actionselectioncontrol.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\assistedprocedurereportwindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\assistedprocedurewizardwindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\codeelementviewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\genericselectioncontrol.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\genericusercontrolwindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\typebindingselectionwindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="assistedprocedures\typemapcontrol.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

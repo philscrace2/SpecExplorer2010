@@ -17,8 +17,8 @@ namespace Microsoft.SpecExplorer.VS
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
   public class AssistedProcedureWizardWindow : Window, IComponentConnector
   {
-    public static readonly DependencyProperty BannerTextProperty = DependencyProperty.Register(nameof (BannerText), typeof (string), typeof (AssistedProcedureWizardWindow));
-    public static readonly DependencyProperty BannerHeaderProperty = DependencyProperty.Register(nameof (BannerHeader), typeof (string), typeof (AssistedProcedureWizardWindow));
+      public static readonly DependencyProperty BannerTextProperty = DependencyProperty.Register(wizardWindow.BannerText, typeof(string), typeof(AssistedProcedureWizardWindow));
+      public static readonly DependencyProperty BannerHeaderProperty = DependencyProperty.Register(wizardWindow.BannerHeader, typeof(string), typeof(AssistedProcedureWizardWindow));
     public static readonly DependencyProperty IsStartStateProperty = DependencyProperty.Register(nameof (IsStartState), typeof (bool), typeof (AssistedProcedureWizardWindow));
     public static readonly DependencyProperty IsFinalStateProperty = DependencyProperty.Register(nameof (IsFinalState), typeof (bool), typeof (AssistedProcedureWizardWindow));
     public static readonly DependencyProperty WarningTextProperty = DependencyProperty.Register(nameof (WanringText), typeof (string), typeof (AssistedProcedureWizardWindow));

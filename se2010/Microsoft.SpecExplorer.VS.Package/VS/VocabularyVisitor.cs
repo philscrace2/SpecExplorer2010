@@ -27,7 +27,6 @@ namespace Microsoft.SpecExplorer.VS
 
     internal VocabularyVisitor(CoordinationScript ast, IList<Namespace> imports, Project project)
     {
-      this.\u002Ector();
       this.ast = ast;
       this.imports = imports;
       this.project = project;

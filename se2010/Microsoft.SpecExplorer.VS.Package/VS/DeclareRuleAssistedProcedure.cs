@@ -146,7 +146,7 @@ namespace Microsoft.SpecExplorer.VS
                 adapterTypes.Add(procedureType);
               foreach (IMethod declaredMethod in type.DeclaredMethods)
               {
-                if ((declaredMethod.AssociationReferences == null || declaredMethod.AssociationReferences.Length <= 0 || (declaredMethod.AssociationReferences[0].Kind == null || declaredMethod.AssociationReferences[0].Kind == 1)) && (!declaredMethod.IsConstructor || !declaredMethod.IsStatic))
+                if ((declaredMethod.AssociationReferences == null || declaredMethod.AssociationReferences.Length <= 0 || (declaredMethod.AssociationReferences[0].Kind == null || declaredMethod.AssociationReferences[0].Kind.Equals(1))) && (!declaredMethod.IsConstructor || !declaredMethod.IsStatic))
                 {
                   MethodDescriptor method2 = this.BuildMethodDescriptor(declaredMethod, type);
                   this.CollectMethodDescriptor(methodDescriptorDict, procedureType, method2);
@@ -154,7 +154,7 @@ namespace Microsoft.SpecExplorer.VS
               }
               foreach (IAssociation declaredAssociation in type.DeclaredAssociations)
               {
-                if (declaredAssociation.Kind == 1)
+                if (declaredAssociation.Kind.Equals(1))
                 {
                   MethodDescriptor method2 = this.BuildMethodDescriptor(declaredAssociation, type);
                   this.CollectMethodDescriptor(methodDescriptorDict, procedureType, method2);
@@ -243,9 +243,9 @@ namespace Microsoft.SpecExplorer.VS
           {
             KeyValuePair<string, string> keyValuePair = new KeyValuePair<string, string>((string) parameter.Name, this.GetParameterTypeName((IType) parameter.ResolvedType, typeBindingClassCache));
             parameters.Add(keyValuePair);
-            if (parameter.Kind == 4)
+            if (parameter.Kind.Equals(4))
               parametersKind[(string) parameter.Name] = vsCMParameterKind.vsCMParameterKindOut;
-            if (parameter.Kind == 8)
+            if (parameter.Kind.Equals(8))
               parametersKind[(string) parameter.Name] = vsCMParameterKind.vsCMParameterKindRef;
           }
           string methodName1 = this.GetMethodName(current);
@@ -424,16 +424,18 @@ namespace Microsoft.SpecExplorer.VS
     private IEnumerable<IType> EnuemrateTypeArgument(IType type)
     {
       // ISSUE: object of a compiler-generated type is created
-      return (IEnumerable<IType>) new DeclareRuleAssistedProcedure.\u003CEnuemrateTypeArgument\u003Ed__10(-2)
-      {
-        \u003C\u003E4__this = this,
-        \u003C\u003E3__type = type
-      };
+      //return (IEnumerable<IType>) new DeclareRuleAssistedProcedure.\u003CEnuemrateTypeArgument\u003Ed__10(-2)
+      //{
+      //  \u003C\u003E4__this = this,
+      //  \u003C\u003E3__type = type
+      //};
+
+        return new DeclareRuleAssistedProcedure(package).EnuemrateTypeArgument(type);
     }
 
     private bool IsNeedTypeBinding(IType type)
     {
-      if (type.Category == 4 && !type.IsCompoundValue && !type.IsNative)
+      if (type.Category.Equals(4) && !type.IsCompoundValue && !type.IsNative)
         return string.Compare(((IMember) type).FullName, "System.Object", true) != 0;
       return false;
     }
@@ -747,7 +749,7 @@ namespace Microsoft.SpecExplorer.VS
       finally
       {
         IDisposable disposable = enumerator as IDisposable;
-        disposable?.Dispose();
+        disposable.Dispose();
       }
     }
 
@@ -816,7 +818,7 @@ namespace Microsoft.SpecExplorer.VS
             itype = itype.ElementType;
           parameterList.Add(new Parameter((Location) Location.None, parameterKind, (Type) null, descriptiveLocalName)
           {
-            ResolvedType = (__Null) itype
+            ResolvedType = itype
           });
         }
       }
