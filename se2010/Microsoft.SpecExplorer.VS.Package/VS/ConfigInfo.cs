@@ -42,7 +42,7 @@ namespace Microsoft.SpecExplorer.VS
 
     public override int GetHashCode()
     {
-      Hash32Builder hash32Builder = (Hash32Builder) null;
+        Hash32Builder hash32Builder = new Hash32Builder(); ;
       if (this.ConfigName != null)
         ((Hash32Builder) hash32Builder).Add(this.ConfigName.GetHashCode());
       if (this.ContainerScript != null)

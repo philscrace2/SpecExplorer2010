@@ -209,7 +209,6 @@ namespace Microsoft.SpecExplorer.VS
             Property property = projectItem.Properties.Item((object) str);
             if (property != null && property != null && !string.IsNullOrEmpty(property.ToString()))
             {
-              property = string.Empty;
               flag = true;
             }
           }
@@ -650,7 +649,6 @@ namespace Microsoft.SpecExplorer.VS
     {
       try
       {
-        location = (TextLocation) null;
         Project containingProject = this.GetContainingProject(member);
         if (containingProject == null)
           return false;
@@ -712,7 +710,7 @@ namespace Microsoft.SpecExplorer.VS
           }
           return false;
         }
-        if (member.Kind != 3)
+        if (member.Kind.Equals(3))
           return false;
         foreach (CodeElement allMember in codeType.GetAllMembers())
         {
@@ -727,7 +725,7 @@ namespace Microsoft.SpecExplorer.VS
       catch (Exception ex)
       {
         this.DiagMessage((DiagnosisKind) 1, string.Format("A Spec Explorer/Visual Studio integration error occurred: \r\n{0}.\r\n Please report this error to support team.", (object) ex.ToString()), (object) null);
-        location = (TextLocation) null;
+        //location = (TextLocation) null;
         return false;
       }
     }
@@ -2133,7 +2131,7 @@ namespace Microsoft.SpecExplorer.VS
       pOptionsStream.Seek(dlibMove, 2U, plibNewPosition);
       uint quadPart = (uint) plibNewPosition[0].QuadPart;
       pOptionsStream.Seek(dlibMove, 0U, plibNewPosition);
-      byte[] numArray = new byte[(IntPtr) quadPart];
+      byte[] numArray = new byte[quadPart];
       uint pcbRead;
       pOptionsStream.Read(numArray, quadPart, out pcbRead);
       return new ASCIIEncoding().GetString(numArray, 0, (int) pcbRead);

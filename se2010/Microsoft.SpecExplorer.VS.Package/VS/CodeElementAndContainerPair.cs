@@ -18,7 +18,7 @@ namespace Microsoft.SpecExplorer.VS
     public CodeElementAndContainerPair(CodeElement element, CodeType container)
     {
       if (element == null)
-        throw new ArgumentNullException(nameof (element));
+        throw new ArgumentNullException(element.Name);
       this.Element = element;
       this.Container = container;
     }

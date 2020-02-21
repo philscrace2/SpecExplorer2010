@@ -29,7 +29,7 @@ namespace Microsoft.SpecExplorer.VS
       }
       finally
       {
-        key?.Close();
+        key.Close();
       }
     }
 

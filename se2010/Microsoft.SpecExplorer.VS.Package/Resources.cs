@@ -53,7 +53,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (AbortingExploration), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(AbortingExploration, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -61,7 +61,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ApplicationName), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ApplicationName, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -69,7 +69,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (BuildingProjectFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(BuildingProjectFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -77,7 +77,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (BuildProjectFailedFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(BuildProjectFailedFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -85,7 +85,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (BuildProjectSucceededFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(BuildProjectSucceededFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -93,7 +93,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (CanNotCreateWindow), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(CanNotCreateWindow, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -101,7 +101,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (CodeGenerationTimeout), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(CodeGenerationTimeout, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 

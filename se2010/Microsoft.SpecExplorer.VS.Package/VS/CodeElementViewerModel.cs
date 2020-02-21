@@ -80,7 +80,7 @@ namespace Microsoft.SpecExplorer.VS
       set
       {
         this.isMultipleSelectionAllowed = value;
-        this.SendNotification(nameof (IsMultipleSelectionAllowed));
+        this.SendNotification(IsMultipleSelectionAllowed.ToString());
       }
     }
 

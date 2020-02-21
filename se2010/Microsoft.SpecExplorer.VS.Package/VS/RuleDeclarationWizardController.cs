@@ -284,7 +284,7 @@ namespace Microsoft.SpecExplorer.VS
         finally
         {
           IDisposable disposable = enumerator as IDisposable;
-          disposable?.Dispose();
+          disposable.Dispose();
         }
       }
     }

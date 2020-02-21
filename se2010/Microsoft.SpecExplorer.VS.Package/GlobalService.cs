@@ -15,7 +15,7 @@ namespace Microsoft.SpecExplorer
     internal GlobalService(ComponentBase session)
     {
       if (session == null)
-        throw new ArgumentNullException(nameof (session));
+        throw new ArgumentNullException(session.ToString());
       this.CurrentSession = session;
     }
 

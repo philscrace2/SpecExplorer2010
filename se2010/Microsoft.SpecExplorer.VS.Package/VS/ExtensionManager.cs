@@ -26,7 +26,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       IExtensionService iextensionService;
       if (this.extensionServices.TryGetValue(key, out iextensionService))
-        return iextensionService.TryGetExtensionData(inputValue, ref outputValue);
+        return iextensionService.TryGetExtensionData(inputValue, out outputValue);
       outputValue = (object) null;
       return false;
     }

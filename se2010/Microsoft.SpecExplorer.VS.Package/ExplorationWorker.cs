@@ -307,7 +307,7 @@ namespace Microsoft.SpecExplorer
         this.control.ProgressMessage(message1);
         this.package.ProgressMessage((VerbosityLevel) 0, message1);
         this.explorer.StartBuilding().WaitOne();
-        if (this.explorer.State == 3)
+        if (this.explorer.State.Equals(3))
         {
           string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.Name);
           this.control.ProgressMessage(message2);
@@ -318,7 +318,7 @@ namespace Microsoft.SpecExplorer
           this.progressData = new ExplorationStatistics();
           this.needSaveExplorationResult = true;
           this.explorer.StartExploration().WaitOne();
-          if (this.explorer.State == 6)
+          if (this.explorer.State.Equals(6))
           {
             if (this.progressTimer != null)
             {
@@ -391,7 +391,7 @@ namespace Microsoft.SpecExplorer
       this.control.ProgressMessage(message1);
       this.package.ProgressMessage((VerbosityLevel) 0, message1);
       this.explorer.StartBuilding().WaitOne();
-      if (this.explorer.State == 3)
+      if (this.explorer.State.Equals(3))
       {
         string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.Name);
         this.control.ProgressMessage(message2);
@@ -496,11 +496,11 @@ namespace Microsoft.SpecExplorer
         if (fileInfo.Exists && fileInfo.IsReadOnly)
         {
           MessageResult messageResult = this.package.DecisionDialog(Resources.SpecExplorer, string.Format(Resources.SaveOfReadOnlyFileFormat, (object) resultPath), (MessageButton) 3);
-          if (messageResult == 6)
+          if (messageResult.Equals(6))
             fileInfo.IsReadOnly = false;
-          else if (messageResult != 7)
+          else if (!messageResult.Equals(7))
           {
-            this.package.Assert(messageResult == 2, "message result must be CANCEL.");
+            this.package.Assert(messageResult.Equals(2), "message result must be CANCEL.");
             if (isTestTrace)
               this.package.ProgressMessage((VerbosityLevel) 0, "On-The-Fly test result is not saved.");
             else
@@ -632,11 +632,11 @@ namespace Microsoft.SpecExplorer
           if (fileInfo.Exists && fileInfo.IsReadOnly)
           {
             MessageResult messageResult = this.package.DecisionDialog(Resources.SpecExplorer, string.Format(Resources.SaveOfReadOnlyFileFormat, (object) fullPath2), (MessageButton) 3);
-            if (messageResult == 6)
+            if (messageResult.Equals(6))
               fileInfo.IsReadOnly = false;
-            else if (messageResult != 7)
+            else if (!messageResult.Equals(7))
             {
-              this.package.Assert(messageResult == 2, "message result must be CANCEL.");
+              this.package.Assert(messageResult.Equals(2), "message result must be CANCEL.");
               string str1 = "Generated code is not saved.";
               this.control.ProgressMessage(str1);
               this.package.ProgressMessage((VerbosityLevel) 0, str1);
@@ -682,12 +682,14 @@ namespace Microsoft.SpecExplorer
       dictionary1["WorkingDirectory"] = (object) Path.GetDirectoryName(projectFullName);
       Dictionary<string, Type> source;
       Dictionary<string, string> dictionary2;
-      if (!PostProcessorHelper.LoadCustomizedPostProcessingTypes(str, (IHost) this.package, ref source, ref dictionary2))
-        return;
+      if (!PostProcessorHelper.LoadCustomizedPostProcessingTypes(str, (IHost) this.package, out source, out dictionary2))
+      { 
+      
+      }
       // ISSUE: method pointer
-      this.postProcessorHelper = new PostProcessorHelper((IDictionary<string, object>) dictionary1, new ProgressMessageDisplayer((object) this.control, __methodptr(ProgressMessage)));
-      this.postProcessorHelper.ExecutePostProcessing(resultPath, source.Where<KeyValuePair<string, Type>>((Func<KeyValuePair<string, Type>, bool>) (item => this.postProcessors.Contains<string>(item.Key))).Select<KeyValuePair<string, Type>, Type>((Func<KeyValuePair<string, Type>, Type>) (p => p.Value)), (IHost) this.package);
-      this.postProcessorHelper.Dispose();
+      //this.postProcessorHelper = new PostProcessorHelper((IDictionary<string, object>) dictionary1, new ProgressMessageDisplayer((object) this.control, __methodptr(ProgressMessage)));
+      //this.postProcessorHelper.ExecutePostProcessing(resultPath, source.Where<KeyValuePair<string, Type>>((Func<KeyValuePair<string, Type>, bool>) (item => this.postProcessors.Contains<string>(item.Key))).Select<KeyValuePair<string, Type>, Type>((Func<KeyValuePair<string, Type>, Type>) (p => p.Value)), (IHost) this.package);
+      //this.postProcessorHelper.Dispose();
     }
 
     private string GetTransitionSystemStatusString(TransitionSystem transitionSystem)

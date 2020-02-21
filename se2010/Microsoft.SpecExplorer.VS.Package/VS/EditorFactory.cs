@@ -27,7 +27,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       this.package = host;
       this.documents = new Dictionary<string, CordDocument>();
-      this.GetTextManagerConnectionPoint()?.Advise((object) this, out this.textManagerEventsCookie);
+      this.GetTextManagerConnectionPoint().Advise((object) this, out this.textManagerEventsCookie);
     }
 
     private IConnectionPoint GetTextManagerConnectionPoint()

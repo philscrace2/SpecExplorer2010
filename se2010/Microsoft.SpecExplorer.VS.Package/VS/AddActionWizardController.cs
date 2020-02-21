@@ -131,7 +131,7 @@ namespace Microsoft.SpecExplorer.VS
     private void LoadProjects()
     {
       this.scriptCreation.ItemList.Clear();
-      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes())
+      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes)
         this.scriptCreation.ItemList.Add((ICordSyntaxElementInfo) new ProjectInfo(allScope));
     }
 

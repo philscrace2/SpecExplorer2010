@@ -16,7 +16,7 @@ namespace Microsoft.SpecExplorer.VS
     internal ActionDeclaration(MethodDescriptor method)
     {
       if (method == null)
-        throw new ArgumentNullException(nameof (method));
+        throw new ArgumentNullException(method.ToString());
       this.Method = method;
     }
 
@@ -25,7 +25,7 @@ namespace Microsoft.SpecExplorer.VS
       get
       {
         if (this.Method.MethodName == null)
-          return ((Type) this.Method.ResultType).Flatten();
+          return (this.Method.ResultType).Flatten();
         return (string) ((InstantiatedName) this.Method.MethodName).Name;
       }
     }

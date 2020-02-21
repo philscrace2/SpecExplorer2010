@@ -134,7 +134,7 @@ namespace Microsoft.SpecExplorer.VS
       TextLineChange[] pTextLineChange,
       int fLast)
     {
-      this.package.GetDesignTimeForCordDocument(this)?.RefreshScriptSyntax(this.FileName);
+      this.package.GetDesignTimeForCordDocument(this).RefreshScriptSyntax(this.FileName);
     }
 
     public void Dispose()

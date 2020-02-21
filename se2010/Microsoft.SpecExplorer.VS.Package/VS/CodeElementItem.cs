@@ -36,7 +36,7 @@ namespace Microsoft.SpecExplorer.VS
       Func<CodeElementItem, string> nameFabricator)
     {
       if (rootElement == null && parent == null)
-        throw new ArgumentNullException(nameof (rootElement), "rootElement and parent cannot be null at the same time.");
+        throw new ArgumentNullException(rootElement.Name, "rootElement and parent cannot be null at the same time.");
       this.RootElement = rootElement;
       this.Parent = parent;
       this.nameFabricator = nameFabricator;
@@ -152,7 +152,7 @@ namespace Microsoft.SpecExplorer.VS
       set
       {
         this.isSelected = value;
-        this.SendNotification(nameof (IsSelected));
+        this.SendNotification(IsSelected.ToString());
       }
     }
 
@@ -225,7 +225,7 @@ namespace Microsoft.SpecExplorer.VS
             }
             finally
             {
-              (enumerator as IDisposable)?.Dispose();
+              (enumerator as IDisposable).Dispose();
             }
           }
           else
@@ -250,7 +250,7 @@ namespace Microsoft.SpecExplorer.VS
           }
           finally
           {
-            (enumerator1 as IDisposable)?.Dispose();
+            (enumerator1 as IDisposable).Dispose();
           }
       }
     }

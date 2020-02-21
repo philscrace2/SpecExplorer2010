@@ -48,7 +48,7 @@ namespace Microsoft.SpecExplorer.VS
       this.viewDocumentControl.CompareStates += new EventHandler<CompareStateEventArgs>(this.OnCompareStates);
       this.viewDocumentControl.InvokeViewDefinitionManager += new EventHandler(this.OnInvokeViewDefinitionManager);
       ViewDocumentControl viewDocumentControl = this.viewDocumentControl;
-      viewDocumentControl.FullScreen = (__Null) Delegate.Combine((Delegate) viewDocumentControl.FullScreen, (Delegate) ((sender, args) =>
+      viewDocumentControl.FullScreen = Delegate.Combine((Delegate) viewDocumentControl.FullScreen, ((sender, args) =>
       {
         Guid standardCommandSet97 = VSConstants.GUID_VSStandardCommandSet97;
         object pvaIn = (object) null;
@@ -92,7 +92,7 @@ namespace Microsoft.SpecExplorer.VS
         SharedEntitySet sharedEntities = explorationResultLoader.LoadSharedEntities();
         StateComparisonView toolWindow = this.package.FindToolWindow(typeof (StateComparisonView), 0, true) as StateComparisonView;
         toolWindow.Show();
-        toolWindow.ShowDiff(e.Left(.Label, this.BuildStateString(sharedEntities, state1), e.Right.Label, this.BuildStateString(sharedEntities, state2), e.CompareLabel);
+        toolWindow.ShowDiff(e.Left.Label, this.BuildStateString(sharedEntities, state1), e.Right.Label, this.BuildStateString(sharedEntities, state2), e.CompareLabel);
       }
       catch (ExplorationResultLoadingException ex)
       {
@@ -344,7 +344,7 @@ namespace Microsoft.SpecExplorer.VS
         return -2147024809;
       for (uint index = 0; index < cChanges; ++index)
       {
-        if (!string.IsNullOrEmpty(rgpszFile[(IntPtr) index]) && string.Compare(rgpszFile[(IntPtr) index], this.fileName, true) == 0 && (((int) rggrfChange[(IntPtr) index] & 6) != 0 && this.IsFileReadyToRead(rgpszFile[(IntPtr) index])))
+        if (!string.IsNullOrEmpty(rgpszFile[index]) && string.Compare(rgpszFile[index], this.fileName, true) == 0 && (((int) rggrfChange[ index] & 6) != 0 && this.IsFileReadyToRead(rgpszFile[index])))
           ErrorHandler.ThrowOnFailure(((IVsPersistDocData) this).ReloadDocData(0U));
       }
       return 0;

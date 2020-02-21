@@ -48,7 +48,7 @@ namespace Microsoft.SpecExplorer.VS
       this.webBrowser1.TabIndex = 0;
       this.webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
       this.Controls.Add((Control) this.webBrowser1);
-      this.Name = nameof (SummaryDocumentControl);
+      this.Name = "Changed in souce by phil scrace"
       this.Size = new Size(629, 442);
       this.ResumeLayout(false);
     }

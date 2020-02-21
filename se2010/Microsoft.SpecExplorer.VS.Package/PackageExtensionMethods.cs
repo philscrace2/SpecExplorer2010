@@ -40,7 +40,7 @@ namespace Microsoft.SpecExplorer
           finally
           {
             IDisposable disposable = enumerator as IDisposable;
-            disposable?.Dispose();
+            disposable.Dispose();
           }
         }
       }
@@ -76,7 +76,7 @@ namespace Microsoft.SpecExplorer
                   finally
                   {
                     IDisposable disposable = enumerator2 as IDisposable;
-                    disposable?.Dispose();
+                    disposable.Dispose();
                   }
                 }
               }
@@ -84,7 +84,7 @@ namespace Microsoft.SpecExplorer
             finally
             {
               IDisposable disposable = enumerator1 as IDisposable;
-              disposable?.Dispose();
+              disposable.Dispose();
             }
           }
         }
@@ -102,7 +102,7 @@ namespace Microsoft.SpecExplorer
           finally
           {
             IDisposable disposable = enumerator as IDisposable;
-            disposable?.Dispose();
+            disposable.Dispose();
           }
         }
       }

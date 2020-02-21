@@ -37,7 +37,7 @@ namespace Microsoft.SpecExplorer.VS
 
     public override int GetHashCode()
     {
-      Hash32Builder hash32Builder = (Hash32Builder) null;
+      Hash32Builder hash32Builder = new Hash32Builder();
       ((Hash32Builder) hash32Builder).Add(typeof (ProcedureType).GetHashCode());
       ((Hash32Builder) hash32Builder).Add(this.FullName.GetHashCode());
       ((Hash32Builder) hash32Builder).Add(this.ShortName.GetHashCode());

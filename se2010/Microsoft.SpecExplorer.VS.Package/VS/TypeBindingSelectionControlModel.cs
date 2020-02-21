@@ -25,7 +25,7 @@ namespace Microsoft.SpecExplorer.VS
         if (this.existingClassSelected == value)
           return;
         this.existingClassSelected = value;
-        this.SendNotification(nameof (ExistingClassSelected));
+        this.SendNotification(ExistingClassSelected.ToString());
       }
     }
 
