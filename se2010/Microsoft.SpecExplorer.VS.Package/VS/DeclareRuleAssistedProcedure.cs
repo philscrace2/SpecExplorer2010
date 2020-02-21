@@ -508,7 +508,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       string methodName1 = methodName;
       CodeFunction codeFunction;
-      if (attributes.TryGetValue(methodName, out codeFunction) && method.IsStatic == (codeFunction.IsShared ? 1 : 0) && this.HasSameParameters(codeFunction.Parameters, (Parameter[]) method.Parameters, typeBindingClassCache) || isCtor && this.HasSameMethod(allFunctions, typeBindingClassCache, method, methodName1))
+      if (attributes.TryGetValue(methodName, out codeFunction) && method.IsStatic == (codeFunction.IsShared) && this.HasSameParameters(codeFunction.Parameters, (Parameter[]) method.Parameters, typeBindingClassCache) || isCtor && this.HasSameMethod(allFunctions, typeBindingClassCache, method, methodName1))
         return false;
       methodName = this.MakeUniqueName(methodName, this.GetMethodName(method), methodNames);
       return true;
@@ -780,7 +780,8 @@ namespace Microsoft.SpecExplorer.VS
       List<IType> itypeList1 = new List<IType>();
       itypeList1.Add(type);
       List<IType> itypeList2 = itypeList1;
-      instantiatedName3.ResolvedTypes((IList<IType>) itypeList2);
+      //instantiatedName3.ResolvedTypes((IList<IType>) itypeList2);
+      
       return new InstantiatedName((Location) Location.None, instantiatedName2, shortName, (Type[]) null);
     }
 

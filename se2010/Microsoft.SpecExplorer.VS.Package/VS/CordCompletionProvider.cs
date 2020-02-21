@@ -25,7 +25,7 @@ namespace Microsoft.SpecExplorer.VS
     internal CordCompletionProvider(SpecExplorerPackage package)
     {      
       if (package == null)
-        throw new ArgumentNullException(nameof (package));
+        throw new ArgumentNullException(package.ToString());
       this.package = package;
     }
 
@@ -34,9 +34,9 @@ namespace Microsoft.SpecExplorer.VS
       IList<Namespace> imports)
     {
       if (element == null)
-        throw new ArgumentNullException(nameof (element));
+        throw new ArgumentNullException(element.Name);
       if (imports == null)
-        throw new ArgumentNullException(nameof (imports));
+        throw new ArgumentNullException(imports.ToString());
       HashSet<Completion> completionSet = new HashSet<Completion>();
       if (element != null)
       {
@@ -72,7 +72,7 @@ namespace Microsoft.SpecExplorer.VS
               }
               finally
               {
-                (enumerator as IDisposable)?.Dispose();
+                (enumerator as IDisposable).Dispose();
               }
             }
             else
@@ -100,9 +100,9 @@ namespace Microsoft.SpecExplorer.VS
       IList<Namespace> imports)
     {
       if (codeModel == null)
-        throw new ArgumentNullException(nameof (codeModel));
+        throw new ArgumentNullException(codeModel.ToString());
       if (imports == null)
-        throw new ArgumentNullException(nameof (imports));
+        throw new ArgumentNullException(imports.ToString());
       HashSet<Completion> completionSet = new HashSet<Completion>();
       foreach (CodeElement codeElement in codeModel.CodeElements)
       {
@@ -160,7 +160,7 @@ namespace Microsoft.SpecExplorer.VS
       string scriptFilePath)
     {
       if (string.IsNullOrEmpty(scriptFilePath))
-        throw new ArgumentNullException("cannot be null or empty.", nameof (scriptFilePath));
+        throw new ArgumentNullException("cannot be null or empty.", scriptFilePath);
       ICordDesignTimeManager designTimeManager = (ICordDesignTimeManager) null;
       Project projectOfFile = ProjectUtils.GetProjectOfFile(scriptFilePath, this.package.DTE);
       if (projectOfFile != null && this.package.CordScopeManager != null)
@@ -171,7 +171,7 @@ namespace Microsoft.SpecExplorer.VS
     public IEnumerable<Completion> GetTypeCompletions(string scriptFilePath)
     {
       if (scriptFilePath == null)
-        throw new ArgumentNullException(nameof (scriptFilePath));
+        throw new ArgumentNullException(scriptFilePath.ToString());
       HashSet<Completion> completionSet = new HashSet<Completion>();
       Project projectOfFile = ProjectUtils.GetProjectOfFile(scriptFilePath, this.package.DTE);
       if (projectOfFile != null && this.package.CordScopeManager != null)
@@ -194,9 +194,9 @@ namespace Microsoft.SpecExplorer.VS
       bool includeMembersOfType)
     {
       if (string.IsNullOrEmpty(parentText))
-        throw new ArgumentException("parentText cannot be null or empty.", nameof (parentText));
+        throw new ArgumentException("parentText cannot be null or empty.", parentText.ToString());
       if (scriptFilePath == null)
-        throw new ArgumentNullException(nameof (scriptFilePath));
+        throw new ArgumentNullException(scriptFilePath.ToString());
       HashSet<Completion> completionSet = new HashSet<Completion>();
       Project projectOfFile = ProjectUtils.GetProjectOfFile(scriptFilePath, this.package.DTE);
       if (projectOfFile != null && this.package.CordScopeManager != null)
@@ -363,9 +363,9 @@ namespace Microsoft.SpecExplorer.VS
       string scriptFilePath)
     {
       if (machine == null)
-        throw new ArgumentNullException(nameof (machine));
+        throw new ArgumentNullException(machine.Name);
       if (scriptFilePath == null)
-        throw new ArgumentNullException(nameof (scriptFilePath));
+        throw new ArgumentNullException(scriptFilePath);
       HashSet<Completion> completionSet = new HashSet<Completion>();
       Project projectOfFile = ProjectUtils.GetProjectOfFile(scriptFilePath, this.package.DTE);
       if (projectOfFile != null && this.package.CordScopeManager != null)
@@ -409,9 +409,9 @@ namespace Microsoft.SpecExplorer.VS
       string scriptFilePath)
     {
       if (machine == null)
-        throw new ArgumentNullException(nameof (machine));
+        throw new ArgumentNullException(machine.Name);
       if (scriptFilePath == null)
-        throw new ArgumentNullException(nameof (scriptFilePath));
+        throw new ArgumentNullException(scriptFilePath);
       HashSet<Completion> completionSet = new HashSet<Completion>();
       Project projectOfFile = ProjectUtils.GetProjectOfFile(scriptFilePath, this.package.DTE);
       if (projectOfFile != null && this.package.CordScopeManager != null)
