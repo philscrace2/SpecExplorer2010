@@ -687,9 +687,9 @@ namespace Microsoft.SpecExplorer
       
       }
       // ISSUE: method pointer
-      //this.postProcessorHelper = new PostProcessorHelper((IDictionary<string, object>) dictionary1, new ProgressMessageDisplayer((object) this.control, __methodptr(ProgressMessage)));
-      //this.postProcessorHelper.ExecutePostProcessing(resultPath, source.Where<KeyValuePair<string, Type>>((Func<KeyValuePair<string, Type>, bool>) (item => this.postProcessors.Contains<string>(item.Key))).Select<KeyValuePair<string, Type>, Type>((Func<KeyValuePair<string, Type>, Type>) (p => p.Value)), (IHost) this.package);
-      //this.postProcessorHelper.Dispose();
+      this.postProcessorHelper = new PostProcessorHelper((IDictionary<string, object>)dictionary1, new ProgressMessageDisplayer((object)this.control, __methodptr(ProgressMessage)));
+      this.postProcessorHelper.ExecutePostProcessing(resultPath, source.Where<KeyValuePair<string, Type>>((Func<KeyValuePair<string, Type>, bool>)(item => this.postProcessors.Contains<string>(item.Key))).Select<KeyValuePair<string, Type>, Type>((Func<KeyValuePair<string, Type>, Type>)(p => p.Value)), (IHost)this.package);
+      this.postProcessorHelper.Dispose();
     }
 
     private string GetTransitionSystemStatusString(TransitionSystem transitionSystem)
