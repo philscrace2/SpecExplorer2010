@@ -109,7 +109,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExecutionAborted), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExecutionAborted, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -117,7 +117,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExecutionFinished), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExecutionFinished, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -125,7 +125,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExplorationAborted), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExplorationAborted, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -133,7 +133,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExplorationFinished), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExplorationFinished, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -141,7 +141,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExplorationInProgress), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExplorationInProgress, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -149,7 +149,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExplorationMachineFailedFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExplorationMachineFailedFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -157,7 +157,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExplorationMachineSucceededFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExplorationMachineSucceededFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -165,7 +165,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExplorationManagerToolWindowTitle), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExplorationManagerToolWindowTitle, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -173,7 +173,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExploringMachineFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExploringMachineFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -181,7 +181,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ExtensionDirectoryName), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ExtensionDirectoryName, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -189,7 +189,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (FailedToBuildProject), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(FailedToBuildProject, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -197,7 +197,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (InvalidMachineExplorationResultFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(InvalidMachineExplorationResultFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -205,7 +205,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (MachineResultUpToDateFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(MachineResultUpToDateFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -213,7 +213,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (OnTheFlyReplayAborted), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(OnTheFlyReplayAborted, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -221,7 +221,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (OnTheFlyReplayFinished), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(OnTheFlyReplayFinished, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -229,7 +229,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (OnTheFlyReplayInProgress), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(OnTheFlyReplayInProgress, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -237,7 +237,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (OnTheFlyTestAborted), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(OnTheFlyTestAborted, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -245,7 +245,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (OnTheFlyTestFinished), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(OnTheFlyTestFinished, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -253,7 +253,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (OnTheFlyTestInProgress), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(OnTheFlyTestInProgress, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -261,7 +261,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (PostProcessorAborted), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(PostProcessorAborted, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -269,7 +269,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (SaveOfReadOnlyFileFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(SaveOfReadOnlyFileFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -277,7 +277,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (SEMainAssemblyName), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(SEMainAssemblyName, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -285,7 +285,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (SkippingFailedProjectMachineFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(SkippingFailedProjectMachineFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -293,7 +293,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (SkippingNoProjectMachineFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(SkippingNoProjectMachineFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -301,7 +301,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (SpecExplorer), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(SpecExplorer, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -309,7 +309,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (StateComparisonWindowTitle), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(StateComparisonWindowTitle, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -317,7 +317,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (StatesBrowserToolWindowTitle), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(StatesBrowserToolWindowTitle, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -325,7 +325,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (StepBrowserToolWindow), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(StepBrowserToolWindow, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -333,7 +333,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (SummaryTemplate), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(SummaryTemplate, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -341,7 +341,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (TestCodeGenerationAborted), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(TestCodeGenerationAborted, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -349,7 +349,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (TestCodeGenerationFailedFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(TestCodeGenerationFailedFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -357,7 +357,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (TestCodeGenerationInProgressFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(TestCodeGenerationInProgressFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -365,7 +365,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (TestCodeGenerationSucceededFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(TestCodeGenerationSucceededFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -373,7 +373,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ToolWindowTitle), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ToolWindowTitle, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -381,7 +381,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ValidatingMachineFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ValidatingMachineFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -389,7 +389,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ValidationFailed), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ValidationFailed, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -397,7 +397,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ValidationInProgress), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ValidationInProgress, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -405,7 +405,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ValidationMachineFailedFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ValidationMachineFailedFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -413,7 +413,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ValidationMachineSucceededFormat), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ValidationMachineSucceededFormat, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -421,7 +421,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (ValidationSucceeded), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(ValidationSucceeded, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -429,7 +429,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (WorkflowFileExtension), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(WorkflowFileExtension, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -437,7 +437,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (WorkflowLoadingFailure), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(WorkflowLoadingFailure, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -445,7 +445,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (WorkflowsDirectory), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(WorkflowsDirectory, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
 
@@ -453,7 +453,7 @@ namespace Microsoft.SpecExplorer
     {
       get
       {
-        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(nameof (WorkflowToolWindowTitle), Microsoft.SpecExplorer.Resources.resourceCulture);
+        return Microsoft.SpecExplorer.Resources.ResourceManager.GetString(WorkflowToolWindowTitle, Microsoft.SpecExplorer.Resources.resourceCulture);
       }
     }
   }
