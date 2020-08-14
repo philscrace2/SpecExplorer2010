@@ -17,12 +17,12 @@ namespace Microsoft.SpecExplorer.VS
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
   public partial class AssistedProcedureWizardWindow : Window
   {
-    public DependencyProperty BannerTextProperty = DependencyProperty.Register(BannerText, typeof (string), typeof (AssistedProcedureWizardWindow));
-    public static readonly DependencyProperty BannerHeaderProperty = DependencyProperty.Register(nameof (BannerHeader), typeof (string), typeof (AssistedProcedureWizardWindow));
-    public static readonly DependencyProperty IsStartStateProperty = DependencyProperty.Register(nameof (IsStartState), typeof (bool), typeof (AssistedProcedureWizardWindow));
-    public static readonly DependencyProperty IsFinalStateProperty = DependencyProperty.Register(nameof (IsFinalState), typeof (bool), typeof (AssistedProcedureWizardWindow));
-    public static readonly DependencyProperty WarningTextProperty = DependencyProperty.Register(nameof (WanringText), typeof (string), typeof (AssistedProcedureWizardWindow));
-    public static readonly DependencyProperty WarningTextVisibleProperty = DependencyProperty.Register(nameof (WarningTextVisible), typeof (Visibility), typeof (AssistedProcedureWizardWindow));
+    public static readonly DependencyProperty BannerTextProperty = DependencyProperty.Register("BannerText", typeof (string), typeof (AssistedProcedureWizardWindow));
+    public static readonly DependencyProperty BannerHeaderProperty = DependencyProperty.Register("BannerHeader", typeof (string), typeof (AssistedProcedureWizardWindow));
+    public static readonly DependencyProperty IsStartStateProperty = DependencyProperty.Register("IsStartState", typeof (bool), typeof (AssistedProcedureWizardWindow));
+    public static readonly DependencyProperty IsFinalStateProperty = DependencyProperty.Register("IsFinalState", typeof (bool), typeof (AssistedProcedureWizardWindow));
+    public static readonly DependencyProperty WarningTextProperty = DependencyProperty.Register("WanringText", typeof (string), typeof (AssistedProcedureWizardWindow));
+    public static readonly DependencyProperty WarningTextVisibleProperty = DependencyProperty.Register("WarningTextVisible", typeof (Visibility), typeof (AssistedProcedureWizardWindow));
     internal AssistedProcedureWizardWindow wizardWindow;
     internal Grid userControlContainer;
     internal Button previousPageButton;
