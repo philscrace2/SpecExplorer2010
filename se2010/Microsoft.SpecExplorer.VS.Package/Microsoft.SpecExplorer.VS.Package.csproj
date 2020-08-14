@@ -137,8 +137,6 @@
     <Compile Include="VS\AddActionWizardController.cs" />
     <Compile Include="VS\ItemNameInputValidator.cs" />
     <Compile Include="VS\AddActionWizardData.cs" />
-    <Compile Include="VS\AssistedProcedureReportWindow.cs" />
-    <Compile Include="VS\AssistedProcedureWizardWindow.cs" />
     <Compile Include="VS\EnvDTEUtils.cs" />
     <Compile Include="VS\PackageScriptsManipulator.cs" />
     <Compile Include="VS\ScriptManipulationReport.cs" />
@@ -191,6 +189,14 @@
     <Compile Include="VS\GuidList.cs" />
     <Compile Include="VS\PkgCmdIDList.cs" />
     <Compile Include="VS\WorkflowToolWindow.cs" />
+    <Compile Include="assistedprocedures\AssistedProcedureReportWindow.cs">
+      <DependentUpon>assistedprocedurereportwindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="assistedprocedures\AssistedProcedureWizardWindow.cs">
+      <DependentUpon>assistedprocedurewizardwindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ErrorReporting\ErrorReportBuilder.cs" />
     <Compile Include="ErrorReporting\WER_REGISTER_FILE_TYPE.cs" />
     <Compile Include="ErrorReporting\WER_REPORT_TYPE.cs" />
@@ -204,6 +210,16 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx" />
     <EmbeddedResource Include="SpecExplorer.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="assistedprocedures\assistedprocedurereportwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="assistedprocedures\assistedprocedurewizardwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

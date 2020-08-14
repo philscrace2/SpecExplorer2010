@@ -1,4 +1,4 @@
-<Window x:Class="Microsoft.SpecExplorer.VS.AssistedProcedureWizardWindow"
+<Window x:Class="Microsoft.SpecExplorer.assistedprocedures.AssistedProcedureWizardWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Name="wizardWindow" Height="380" Width="500" ResizeMode="NoResize"
