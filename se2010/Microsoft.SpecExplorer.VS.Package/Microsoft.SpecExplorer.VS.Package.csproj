@@ -130,7 +130,6 @@
     <Compile Include="VS\ActionDeclaration.cs" />
     <Compile Include="VS\VocabularyVisitor.cs" />
     <Compile Include="VS\ActionDeclarationBuilder.cs" />
-    <Compile Include="VS\ActionSelectionControl.cs" />
     <Compile Include="VS\ActionSelectionControlModel.cs" />
     <Compile Include="VS\ICordSyntaxElementInfo.cs" />
     <Compile Include="VS\ActionSelectionItem.cs" />
@@ -144,20 +143,15 @@
     <Compile Include="VS\ActionConfigClauseResolver.cs" />
     <Compile Include="VS\SourceBindingTypeProvider.cs" />
     <Compile Include="VS\RuleDeclarationWizardData.cs" />
-    <Compile Include="VS\GenericSelectionControl.cs" />
     <Compile Include="VS\ConfigInfo.cs" />
     <Compile Include="VS\ScriptInfo.cs" />
     <Compile Include="VS\ProjectInfo.cs" />
     <Compile Include="VS\CordSyntaxElementBuilder.cs" />
-    <Compile Include="VS\GenericUserControlWindow.cs" />
-    <Compile Include="VS\TypeBindingSelectionWindow.cs" />
     <Compile Include="VS\NullableBooleanConverter.cs" />
     <Compile Include="VS\TypeBindingSelectionControlModel.cs" />
-    <Compile Include="VS\TypeMapControl.cs" />
     <Compile Include="VS\TypeMapUnit.cs" />
     <Compile Include="VS\CodeElementItem.cs" />
     <Compile Include="VS\CodeElementItemType.cs" />
-    <Compile Include="VS\CodeElementViewer.cs" />
     <Compile Include="VS\CodeElementViewerModel.cs" />
     <Compile Include="VS\CodeElementAndContainerPair.cs" />
     <Compile Include="VS\CodeElementExpandOptions.cs" />
@@ -189,12 +183,36 @@
     <Compile Include="VS\GuidList.cs" />
     <Compile Include="VS\PkgCmdIDList.cs" />
     <Compile Include="VS\WorkflowToolWindow.cs" />
-    <Compile Include="assistedprocedures\AssistedProcedureReportWindow.cs">
+    <Compile Include="VS\AssistedProcedureReportWindow.cs">
       <DependentUpon>assistedprocedurereportwindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="assistedprocedures\AssistedProcedureWizardWindow.cs">
+    <Compile Include="VS\AssistedProcedureWizardWindow.cs">
       <DependentUpon>assistedprocedurewizardwindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VS\CodeElementViewer.cs">
+      <DependentUpon>codeelementviewer.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VS\ActionSelectionControl.cs">
+      <DependentUpon>actionselectioncontrol.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VS\GenericSelectionControl.cs">
+      <DependentUpon>genericselectioncontrol.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VS\GenericUserControlWindow.cs">
+      <DependentUpon>genericusercontrolwindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VS\TypeBindingSelectionWindow.cs">
+      <DependentUpon>typebindingselectionwindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="VS\TypeMapControl.cs">
+      <DependentUpon>typemapcontrol.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ErrorReporting\ErrorReportBuilder.cs" />
@@ -212,14 +230,41 @@
     <EmbeddedResource Include="SpecExplorer.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="assistedprocedures\assistedprocedurereportwindow.xaml">
+    <Page Include="VS\actionselectioncontrol.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="assistedprocedures\assistedprocedurewizardwindow.xaml">
+    <Page Include="VS\assistedprocedurereportwindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="VS\assistedprocedurewizardwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\codeelementviewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\genericselectioncontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\genericusercontrolwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\typebindingselectionwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\typemapcontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="assistedprocedures\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

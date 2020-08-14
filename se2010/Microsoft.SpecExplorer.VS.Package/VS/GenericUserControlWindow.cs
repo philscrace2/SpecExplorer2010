@@ -16,7 +16,7 @@ using System.Windows.Markup;
 namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public class GenericUserControlWindow : Window, IComponentConnector
+  public partial class GenericUserControlWindow : Window
   {
     internal Grid userControlContainer;
     private bool _contentLoaded;
@@ -47,22 +47,22 @@ namespace Microsoft.SpecExplorer.VS
       Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/genericusercontrolwindow.xaml", UriKind.Relative));
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [DebuggerNonUserCode]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      switch (connectionId)
-      {
-        case 1:
-          this.userControlContainer = (Grid) target;
-          break;
-        case 2:
-          ((ButtonBase) target).Click += new RoutedEventHandler(this.OKButtonClick);
-          break;
-        default:
-          this._contentLoaded = true;
-          break;
-      }
-    }
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //[DebuggerNonUserCode]
+    //void IComponentConnector.Connect(int connectionId, object target)
+    //{
+    //  switch (connectionId)
+    //  {
+    //    case 1:
+    //      this.userControlContainer = (Grid) target;
+    //      break;
+    //    case 2:
+    //      ((ButtonBase) target).Click += new RoutedEventHandler(this.OKButtonClick);
+    //      break;
+    //    default:
+    //      this._contentLoaded = true;
+    //      break;
+    //  }
+    //}
   }
 }

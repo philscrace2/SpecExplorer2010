@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Interop;
+using Microsoft.SpecExplorer.assistedprocedures;
 
 namespace Microsoft.SpecExplorer.VS
 {

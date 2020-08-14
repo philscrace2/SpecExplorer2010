@@ -15,11 +15,11 @@ using System.Windows.Markup;
 namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public class ActionSelectionControl : UserControl, IComponentConnector
+  public partial class ActionSelectionControl : UserControl
   {
-    internal ActionSelectionControl actionSelectionControl;
-    internal ActionSelectionControlModel controlModel;
-    private bool _contentLoaded;
+    //internal ActionSelectionControl actionSelectionControl;
+    //internal ActionSelectionControlModel controlModel;
+    //private bool _contentLoaded;
 
     public ActionSelectionControl()
     {
@@ -34,31 +34,31 @@ namespace Microsoft.SpecExplorer.VS
       }
     }
 
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/actionselectioncontrol.xaml", UriKind.Relative));
-    }
+    //[DebuggerNonUserCode]
+    //public void InitializeComponent()
+    //{
+    //  if (this._contentLoaded)
+    //    return;
+    //  this._contentLoaded = true;
+    //  Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/actionselectioncontrol.xaml", UriKind.Relative));
+    //}
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [DebuggerNonUserCode]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      switch (connectionId)
-      {
-        case 1:
-          this.actionSelectionControl = (ActionSelectionControl) target;
-          break;
-        case 2:
-          this.controlModel = (ActionSelectionControlModel) target;
-          break;
-        default:
-          this._contentLoaded = true;
-          break;
-      }
-    }
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //[DebuggerNonUserCode]
+    //void IComponentConnector.Connect(int connectionId, object target)
+    //{
+    //  switch (connectionId)
+    //  {
+    //    case 1:
+    //      this.actionSelectionControl = (ActionSelectionControl) target;
+    //      break;
+    //    case 2:
+    //      this.controlModel = (ActionSelectionControlModel) target;
+    //      break;
+    //    default:
+    //      this._contentLoaded = true;
+    //      break;
+    //  }
+    //}
   }
 }

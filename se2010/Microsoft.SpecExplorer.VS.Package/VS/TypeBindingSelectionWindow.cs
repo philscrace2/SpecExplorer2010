@@ -16,13 +16,13 @@ using System.Windows.Markup;
 namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public class TypeBindingSelectionWindow : Window, IComponentConnector
+  public partial class TypeBindingSelectionWindow : Window
   {
-    internal TypeBindingSelectionControlModel controlModel;
-    internal RadioButton classCreationButton;
-    internal RadioButton classSelectionButton;
-    internal CodeElementViewer viewerControl;
-    private bool _contentLoaded;
+    //internal TypeBindingSelectionControlModel controlModel;
+    //internal RadioButton classCreationButton;
+    //internal RadioButton classSelectionButton;
+    //internal CodeElementViewer viewerControl;
+    //private bool _contentLoaded;
 
     public TypeBindingSelectionWindow()
     {
@@ -43,46 +43,46 @@ namespace Microsoft.SpecExplorer.VS
       this.DialogResult = new bool?(true);
     }
 
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/typebindingselectionwindow.xaml", UriKind.Relative));
-    }
+    //[DebuggerNonUserCode]
+    //public void InitializeComponent()
+    //{
+    //  if (this._contentLoaded)
+    //    return;
+    //  this._contentLoaded = true;
+    //  Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/typebindingselectionwindow.xaml", UriKind.Relative));
+    //}
 
-    [DebuggerNonUserCode]
-    internal Delegate _CreateDelegate(Type delegateType, string handler)
-    {
-      return Delegate.CreateDelegate(delegateType, (object) this, handler);
-    }
+    //[DebuggerNonUserCode]
+    //internal Delegate _CreateDelegate(Type delegateType, string handler)
+    //{
+    //  return Delegate.CreateDelegate(delegateType, (object) this, handler);
+    //}
 
-    [DebuggerNonUserCode]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      switch (connectionId)
-      {
-        case 1:
-          this.controlModel = (TypeBindingSelectionControlModel) target;
-          break;
-        case 2:
-          this.classCreationButton = (RadioButton) target;
-          break;
-        case 3:
-          this.classSelectionButton = (RadioButton) target;
-          break;
-        case 4:
-          this.viewerControl = (CodeElementViewer) target;
-          break;
-        case 5:
-          ((ButtonBase) target).Click += new RoutedEventHandler(this.OKButtonClick);
-          break;
-        default:
-          this._contentLoaded = true;
-          break;
-      }
-    }
+    //[DebuggerNonUserCode]
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //void IComponentConnector.Connect(int connectionId, object target)
+    //{
+    //  switch (connectionId)
+    //  {
+    //    case 1:
+    //      this.controlModel = (TypeBindingSelectionControlModel) target;
+    //      break;
+    //    case 2:
+    //      this.classCreationButton = (RadioButton) target;
+    //      break;
+    //    case 3:
+    //      this.classSelectionButton = (RadioButton) target;
+    //      break;
+    //    case 4:
+    //      this.viewerControl = (CodeElementViewer) target;
+    //      break;
+    //    case 5:
+    //      ((ButtonBase) target).Click += new RoutedEventHandler(this.OKButtonClick);
+    //      break;
+    //    default:
+    //      this._contentLoaded = true;
+    //      break;
+    //  }
+    //}
   }
 }

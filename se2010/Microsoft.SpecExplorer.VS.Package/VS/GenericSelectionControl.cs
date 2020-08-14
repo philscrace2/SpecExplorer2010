@@ -16,11 +16,11 @@ using System.Windows.Markup;
 namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public class GenericSelectionControl : UserControl, IComponentConnector
+  public partial class GenericSelectionControl : UserControl
   {
-    public static readonly DependencyProperty TextInputLabelProperty = DependencyProperty.Register(nameof (TextInputLabel), typeof (string), typeof (GenericSelectionControl));
-    public static readonly DependencyProperty TextInputValueProperty = DependencyProperty.Register(nameof (TextInputValue), typeof (string), typeof (GenericSelectionControl));
-    public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(nameof (SelectedItem), typeof (ICordSyntaxElementInfo), typeof (GenericSelectionControl));
+    public static readonly DependencyProperty TextInputLabelProperty = DependencyProperty.Register("TextInputLabel", typeof (string), typeof (GenericSelectionControl));
+    public static readonly DependencyProperty TextInputValueProperty = DependencyProperty.Register("TextInputValue", typeof (string), typeof (GenericSelectionControl));
+    public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof (ICordSyntaxElementInfo), typeof (GenericSelectionControl));
     internal GenericSelectionControl selectionControl;
     internal Grid textInputPanel;
     internal TextBox textInputBox;
@@ -94,29 +94,29 @@ namespace Microsoft.SpecExplorer.VS
       Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/genericselectioncontrol.xaml", UriKind.Relative));
     }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [DebuggerNonUserCode]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      switch (connectionId)
-      {
-        case 1:
-          this.selectionControl = (GenericSelectionControl) target;
-          this.selectionControl.Loaded += new RoutedEventHandler(this.selectionControl_Loaded);
-          break;
-        case 2:
-          this.textInputPanel = (Grid) target;
-          break;
-        case 3:
-          this.textInputBox = (TextBox) target;
-          break;
-        case 4:
-          this.itemListView = (ListView) target;
-          break;
-        default:
-          this._contentLoaded = true;
-          break;
-      }
-    }
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //[DebuggerNonUserCode]
+    //void IComponentConnector.Connect(int connectionId, object target)
+    //{
+    //  switch (connectionId)
+    //  {
+    //    case 1:
+    //      this.selectionControl = (GenericSelectionControl) target;
+    //      this.selectionControl.Loaded += new RoutedEventHandler(this.selectionControl_Loaded);
+    //      break;
+    //    case 2:
+    //      this.textInputPanel = (Grid) target;
+    //      break;
+    //    case 3:
+    //      this.textInputBox = (TextBox) target;
+    //      break;
+    //    case 4:
+    //      this.itemListView = (ListView) target;
+    //      break;
+    //    default:
+    //      this._contentLoaded = true;
+    //      break;
+    //  }
+    //}
   }
 }
