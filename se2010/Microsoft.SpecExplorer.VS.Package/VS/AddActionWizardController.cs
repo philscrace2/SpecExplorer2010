@@ -110,7 +110,7 @@ namespace Microsoft.SpecExplorer.VS
           while (((IEnumerator) enumerator).MoveNext())
           {
             Config current = enumerator.Current;
-            this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, ((SyntaxElement) current).Location().get_FileName(), (string) current.Name));
+            this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, current.Location.FileName, current.Name));
           }
         }
       }

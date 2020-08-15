@@ -649,6 +649,7 @@ namespace Microsoft.SpecExplorer.VS
     {
       try
       {
+        location = new TextLocation();
         Project containingProject = this.GetContainingProject(member);
         if (containingProject == null)
           return false;
@@ -725,7 +726,7 @@ namespace Microsoft.SpecExplorer.VS
       catch (Exception ex)
       {
         this.DiagMessage((DiagnosisKind) 1, string.Format("A Spec Explorer/Visual Studio integration error occurred: \r\n{0}.\r\n Please report this error to support team.", (object) ex.ToString()), (object) null);
-        //location = (TextLocation) null;
+        location = new TextLocation();
         return false;
       }
     }
@@ -1270,7 +1271,7 @@ namespace Microsoft.SpecExplorer.VS
           referenceUpgradeHelper.Handle(allRealProject);
         }
       }
-      if (referenceUpgradeHelper.NeedUpgrade && this.DecisionDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("{0} finds the projects that you are opening contain references created by previous version of {0}, which might cause unexpected behaviors. Would you like to upgrade it to the latest version?", (object) Microsoft.SpecExplorer.Resources.SpecExplorer), (MessageButton) 4) == 6 && referenceUpgradeHelper.Upgrade())
+      if (referenceUpgradeHelper.NeedUpgrade && MessageResult.YES == this.DecisionDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("{0} finds the projects that you are opening contain references created by previous version of {0}, which might cause unexpected behaviors. Would you like to upgrade it to the latest version?", (object) Microsoft.SpecExplorer.Resources.SpecExplorer), MessageButton.YESNOCANCEL))
         this.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, "Project references created by previous version of have been upgraded successfully");
       foreach (Project allRealProject in ProjectUtils.GetAllRealProjects(this.DTE))
       {
