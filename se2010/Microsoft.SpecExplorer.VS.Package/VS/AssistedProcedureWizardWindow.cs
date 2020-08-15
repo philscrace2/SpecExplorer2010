@@ -23,12 +23,12 @@ namespace Microsoft.SpecExplorer.VS
     public static readonly DependencyProperty IsFinalStateProperty = DependencyProperty.Register("IsFinalState", typeof (bool), typeof (AssistedProcedureWizardWindow));
     public static readonly DependencyProperty WarningTextProperty = DependencyProperty.Register("WanringText", typeof (string), typeof (AssistedProcedureWizardWindow));
     public static readonly DependencyProperty WarningTextVisibleProperty = DependencyProperty.Register("WarningTextVisible", typeof (Visibility), typeof (AssistedProcedureWizardWindow));
-    internal AssistedProcedureWizardWindow wizardWindow;
-    internal Grid userControlContainer;
-    internal Button previousPageButton;
-    internal Button nextPageButton;
-    internal Button cancelWizardButton;
-    private bool _contentLoaded;
+    //internal AssistedProcedureWizardWindow wizardWindow;
+    //internal Grid userControlContainer;
+    //internal Button previousPageButton;
+    //internal Button nextPageButton;
+    //internal Button cancelWizardButton;
+    //private bool _contentLoaded;
 
     public AssistedProcedureWizardWindow(string title)
     {

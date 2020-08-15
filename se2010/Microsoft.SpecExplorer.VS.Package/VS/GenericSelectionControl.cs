@@ -21,11 +21,11 @@ namespace Microsoft.SpecExplorer.VS
     public static readonly DependencyProperty TextInputLabelProperty = DependencyProperty.Register("TextInputLabel", typeof (string), typeof (GenericSelectionControl));
     public static readonly DependencyProperty TextInputValueProperty = DependencyProperty.Register("TextInputValue", typeof (string), typeof (GenericSelectionControl));
     public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register("SelectedItem", typeof (ICordSyntaxElementInfo), typeof (GenericSelectionControl));
-    internal GenericSelectionControl selectionControl;
-    internal Grid textInputPanel;
-    internal TextBox textInputBox;
-    internal ListView itemListView;
-    private bool _contentLoaded;
+    //internal GenericSelectionControl selectionControl;
+    //internal Grid textInputPanel;
+    //internal TextBox textInputBox;
+    //internal ListView itemListView;
+    //private bool _contentLoaded;
 
     public GenericSelectionControl(bool textInputEnabled, string headerText)
     {

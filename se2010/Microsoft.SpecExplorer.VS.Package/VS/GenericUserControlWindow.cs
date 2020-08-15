@@ -18,7 +18,7 @@ namespace Microsoft.SpecExplorer.VS
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
   public partial class GenericUserControlWindow : Window
   {
-    internal Grid userControlContainer;
+    //internal Grid userControlContainer;
     private bool _contentLoaded;
 
     public GenericUserControlWindow(string title)

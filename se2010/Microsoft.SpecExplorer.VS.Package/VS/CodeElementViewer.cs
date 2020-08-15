@@ -14,11 +14,11 @@ using System.Windows.Markup;
 
 namespace Microsoft.SpecExplorer.VS
 {
-  [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public partial class CodeElementViewer : UserControl, IComponentConnector
+  
+  public partial class CodeElementViewer : UserControl
   {
     //internal CodeElementViewerModel viewerModel;
-    private bool _contentLoaded;
+    //private bool _contentLoaded;
 
     public CodeElementViewer()
     {
