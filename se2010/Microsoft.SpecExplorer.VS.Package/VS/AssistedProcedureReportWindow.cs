@@ -15,7 +15,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Markup;
 using Microsoft.SpecExplorer.VS;
 
-namespace Microsoft.SpecExplorer.assistedprocedures
+namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
   public partial class AssistedProcedureReportWindow : Window

@@ -1,4 +1,4 @@
-<Window x:Class="Microsoft.SpecExplorer.assistedprocedures.GenericUserControlWindow"
+<Window x:Class="Microsoft.SpecExplorer.VS.GenericUserControlWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Height="380" Width="500" ResizeMode="NoResize" WindowStartupLocation="CenterOwner"

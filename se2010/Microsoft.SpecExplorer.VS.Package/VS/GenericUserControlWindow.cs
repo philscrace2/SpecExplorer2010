@@ -38,14 +38,14 @@ namespace Microsoft.SpecExplorer.VS
       this.DialogResult = new bool?(true);
     }
 
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/genericusercontrolwindow.xaml", UriKind.Relative));
-    }
+    //[DebuggerNonUserCode]
+    //public void InitializeComponent()
+    //{
+    //  if (this._contentLoaded)
+    //    return;
+    //  this._contentLoaded = true;
+    //  Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/genericusercontrolwindow.xaml", UriKind.Relative));
+    //}
 
     //[EditorBrowsable(EditorBrowsableState.Never)]
     //[DebuggerNonUserCode]

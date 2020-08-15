@@ -85,14 +85,14 @@ namespace Microsoft.SpecExplorer.VS
         this.itemListView.Focus();
     }
 
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/genericselectioncontrol.xaml", UriKind.Relative));
-    }
+    //[DebuggerNonUserCode]
+    //public void InitializeComponent()
+    //{
+    //  if (this._contentLoaded)
+    //    return;
+    //  this._contentLoaded = true;
+    //  Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/genericselectioncontrol.xaml", UriKind.Relative));
+    //}
 
     //[EditorBrowsable(EditorBrowsableState.Never)]
     //[DebuggerNonUserCode]

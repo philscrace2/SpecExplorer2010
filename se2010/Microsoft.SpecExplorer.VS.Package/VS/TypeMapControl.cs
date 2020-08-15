@@ -110,24 +110,24 @@ namespace Microsoft.SpecExplorer.VS
       return str;
     }
 
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/typemapcontrol.xaml", UriKind.Relative));
-    }
+    //[DebuggerNonUserCode]
+    //public void InitializeComponent()
+    //{
+    //  if (this._contentLoaded)
+    //    return;
+    //  this._contentLoaded = true;
+    //  Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/typemapcontrol.xaml", UriKind.Relative));
+    //}
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    [DebuggerNonUserCode]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      if (connectionId == 1)
-        this.typeMapControl = (TypeMapControl) target;
-      else
-        this._contentLoaded = true;
-    }
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //[DebuggerNonUserCode]
+    //void IComponentConnector.Connect(int connectionId, object target)
+    //{
+    //  if (connectionId == 1)
+    //    this.typeMapControl = (TypeMapControl) target;
+    //  else
+    //    this._contentLoaded = true;
+    //}
 
     [EditorBrowsable(EditorBrowsableState.Never)]
     [DebuggerNonUserCode]

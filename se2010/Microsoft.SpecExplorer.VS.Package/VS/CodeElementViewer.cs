@@ -17,7 +17,7 @@ namespace Microsoft.SpecExplorer.VS
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
   public partial class CodeElementViewer : UserControl, IComponentConnector
   {
-    internal CodeElementViewerModel viewerModel;
+    //internal CodeElementViewerModel viewerModel;
     private bool _contentLoaded;
 
     public CodeElementViewer()
@@ -33,23 +33,23 @@ namespace Microsoft.SpecExplorer.VS
       }
     }
 
-    [DebuggerNonUserCode]
-    public void InitializeComponent()
-    {
-      if (this._contentLoaded)
-        return;
-      this._contentLoaded = true;
-      Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/codeelementviewer.xaml", UriKind.Relative));
-    }
+    //[DebuggerNonUserCode]
+    //public void InitializeComponent()
+    //{
+    //  if (this._contentLoaded)
+    //    return;
+    //  this._contentLoaded = true;
+    //  Application.LoadComponent((object) this, new Uri("/Microsoft.SpecExplorer.VS.Package;V2.2.0.0;component/assistedprocedures/codeelementviewer.xaml", UriKind.Relative));
+    //}
 
-    [DebuggerNonUserCode]
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    void IComponentConnector.Connect(int connectionId, object target)
-    {
-      if (connectionId == 1)
-        this.viewerModel = (CodeElementViewerModel) target;
-      else
-        this._contentLoaded = true;
-    }
+    //[DebuggerNonUserCode]
+    //[EditorBrowsable(EditorBrowsableState.Never)]
+    //void IComponentConnector.Connect(int connectionId, object target)
+    //{
+    //  if (connectionId == 1)
+    //    this.viewerModel = (CodeElementViewerModel) target;
+    //  else
+    //    this._contentLoaded = true;
+    //}
   }
 }

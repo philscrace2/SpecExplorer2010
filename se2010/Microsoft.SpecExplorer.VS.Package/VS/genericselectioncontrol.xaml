@@ -1,4 +1,4 @@
-<UserControl x:Class="Microsoft.SpecExplorer.assistedprocedures.GenericSelectionControl"
+<UserControl x:Class="Microsoft.SpecExplorer.VS.GenericSelectionControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Loaded="selectionControl_Loaded" Name="selectionControl">
