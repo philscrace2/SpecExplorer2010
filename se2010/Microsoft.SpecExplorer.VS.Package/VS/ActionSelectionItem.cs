@@ -38,7 +38,7 @@ namespace Microsoft.SpecExplorer.VS
       set
       {
         this.isSelected = value;
-        this.SendNotification(IsSelected);
+        //this.SendNotification(IsSelected);
       }
     }
 

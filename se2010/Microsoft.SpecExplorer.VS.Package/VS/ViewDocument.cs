@@ -48,12 +48,12 @@ namespace Microsoft.SpecExplorer.VS
       this.viewDocumentControl.CompareStates += new EventHandler<CompareStateEventArgs>(this.OnCompareStates);
       this.viewDocumentControl.InvokeViewDefinitionManager += new EventHandler(this.OnInvokeViewDefinitionManager);
       ViewDocumentControl viewDocumentControl = this.viewDocumentControl;
-      viewDocumentControl.FullScreen = Delegate.Combine((Delegate) viewDocumentControl.FullScreen, ((sender, args) =>
+      viewDocumentControl.FullScreen += delegate (Object sender, EventArgs args)
       {
         Guid standardCommandSet97 = VSConstants.GUID_VSStandardCommandSet97;
         object pvaIn = (object) null;
         ErrorHandler.ThrowOnFailure(((IVsUIShell) this.GetService(typeof (SVsUIShell))).PostExecCommand(ref standardCommandSet97, 233U, 233U, ref pvaIn));
-      }));
+      };
     }
 
     private void OnInvokeViewDefinitionManager(object sender, EventArgs e)

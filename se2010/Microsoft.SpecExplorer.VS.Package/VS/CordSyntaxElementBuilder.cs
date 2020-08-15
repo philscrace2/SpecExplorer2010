@@ -8,6 +8,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.ActionMachines;
 using Microsoft.ActionMachines.Cord;
+using Microsoft.Xrt;
 using Microsoft.Modeling;
 using System;
 using System.Collections.Generic;
@@ -134,7 +135,7 @@ namespace Microsoft.SpecExplorer.VS
       }
       Type type = (Type) this.CreateType(param.Type);
       if (type != null)
-        return new Parameter(type, parameterKind, type, param.FullName);
+        return new Parameter(none, parameterKind, type, param.FullName);
       return (Parameter) null;
     }
 
