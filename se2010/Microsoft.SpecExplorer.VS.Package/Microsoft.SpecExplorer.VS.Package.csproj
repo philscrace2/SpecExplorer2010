@@ -268,8 +268,17 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="assistedprocedures\" />
+    <Content Include="assistedprocedures\images\classicon.gif" />
+    <Content Include="assistedprocedures\images\eventicon.gif" />
+    <Content Include="assistedprocedures\images\foldericon.gif" />
+    <Content Include="assistedprocedures\images\info.ico" />
+    <Content Include="assistedprocedures\images\interfaceicon.gif" />
+    <Content Include="assistedprocedures\images\methodicon.gif" />
+    <Content Include="assistedprocedures\images\namespaceicon.gif" />
+    <Content Include="assistedprocedures\images\staticicon.gif" />
+    <Content Include="assistedprocedures\images\warning.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
