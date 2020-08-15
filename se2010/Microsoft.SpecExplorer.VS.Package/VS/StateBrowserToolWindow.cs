@@ -30,7 +30,7 @@ namespace Microsoft.SpecExplorer.VS
 
     public void SetHost(IHost host)
     {
-      this.control.set_Host(host);
+       this.control.Host = host;
     }
 
     public void LoadStates(
