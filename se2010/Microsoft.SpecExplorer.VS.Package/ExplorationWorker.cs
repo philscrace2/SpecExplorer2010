@@ -20,7 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using Type = Microsoft.ActionMachines.Cord.Type;
+using Type = System.Type;
 
 namespace Microsoft.SpecExplorer
 {
@@ -680,13 +680,14 @@ namespace Microsoft.SpecExplorer
       string str = Path.Combine(this.package.Session.InstallDir, Resources.ExtensionDirectoryName);
       Dictionary<string, object> dictionary1 = new Dictionary<string, object>();
       dictionary1["WorkingDirectory"] = (object) Path.GetDirectoryName(projectFullName);
-      Dictionary<string, System.Type> source;
+      Dictionary<string, Type> source;
       Dictionary<string, string> dictionary2;
       
       if (!PostProcessorHelper.LoadCustomizedPostProcessingTypes(str, (IHost) this.package, out source, out dictionary2))
       { 
           this.postProcessorHelper = new PostProcessorHelper((IDictionary<string, object>)dictionary1, new ProgressMessageDisplayer(this.control.ProgressMessage));
-          this.postProcessorHelper.ExecutePostProcessing(resultPath, source.Where<KeyValuePair<string, Type>>((Func<KeyValuePair<string, Type>, bool>)(item => this.postProcessors.Contains<string>(item.Key))).Select<KeyValuePair<string, Type>, Type>((Func<KeyValuePair<string, Type>, Type>)(p => p.Value)), (IHost)this.package);
+                IEnumerable<Type> t = source.Where<KeyValuePair<string, Type>>((Func<KeyValuePair<string, Type>, bool>)(item => this.postProcessors.Contains<string>(item.Key))).Select<KeyValuePair<string, Type>, Type>((Func<KeyValuePair<string, Type>, Type>)(p => p.Value));
+          this.postProcessorHelper.ExecutePostProcessing(resultPath, t.ToList<Type>(), (IHost)this.package);
           this.postProcessorHelper.Dispose();
       }
       
