@@ -19,7 +19,7 @@ namespace Microsoft.SpecExplorer.VS
   public partial class GenericUserControlWindow : Window
   {
     //internal Grid userControlContainer;
-    private bool _contentLoaded;
+    //private bool _contentLoaded;
 
     public GenericUserControlWindow(string title)
     {

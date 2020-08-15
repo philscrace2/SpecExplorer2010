@@ -23,10 +23,10 @@ using System.Windows.Markup;
 namespace Microsoft.SpecExplorer.VS
 {
   [GeneratedCode("PresentationBuildTasks", "4.0.0.0")]
-  public class TypeMapControl : UserControl, IStyleConnector
+  public partial class TypeMapControl : UserControl, IStyleConnector
   {
     private IEnumerable availableCodeElements;
-    internal TypeMapControl typeMapControl;
+    //internal TypeMapControl typeMapControl;
     //private bool _contentLoaded;
 
     public TypeMapControl()
