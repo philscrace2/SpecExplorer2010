@@ -177,9 +177,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ErrorReportBuilder.cs" />
+    <Compile Include="ErrorReporting\ErrorReportBuilder.cs" />
     <Compile Include="Guids.cs" />
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="ErrorReporting\NativeMethods.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -190,12 +190,12 @@
     <Compile Include="VSPackage5Package.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PkgCmdID.cs" />
-    <Compile Include="WER_CONSENT.cs" />
-    <Compile Include="WER_REGISTER_FILE_TYPE.cs" />
-    <Compile Include="WER_REPORT_INFORMATION.cs" />
-    <Compile Include="WER_REPORT_TYPE.cs" />
-    <Compile Include="WER_REPORT_UI.cs" />
-    <Compile Include="WER_SUBMIT_RESULT.cs" />
+    <Compile Include="ErrorReporting\WER_CONSENT.cs" />
+    <Compile Include="ErrorReporting\WER_REGISTER_FILE_TYPE.cs" />
+    <Compile Include="ErrorReporting\WER_REPORT_INFORMATION.cs" />
+    <Compile Include="ErrorReporting\WER_REPORT_TYPE.cs" />
+    <Compile Include="ErrorReporting\WER_REPORT_UI.cs" />
+    <Compile Include="ErrorReporting\WER_SUBMIT_RESULT.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
