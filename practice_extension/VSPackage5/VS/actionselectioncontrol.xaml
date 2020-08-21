@@ -1,0 +1,40 @@
+<UserControl x:Class="Microsoft.SpecExplorer.VS.ActionSelectionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Microsoft.SpecExplorer.VS"
+             Name="actionSelectionControl">
+  <FrameworkElement.DataContext>
+    <local:ActionSelectionControlModel x:Name="controlModel"/>
+  </FrameworkElement.DataContext>
+  <FrameworkElement.Resources>
+    <Style x:Key="actionItemStyle" TargetType="{x:Type ListViewItem}">
+      <Setter Property="Control.HorizontalContentAlignment" Value="Left"/>
+    </Style>
+  </FrameworkElement.Resources>
+  <ListView TabIndex="0" ItemContainerStyle="{StaticResource actionItemStyle}"
+            ItemsSource="{Binding Path=ActionSelectionItems}">
+    <ListView.View>
+      <GridView>
+        <GridViewColumn>
+          <GridViewColumn.CellTemplate>
+            <DataTemplate>
+              <CheckBox IsChecked="{Binding IsSelected}"/>
+            </DataTemplate>
+          </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+        <GridViewColumn DisplayMemberBinding="{Binding DisplayText}"/>
+      </GridView>
+    </ListView.View>
+    <Control.Template>
+      <ControlTemplate TargetType="{x:Type ListView}">
+        <Border Name="Bd" BorderThickness="{TemplateBinding Border.BorderThickness}" Padding="1,1,1,1"
+                BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}"
+                SnapsToDevicePixels="true">
+          <ScrollViewer Padding="{TemplateBinding Control.Padding}" Focusable="false">
+            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}"/>
+          </ScrollViewer>
+        </Border>
+      </ControlTemplate>
+    </Control.Template>
+  </ListView>
+</UserControl>

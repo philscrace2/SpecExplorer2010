@@ -7,7 +7,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer.ErrorReporting
 {
   [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
   public struct WER_REPORT_INFORMATION

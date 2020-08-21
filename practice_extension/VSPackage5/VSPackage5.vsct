@@ -69,7 +69,7 @@
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <CommandName>cmdidMyCommand</CommandName>
-          <ButtonText>My Buttonish</ButtonText>
+          <ButtonText>My Buttonish2</ButtonText>
         </Strings>
       </Button>
 

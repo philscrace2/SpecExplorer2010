@@ -29,9 +29,12 @@ using System.Threading;
 using System.Xml;
 using VSLangProj80;
 using Microsoft.SpecExplorer.VS.Common;
+using Microsoft.SpecExplorer.ErrorReporting;
+using Microsoft.SpecExplorer;
 
 
-namespace Company.VSPackage5
+
+namespace Microsoft.SpecExplorer
 {
     
     /// <summary>
@@ -109,7 +112,7 @@ namespace Company.VSPackage5
             if ( null != mcs )
             {
                 // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidList.guidVSPackage5CmdSet, (int)PkgCmdIDList.cmdidMyCommand);
+                CommandID menuCommandID = new CommandID(GuidList.guidVSPackage5CmdSet, (int)PkgCmdID.cmdidMyCommand);
                 MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
                 mcs.AddCommand( menuItem );
             }
@@ -132,53 +135,53 @@ namespace Company.VSPackage5
 
         private class SpecExplorerError : ErrorTask
         {
-            private SpecExplorerPackage package;
+            //private SpecExplorerPackage package;
 
-            internal bool IsParsingError { get; private set; }
+            //internal bool IsParsingError { get; private set; }
 
-            internal SpecExplorerError(
-              SpecExplorerPackage package,
-              TaskCategory category,
-              DiagnosisKind kind,
-              string fileName,
-              bool isParsingError,
-              int line,
-              int column,
-              string message)
-            {
-                if (package == null)
-                    throw new ArgumentNullException(package.ToString());
-                if (fileName == null)
-                    throw new ArgumentNullException(fileName.ToString());
-                this.package = package;
-                this.IsParsingError = isParsingError;
-                switch ((int)kind)
-                {
-                    case 0:
-                        this.Priority = TaskPriority.High;
-                        this.ErrorCategory = TaskErrorCategory.Error;
-                        break;
-                    case 1:
-                        this.Priority = TaskPriority.Normal;
-                        this.ErrorCategory = TaskErrorCategory.Warning;
-                        break;
-                    case 2:
-                        this.Priority = TaskPriority.Low;
-                        this.ErrorCategory = TaskErrorCategory.Message;
-                        break;
-                }
-                int length1 = fileName.IndexOf("$");
-                if (length1 >= 0)
-                    fileName = fileName.Substring(0, length1);
-                int length2 = fileName.LastIndexOf("?");
-                if (length2 >= 0)
-                    fileName = fileName.Substring(0, length2);
-                this.Document = fileName;
-                this.Line = line - 1;
-                this.Column = column - 1;
-                this.Text = message;
-                this.Category = category;
-            }
+            //internal SpecExplorerError(
+            //  SpecExplorerPackage package,
+            //  TaskCategory category,
+            //  DiagnosisKind kind,
+            //  string fileName,
+            //  bool isParsingError,
+            //  int line,
+            //  int column,
+            //  string message)
+            //{
+            //    if (package == null)
+            //        throw new ArgumentNullException(package.ToString());
+            //    if (fileName == null)
+            //        throw new ArgumentNullException(fileName.ToString());
+            //    this.package = package;
+            //    this.IsParsingError = isParsingError;
+            //    switch ((int)kind)
+            //    {
+            //        case 0:
+            //            this.Priority = TaskPriority.High;
+            //            this.ErrorCategory = TaskErrorCategory.Error;
+            //            break;
+            //        case 1:
+            //            this.Priority = TaskPriority.Normal;
+            //            this.ErrorCategory = TaskErrorCategory.Warning;
+            //            break;
+            //        case 2:
+            //            this.Priority = TaskPriority.Low;
+            //            this.ErrorCategory = TaskErrorCategory.Message;
+            //            break;
+            //    }
+            //    int length1 = fileName.IndexOf("$");
+            //    if (length1 >= 0)
+            //        fileName = fileName.Substring(0, length1);
+            //    int length2 = fileName.LastIndexOf("?");
+            //    if (length2 >= 0)
+            //        fileName = fileName.Substring(0, length2);
+            //    this.Document = fileName;
+            //    this.Line = line - 1;
+            //    this.Column = column - 1;
+            //    this.Text = message;
+            //    this.Category = category;
+            //}
 
             protected override void OnNavigate(EventArgs e)
             {

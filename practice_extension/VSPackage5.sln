@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSPackage5", "VSPackage5\VSPackage5.csproj", "{9BD9DB9D-449B-488F-B2A4-3607B1BD8D92}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.SpecExplorer.VS.Package2", "VSPackage5\Microsoft.SpecExplorer.VS.Package2.csproj", "{9BD9DB9D-449B-488F-B2A4-3607B1BD8D92}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
