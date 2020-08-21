@@ -7,9 +7,9 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer.ErrorReporting
 {
-  internal class NativeMethods
+  public class NativeMethods
   {
     public const int WER_FILE_DELETE_WHEN_DONE = 1;
     public const int WER_FILE_ANONYMOUS_DATA = 2;

@@ -2,7 +2,7 @@
 // MUST match guids.h
 using System;
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer
 {
     static class GuidList
     {

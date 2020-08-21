@@ -29,9 +29,10 @@ using System.Threading;
 using System.Xml;
 using VSLangProj80;
 using Microsoft.SpecExplorer.VS.Common;
+using Microsoft.SpecExplorer.ErrorReporting;
 
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer
 {
     
     /// <summary>

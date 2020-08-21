@@ -2,7 +2,7 @@
 // MUST match PkgCmdID.h
 using System;
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer
 {
     static class PkgCmdIDList
     {

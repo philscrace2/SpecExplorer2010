@@ -4,7 +4,7 @@
 // MVID: 04778F4E-8525-4D68-B061-08FAB43841FA
 // Assembly location: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\Microsoft\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Package.dll
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer.ErrorReporting
 {
   public enum WER_REGISTER_FILE_TYPE
   {

@@ -13,7 +13,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.SpecExplorer;
 
-namespace Company.VSPackage5
+namespace Microsoft.SpecExplorer.ErrorReporting
 {
     public class ErrorReportBuilder
     {
