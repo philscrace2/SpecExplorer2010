@@ -211,6 +211,7 @@
     <Compile Include="VS\EnvDTEUtils.cs" />
     <Compile Include="VS\ExplorationManagerToolWindow.cs" />
     <Compile Include="VS\ExtensionManager.cs" />
+    <Compile Include="VS\ProvideSolutionProps.cs" />
     <Compile Include="VS\SolutionBuildEventArgs.cs" />
     <Compile Include="VS\StateComparisonView.cs" />
     <Compile Include="VS\StepBrowserToolWindow.cs" />

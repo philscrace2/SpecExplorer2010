@@ -56,11 +56,11 @@ namespace Microsoft.SpecExplorer
     [ProvideToolWindow(typeof(StepBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
     //[ProvideToolWindow(typeof(WorkflowToolWindow), Orientation = ToolWindowOrientation.none, Style = VsDockStyle.Tabbed, Width = 250, Window = "{B1E99781-AB81-11D0-B683-00AA00A3EE26}")]
     [ProvideToolWindow(typeof(ExplorationManagerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
-    //[DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
+    [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
     ////[InstalledProductRegistration(false, "Spec Explorer for Visual Studio 2010 (version 3.5.3146.0)", "Spec Explorer Modeling and Testing Environment, (c) 2009 Microsoft Corporation.", "3.5.3146.0", IconResourceID = 600)]
-    //[ProvideLoadKey("Standard", "2.0", "Spec Explorer for VS", "Microsoft", 400)]
+    [ProvideLoadKey("Standard", "2.0", "Spec Explorer for VS", "Microsoft", 400)]
     //[ProvideMenuResource(1000, 32)]
-    //[ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
+    [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
     //[ProvideToolWindow(typeof(StateBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
     //[ProvideEditorExtension(typeof(EditorFactory), ".cord", 32)]
     //[ProvideEditorLogicalView(typeof(EditorFactory), "{7651A703-06E5-11D1-8EBD-00A0C90F26EA}", IsTrusted = true)]
@@ -72,7 +72,7 @@ namespace Microsoft.SpecExplorer
     //[ProvideEditorLogicalView(typeof(SummaryDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
     [ProvideService(typeof(SGlobalService))]
     //[Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
-    //[ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
+    [ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     // This attribute is used to register the informations needed to show the this package
     // in the Help/About dialog of Visual Studio.
