@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Microsoft.SpecExplorer;
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -39,7 +40,7 @@ namespace Microsoft.SpecExplorer.VS
       bool shouldDisplayLeftTree,
       string label)
     {
-      this.Caption = string.Format("{0} - {1}", (object) Microsoft.SpecExplorer.Resources.StatesBrowserToolWindowTitle, (object) label);
+      this.Caption = string.Format("{0} - {1}", Resources.StatesBrowserToolWindowTitle, (object) label);
       ((Control) this.control).SuspendLayout();
       this.control.LoadStates(fileName, states, shouldDisplayLeftTree);
       ((Control) this.control).ResumeLayout();

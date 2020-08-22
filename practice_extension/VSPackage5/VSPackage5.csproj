@@ -214,7 +214,6 @@
     <Compile Include="VS\ProvideSolutionProps.cs" />
     <Compile Include="VS\SolutionBuildEventArgs.cs" />
     <Compile Include="VS\StateComparisonView.cs" />
-    <Compile Include="VS\StepBrowserToolWindow.cs" />
     <Compile Include="VS\VocabularyVisitor.cs" />
     <Compile Include="VS\WorkflowToolWindow.cs" />
   </ItemGroup>
