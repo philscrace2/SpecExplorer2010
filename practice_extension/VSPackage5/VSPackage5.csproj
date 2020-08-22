@@ -178,8 +178,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ErrorReporting\ErrorReportBuilder.cs" />
+    <Compile Include="ExplorationWorker.cs" />
+    <Compile Include="FileNames.cs" />
+    <Compile Include="GlobalService.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="ErrorReporting\NativeMethods.cs" />
+    <Compile Include="MachineExecuteItem.cs" />
+    <Compile Include="PackageExtensionMethods.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -195,10 +200,25 @@
     <Compile Include="ErrorReporting\WER_REPORT_TYPE.cs" />
     <Compile Include="ErrorReporting\WER_REPORT_UI.cs" />
     <Compile Include="ErrorReporting\WER_SUBMIT_RESULT.cs" />
+    <Compile Include="TaskTypes.cs" />
+    <Compile Include="VS\ActionDeclaration.cs" />
+    <Compile Include="VS\ActionDeclarationBuilder.cs" />
+    <Compile Include="VS\CodeElementTypeResolver.cs" />
+    <Compile Include="VS\CordCompletionProvider.cs" />
+    <Compile Include="VS\CordDocument.cs" />
+    <Compile Include="VS\CordSyntaxElementBuilder.cs" />
+    <Compile Include="VS\EditorFactory.cs" />
+    <Compile Include="VS\EnvDTEUtils.cs" />
+    <Compile Include="VS\ExplorationManagerToolWindow.cs" />
+    <Compile Include="VS\ExtensionManager.cs" />
+    <Compile Include="VS\SolutionBuildEventArgs.cs" />
+    <Compile Include="VS\StateComparisonView.cs" />
+    <Compile Include="VS\StepBrowserToolWindow.cs" />
+    <Compile Include="VS\VocabularyVisitor.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -225,6 +245,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Package.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="VS\images\" />
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

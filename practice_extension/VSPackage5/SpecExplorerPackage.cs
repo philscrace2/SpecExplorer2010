@@ -31,6 +31,8 @@ using System.Xml;
 using VSLangProj80;
 using Microsoft.SpecExplorer.VS.Common;
 using Microsoft.SpecExplorer.ErrorReporting;
+using Microsoft.SpecExplorer.VS;
+using Microsoft.SpecExplorer.VS.Package55;
 
 
 namespace Microsoft.SpecExplorer
@@ -48,12 +50,12 @@ namespace Microsoft.SpecExplorer
     /// </summary>
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
-    //[ProvideToolWindow(typeof(StateComparisonView), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
-    //[ProvideKeyBindingTable("04C7681D-A337-4705-8AD9-2206D31A9F7B", 508)]
-    //[ProvideEditorFactory(typeof(EditorFactory), 503, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
-    //[ProvideToolWindow(typeof(StepBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
+    [ProvideToolWindow(typeof(StateComparisonView), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
+    [ProvideKeyBindingTable("04C7681D-A337-4705-8AD9-2206D31A9F7B", 508)]
+    [ProvideEditorFactory(typeof(EditorFactory), 503, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
+    [ProvideToolWindow(typeof(StepBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
     //[ProvideToolWindow(typeof(WorkflowToolWindow), Orientation = ToolWindowOrientation.none, Style = VsDockStyle.Tabbed, Width = 250, Window = "{B1E99781-AB81-11D0-B683-00AA00A3EE26}")]
-    //[ProvideToolWindow(typeof(ExplorationManagerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]    
+    [ProvideToolWindow(typeof(ExplorationManagerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
     //[DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
     ////[InstalledProductRegistration(false, "Spec Explorer for Visual Studio 2010 (version 3.5.3146.0)", "Spec Explorer Modeling and Testing Environment, (c) 2009 Microsoft Corporation.", "3.5.3146.0", IconResourceID = 600)]
     //[ProvideLoadKey("Standard", "2.0", "Spec Explorer for VS", "Microsoft", 400)]
@@ -68,8 +70,8 @@ namespace Microsoft.SpecExplorer
     //[ProvideEditorFactory(typeof(SummaryDocumentFactory), 511, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
     //[ProvideEditorExtension(typeof(SummaryDocumentFactory), ".sesum", 32)]
     //[ProvideEditorLogicalView(typeof(SummaryDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
-    //[ProvideService(typeof(SGlobalService))]
-    ////[Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
+    [ProvideService(typeof(SGlobalService))]
+    //[Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
     //[ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
     [PackageRegistration(UseManagedResourcesOnly = true)]
     // This attribute is used to register the informations needed to show the this package
@@ -102,6 +104,16 @@ namespace Microsoft.SpecExplorer
         private OutputWindowPane debugPane;
         private CommandWindow commandWindow;
         private bool wasWorkflowLoaded;
+
+        public event EventHandler<SolutionBuildEventArgs> SolutionBuildFinished;
+
+        internal ICordDesignTimeScopeManager CordScopeManager
+        {
+            get
+            {
+                return (ICordDesignTimeScopeManager)this.CoreServices.GetRequiredService<ICordDesignTimeScopeManager>();
+            }
+        }
         
 
         /// <summary>
@@ -131,18 +143,6 @@ namespace Microsoft.SpecExplorer
             Trace.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
-            // Add our command handlers for menu (commands must exist in the .vsct file)
-            OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (null != mcs)
-            {
-                // Create the command for the menu item.
-                CommandID menuCommandID = new CommandID(GuidList.guidVSPackage5CmdSet, (int)PkgCmdIDList.cmdidMyCommand);
-                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-                mcs.AddCommand(menuItem);
-            }
-
-           // Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
-
             if (this.session == null)
             {
                 Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
@@ -154,8 +154,154 @@ namespace Microsoft.SpecExplorer
             }
             //this.InitializeScriptDesignTime();
             //this.InitializeViewDefinitionManager();
+
+            RegisterVSService();
+            RegisterHelps();
+            RegisterExplorationManagerCommands();
+            // Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
+
+
         }
         #endregion
+
+        private void RegisterVSService()
+        {
+            IServiceContainer serviceContainer = (IServiceContainer)this;
+            this.extensionManager = (IExtensionManager)new ExtensionManager();
+            serviceContainer.AddService(typeof(IExtensionManager), (object)this.extensionManager, true);
+            serviceContainer.AddService(typeof(IHost), (object)this, true);
+        }
+
+
+        private void RegisterHelps()
+        {
+            OleMenuCommandService service = this.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (service == null)
+                return;
+            OleMenuCommand oleMenuCommand1 = new OleMenuCommand(new EventHandler(this.OpenSpecExplorerHomePage), new CommandID(GuidList.guidSpecExplorerCmdSet, (int) PkgCmdIDList.cmdidHomePage));
+            service.AddCommand(oleMenuCommand1);
+            OleMenuCommand oleMenuCommand2 = new OleMenuCommand(new EventHandler(this.OpenSpecExplorerDocumentation), new CommandID(GuidList.guidSpecExplorerCmdSet, (int)PkgCmdIDList.cmdidHelp));
+            service.AddCommand((MenuCommand)oleMenuCommand2);
+            OleMenuCommand oleMenuCommand3 = new OleMenuCommand(new EventHandler(this.OpenSpecExplorerForum), new CommandID(GuidList.guidSpecExplorerCmdSet, (int)PkgCmdIDList.cmdidForum));
+            service.AddCommand((MenuCommand)oleMenuCommand3);
+
+            // Add our command handlers for menu (commands must exist in the .vsct file)
+            service = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (null != service)
+            {
+                // Create the command for the menu item.
+                CommandID menuCommandID = new CommandID(GuidList.guidVSPackage5CmdSet, (int)PkgCmdIDList.cmdidMyCommand);
+                MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
+                service.AddCommand(menuItem);
+            }
+
+            service = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (null != service)
+            {
+                //Create the command for the menu item.
+                CommandID menuCommandID1 = new CommandID(GuidList.guidSpecExplorerPackageCmdSet, (int)PkgCmdIDList.cmdidHomePage);
+                MenuCommand menuItem = new MenuCommand(OpenSpecExplorerHomePage, menuCommandID1);
+                service.AddCommand(menuItem);
+            }
+        }
+
+        private void RegisterExplorationManagerCommands()
+        {
+            //OleMenuCommandService service = this.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            //if (service == null)
+            //    return;
+            //OleMenuCommand oleMenuCommand = new OleMenuCommand(new EventHandler(this.ShowExplorationManagerToolWindow), new CommandID(GuidList.guidSpecExplorerCmdSet, 262));
+            //service.AddCommand((MenuCommand)oleMenuCommand);
+
+            OleMenuCommandService service = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            if (null != service)
+            {
+                //Create the command for the menu item.
+                CommandID explorertionWindowComamnd = new CommandID(GuidList.guidSpecExplorerPackageCmdSet, (int)PkgCmdIDList.cmdidExplorationManagerToolWindow);
+                MenuCommand menuItem = new MenuCommand(ShowExplorationManagerToolWindow, explorertionWindowComamnd);
+                service.AddCommand(menuItem);
+            }
+        }
+
+        private void ShowExplorationManagerToolWindow(object sender, EventArgs e)
+        {
+            ErrorHandler.ThrowOnFailure(((IVsWindowFrame)this.FindToolWindow<ExplorationManagerToolWindow>().Frame).Show());
+        }
+
+        internal T FindToolWindow<T>() where T : ToolWindowPane
+        {
+            T toolWindow = (T)this.FindToolWindow(typeof(T), 0, true);
+            this.Assert((object)toolWindow != null && toolWindow.Frame != null, Resources.CanNotCreateWindow);
+            return toolWindow;
+        }
+
+        private void OpenSpecExplorerHomePage(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://go.microsoft.com/fwlink/?LinkID=166911");
+        }
+
+        private void OpenSpecExplorerDocumentation(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("ms-xhelp:///?method=page&id=05db001d-3ea1-48c8-b031-7fb75b6eeaae&product=vs&productversion=100&locale=en-us");
+        }
+
+        private void OpenSpecExplorerForum(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://social.msdn.microsoft.com/Forums/en-US/specexplorer/threads");
+        }
+
+        public event EventHandler SessionInitialized;
+
+        private void InitializeScriptDesignTime()
+        {
+            //this.CordScopeManager.BeforeParseScript += new EventHandler<ScriptParseEventArgs>(this.OnBeforeParseScript);
+            //this.CordScopeManager.ScopeChanged += new EventHandler<ScopeChangeEventArgs>(this.OnScopeChanged);
+        }
+
+        private void InitializeViewDefinitionManager()
+        {
+            //IViewDefinitionManager requiredService = (IViewDefinitionManager)this.CoreServices.GetRequiredService<IViewDefinitionManager>();
+            //if (!this.DTE.Solution.IsOpen || string.IsNullOrEmpty(this.DTE.Solution.FileName))
+            //    return;
+            //Stream stream = this.OpenViewDefinitionStream(this.GetViewDefinitionFileName());
+            //if (stream != null)
+            //{
+            //    using (stream)
+            //    {
+            //        try
+            //        {
+            //            requiredService.Load(stream);
+            //        }
+            //        catch (ViewDefinitionManagerException ex)
+            //        {
+            //            this.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Error occured while loading view definitions:\n{0}", (object)((Exception)ex).Message));
+            //        }
+            //    }
+            //}
+            //else
+            //    requiredService.SetDeferredLoading((Func<Stream>)(() =>
+            //    {
+            //        string definitionFileName = this.GetViewDefinitionFileName();
+            //        if (string.IsNullOrEmpty(definitionFileName))
+            //            return (Stream)null;
+            //        return this.OpenViewDefinitionStream(definitionFileName);
+            //    }));
+        }
+
+        private void InitializeSession()
+        {
+            if (this.session == null)
+            {
+                Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
+                session.Application.Setup.Add((IComponent)new CordCompletionProvider(this));
+                this.session = (ISession)session;
+                ((IServiceContainer)this).AddService(typeof(SGlobalService), (object)new GlobalService((ComponentBase)session), true);
+                if (this.SessionInitialized != null)
+                    this.SessionInitialized((object)this, (EventArgs)null);
+            }
+            this.InitializeScriptDesignTime();
+            this.InitializeViewDefinitionManager();
+        }
 
         private class SpecExplorerError : ErrorTask
         {
@@ -260,14 +406,14 @@ namespace Microsoft.SpecExplorer
                     OutputWindow outputWindow = this.DTE.Windows.Item((object)"{34E76E81-EE4A-11D0-AE2E-00A0C90FFFC3}").Object as OutputWindow;
                     foreach (OutputWindowPane outputWindowPane in outputWindow.OutputWindowPanes)
                     {
-                        if (outputWindowPane.Name == "")
+                        if (outputWindowPane.Name == Resources.SpecExplorer)
                         {
                             this.specExplorerPane = outputWindowPane;
                             break;
                         }
                     }
                     if (this.specExplorerPane == null)
-                        this.specExplorerPane = outputWindow.OutputWindowPanes.Add("");
+                        this.specExplorerPane = outputWindow.OutputWindowPanes.Add(Resources.SpecExplorer);
                 }
                 return this.specExplorerPane;
             }
@@ -675,6 +821,17 @@ namespace Microsoft.SpecExplorer
                 return this.session as ComponentBase;
             }
         }
+        public ISession Session
+        {
+            get
+            {
+                return this.session;
+            }
+        }
+
+        //public ISession Session { get; set; }
+        public ErrorListProvider ErrorList { get; set; }
+        public IVsSolutionBuildManager2 SolutionBuildManager { get; set; }
 
         private class Win32Window : IWin32Window
         {
@@ -989,6 +1146,80 @@ namespace Microsoft.SpecExplorer
         }
 
         public int OnProjectLoadFailure(IVsHierarchy pStubHierarchy, string pszProjectName, string pszProjectMk, string pszKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CollectScripts(List<string> scripts, ProjectItems projectProjectItems)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICollection<string> CollectReferences(Project project)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool BuildProject(Project project)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ClearErrorList()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Assert(bool condition, string message)
+        {
+            if (condition)
+                return;
+            this.FatalError(message);
+        }
+
+        public void Assert(bool condition)
+        {
+            if (condition)
+                return;
+            this.FatalError("assertion failed");
+        }
+
+        public ICordDesignTimeManager GetDesignTimeForProject(Project projectUnitProject)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void MakeErrorListVisible()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ValidateAllScripts()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVsHierarchy ToHierarchy(Project project)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Project GetProjectByUniqueName(string containerProjectName)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ICordDesignTimeManager GetDesignTimeForCordDocument(CordDocument cordDocument)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnregisterCordDocumentFromDesignTimeManager(CordDocument doc)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterCordDocumentToDesignTimeManager(CordDocument doc, bool b)
         {
             throw new NotImplementedException();
         }

@@ -23,7 +23,7 @@
   <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
   <Extern href="msobtnid.h"/>
 
-
+  
 
 
   <!--The Commands section is where we the commands, menus and menu groups are defined.
@@ -47,12 +47,26 @@
       <Group guid="guidVSPackage5CmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
       </Group>
-      
+
+      <Group guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" priority="0x0600">
+        <Parent guid="guidTestCommandPackageCmdSet2" id="TopLevelMenu2"/>
+      </Group>
+
 
 
     </Groups>
+
+    <Menus>
+      <Menu guid="guidTestCommandPackageCmdSet2" id="TopLevelMenu2" priority="0x700" type="Menu">
+        <Parent guid="guidSHLMainMenu"
+                id="IDG_VS_MM_TOOLSADDINS" />
+        <Strings>
+          <ButtonText>Spec Explorer 2</ButtonText>
+        </Strings>
+      </Menu>
+    </Menus>
     
-    <!--Buttons section. -->
+      <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button 
         or combo box in a toolbar. -->
     <Buttons>
@@ -70,6 +84,38 @@
         <Strings>
           <CommandName>cmdidMyCommand</CommandName>
           <ButtonText>My Buttonish2</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidTestCommandPackageCmdSet2" id="ExplorationManagerCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Exploration Manager</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidTestCommandPackageCmdSet2" id="HomePageCommandId" priority="0x0200" type="Button">
+        <Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Home Page</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidTestCommandPackageCmdSet2" id="ForumCommandId" priority="0x0300" type="Button">
+        <Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Online Forum</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidTestCommandPackageCmdSet2" id="HelpCommandId" priority="0x0400" type="Button">
+        <Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Help</ButtonText>
         </Strings>
       </Button>
 
@@ -103,6 +149,15 @@
 
       <IDSymbol name="MyMenuGroup" value="0x1020" />
       <IDSymbol name="cmdidMyCommand" value="0x0100" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidTestCommandPackageCmdSet2" value="{3a3e93b4-11bb-41f5-99d1-d2083ed60672}">
+      <IDSymbol name="MyMenuGroup2" value="0x1020" />
+      <IDSymbol name="HomePageCommandId" value="513" />
+      <IDSymbol name="ForumCommandId" value="516" />
+      <IDSymbol name="HelpCommandId" value="514" />
+      <IDSymbol name="ExplorationManagerCommandId" value="262" />
+      <IDSymbol name="TopLevelMenu2" value="0x1021"/>
     </GuidSymbol>
     
     
