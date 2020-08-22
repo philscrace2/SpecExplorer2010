@@ -78,7 +78,7 @@ namespace Microsoft.SpecExplorer
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(GuidList.guidVSPackage5PkgString)]
-    public sealed class SpecExplorerPackage : Package, IHost
+    public sealed class SpecExplorerPackage : Package, IHost, IDisposable, IVsSolutionEvents,IVsTrackProjectDocumentsEvents2, IVsUpdateSolutionEvents,  IVsPersistSolutionProps, IVsPersistSolutionOpts
     {
         private VerbosityLevel verbosity = (VerbosityLevel)2;
         private bool loggingEnabled = true;
@@ -86,7 +86,7 @@ namespace Microsoft.SpecExplorer
         private TaskCategory currentTaskCategory = TaskCategory.BuildCompile;
         private Dictionary<Tuple<string, string>, string> projectRenameQueries = new Dictionary<Tuple<string, string>, string>();
         private string lastUsedGuidance = string.Empty;
-        //internal EditorFactory editorFactory;
+        //nternal EditorFactory editorFactory;
         //private ViewDocumentFactory viewFactory;
         private ISession session;
         private IExtensionManager extensionManager;
@@ -102,6 +102,8 @@ namespace Microsoft.SpecExplorer
         private OutputWindowPane debugPane;
         private CommandWindow commandWindow;
         private bool wasWorkflowLoaded;
+        
+
         /// <summary>
         /// Default constructor of the package.
         /// Inside this method you can place any initialization code that does not require 
@@ -139,17 +141,17 @@ namespace Microsoft.SpecExplorer
                 mcs.AddCommand(menuItem);
             }
 
-            Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
+           // Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
 
-            //if (this.session == null)
-            //{
-            //    Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
-            //    //session.Application.Setup.Add((IComponent)new CordCompletionProvider(this));
-            //    this.session = (ISession)session;
-            //    ((IServiceContainer)this).AddService(typeof(SGlobalService), (object)new GlobalService((ComponentBase)session), true);
-            //    if (this.SessionInitialized != null)
-            //        this.SessionInitialized((object)this, (EventArgs)null);
-            //}
+            if (this.session == null)
+            {
+                Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
+                //session.Application.Setup.Add((IComponent)new CordCompletionProvider(this));
+                this.session = (ISession)session;
+                //((IServiceContainer)this).AddService(typeof(SGlobalService), (object)new GlobalService((ComponentBase)session), true);
+                //if (this.SessionInitialized != null)
+                //    this.SessionInitialized((object)this, (EventArgs)null);
+            }
             //this.InitializeScriptDesignTime();
             //this.InitializeViewDefinitionManager();
         }
@@ -692,5 +694,303 @@ namespace Microsoft.SpecExplorer
             }
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (this.disposed)
+                return;
+            IServiceContainer serviceContainer = (IServiceContainer)this;
+            serviceContainer.RemoveService(typeof(IExtensionManager), true);
+            serviceContainer.RemoveService(typeof(IHost), true);
+            this.DisposeSession();
+            if (this.errorList != null)
+            {
+                this.errorList.Dispose();
+                this.errorList = (ErrorListProvider)null;
+            }
+            base.Dispose(disposing);
+            this.disposed = true;
+        }
+
+        private void DisposeSession()
+        {
+            ((IServiceContainer)this).RemoveService(typeof(SGlobalService));
+            (this.session as IDisposable).Dispose();
+            this.session = (ISession)null;
+            if (this.SessionDisposed == null)
+                return;
+            this.SessionDisposed((object)this, (EventArgs)null);
+        }
+
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize((object)this);
+        }
+
+        public event EventHandler SessionDisposed;
+
+        public int OnAfterCloseSolution(object pUnkReserved)
+        {
+            //try
+            //{
+            //    if (this.editorFactory != null)
+            //        this.editorFactory.Clear();
+            //    this.errorsSuppressed = 0;
+            //    if (this.CoreServices != null)
+            //        ((IViewDefinitionManager)this.CoreServices.GetRequiredService<IViewDefinitionManager>()).Reset();
+            //    this.FindToolWindow<ExplorationManagerToolWindow>().SwitchView(false);
+            //    this.FindToolWindow<WorkflowToolWindow>().UnloadWindowContent();
+            //    this.ActivityCompletionStatus = string.Empty;
+            //    this.UnregisterAllProjectsFromCordScopeManager();
+            //    this.ClearErrorList();
+            //    this.SpecExplorerPane.Clear();
+            //}
+            //finally
+            //{
+            //    this.DisposeSession();
+            //}
+            return 0;
+        }
+
+        public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+        {
+            //if (this.Session != null)
+            //{
+            //    Project dteProject = this.ToDteProject(pRealHierarchy);
+            //    if (dteProject != null)
+            //    {
+            //        this.CheckAndConvertProject(dteProject);
+            //        this.RegisterProjectToCordScopeManager(dteProject);
+            //    }
+            //}
+            return 0;
+        }
+
+        public int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
+            //if (this.Session != null)
+            //{
+            //    Project dteProject = this.ToDteProject(pHierarchy);
+            //    if (dteProject != null)
+            //    {
+            //        this.CheckAndConvertProject(dteProject);
+            //        this.RegisterProjectToCordScopeManager(dteProject);
+            //    }
+            //}
+            return 0;
+        }
+
+        public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+        {
+            //this.InitializeSession();
+            //SpecExplorerPackage.ReferenceUpgradeHelper referenceUpgradeHelper = new SpecExplorerPackage.ReferenceUpgradeHelper();
+            //foreach (Project allRealProject in ProjectUtils.GetAllRealProjects(this.DTE))
+            //{
+            //    if (allRealProject != null)
+            //    {
+            //        this.CheckAndConvertProject(allRealProject);
+            //        referenceUpgradeHelper.Handle(allRealProject);
+            //    }
+            //}
+            //if (referenceUpgradeHelper.NeedUpgrade && MessageResult.YES == this.DecisionDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("{0} finds the projects that you are opening contain references created by previous version of {0}, which might cause unexpected behaviors. Would you like to upgrade it to the latest version?", (object)Microsoft.SpecExplorer.Resources.SpecExplorer), MessageButton.YESNOCANCEL))
+            //    this.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, "Project references created by previous version of have been upgraded successfully");
+            //foreach (Project allRealProject in ProjectUtils.GetAllRealProjects(this.DTE))
+            //{
+            //    if (allRealProject != null)
+            //        this.RegisterProjectToCordScopeManager(allRealProject);
+            //}
+            //this.FindToolWindow<ExplorationManagerToolWindow>().SwitchView(true);
+            //if (this.WasWorkflowLoadedFlag || this.FindToolWindow<WorkflowToolWindow>().IsWindowVisible)
+            //    this.LoadWorkflowToolWindow();
+            return 0;
+        }
+
+        public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+        {
+            //Project dteProject = this.ToDteProject(pHierarchy);
+            //if (dteProject != null)
+            //    this.UnregisterProjectFromCordScopeManager(dteProject);
+            return 0;
+        }
+
+        public int OnBeforeCloseSolution(object pUnkReserved)
+        {
+            return 0;
+        }
+
+        public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+        {
+            //Project dteProject = this.ToDteProject(pRealHierarchy);
+            //if (dteProject != null)
+            //    this.UnregisterProjectFromCordScopeManager(dteProject);
+            return 0;
+        }
+
+        public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+        {
+            return 0;
+        }
+
+        public int OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+        {
+            return 0;
+        }
+
+        public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+        {
+            return 0;
+        }
+
+        public int OnQueryAddFiles(IVsProject pProject, int cFiles, string[] rgpszMkDocuments, VSQUERYADDFILEFLAGS[] rgFlags,
+            VSQUERYADDFILERESULTS[] pSummaryResult, VSQUERYADDFILERESULTS[] rgResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterAddFilesEx(int cProjects, int cFiles, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgpszMkDocuments, VSADDFILEFLAGS[] rgFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterAddDirectoriesEx(int cProjects, int cDirectories, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgpszMkDocuments, VSADDDIRECTORYFLAGS[] rgFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterRemoveFiles(int cProjects, int cFiles, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgpszMkDocuments, VSREMOVEFILEFLAGS[] rgFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterRemoveDirectories(int cProjects, int cDirectories, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgpszMkDocuments, VSREMOVEDIRECTORYFLAGS[] rgFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnQueryRenameFiles(IVsProject pProject, int cFiles, string[] rgszMkOldNames, string[] rgszMkNewNames,
+            VSQUERYRENAMEFILEFLAGS[] rgFlags, VSQUERYRENAMEFILERESULTS[] pSummaryResult, VSQUERYRENAMEFILERESULTS[] rgResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterRenameFiles(int cProjects, int cFiles, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgszMkOldNames, string[] rgszMkNewNames, VSRENAMEFILEFLAGS[] rgFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnQueryRenameDirectories(IVsProject pProject, int cDirs, string[] rgszMkOldNames, string[] rgszMkNewNames,
+            VSQUERYRENAMEDIRECTORYFLAGS[] rgFlags, VSQUERYRENAMEDIRECTORYRESULTS[] pSummaryResult,
+            VSQUERYRENAMEDIRECTORYRESULTS[] rgResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterRenameDirectories(int cProjects, int cDirs, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgszMkOldNames, string[] rgszMkNewNames, VSRENAMEDIRECTORYFLAGS[] rgFlags)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnQueryAddDirectories(IVsProject pProject, int cDirectories, string[] rgpszMkDocuments,
+            VSQUERYADDDIRECTORYFLAGS[] rgFlags, VSQUERYADDDIRECTORYRESULTS[] pSummaryResult,
+            VSQUERYADDDIRECTORYRESULTS[] rgResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnQueryRemoveFiles(IVsProject pProject, int cFiles, string[] rgpszMkDocuments, VSQUERYREMOVEFILEFLAGS[] rgFlags,
+            VSQUERYREMOVEFILERESULTS[] pSummaryResult, VSQUERYREMOVEFILERESULTS[] rgResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnQueryRemoveDirectories(IVsProject pProject, int cDirectories, string[] rgpszMkDocuments,
+            VSQUERYREMOVEDIRECTORYFLAGS[] rgFlags, VSQUERYREMOVEDIRECTORYRESULTS[] pSummaryResult,
+            VSQUERYREMOVEDIRECTORYRESULTS[] rgResults)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnAfterSccStatusChanged(int cProjects, int cFiles, IVsProject[] rgpProjects, int[] rgFirstIndices,
+            string[] rgpszMkDocuments, uint[] rgdwSccStatus)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateSolution_Begin(ref int pfCancelUpdate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateSolution_StartUpdate(ref int pfCancelUpdate)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int UpdateSolution_Cancel()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int SaveUserOptions(IVsSolutionPersistence pPersistence)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int LoadUserOptions(IVsSolutionPersistence pPersistence, uint grfLoadOpts)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int WriteUserOptions(IStream pOptionsStream, string pszKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ReadUserOptions(IStream pOptionsStream, string pszKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int QuerySaveSolutionProps(IVsHierarchy pHierarchy, VSQUERYSAVESLNPROPS[] pqsspSave)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int SaveSolutionProps(IVsHierarchy pHierarchy, IVsSolutionPersistence pPersistence)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int WriteSolutionProps(IVsHierarchy pHierarchy, string pszKey, IPropertyBag pPropBag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int ReadSolutionProps(IVsHierarchy pHierarchy, string pszProjectName, string pszProjectMk, string pszKey, int fPreLoad,
+            IPropertyBag pPropBag)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int OnProjectLoadFailure(IVsHierarchy pStubHierarchy, string pszProjectName, string pszProjectMk, string pszKey)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
