@@ -17,6 +17,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
+using Microsoft.SpecExplorer.VS.Package55;
 
 namespace Microsoft.SpecExplorer.VS
 {
@@ -32,7 +33,7 @@ namespace Microsoft.SpecExplorer.VS
     public WorkflowToolWindow()
       : base((System.IServiceProvider) null)
     {
-      this.Caption = Microsoft.SpecExplorer.Resources.WorkflowToolWindowTitle;
+      this.Caption = Resources.WorkflowToolWindowTitle;
       this.BitmapResourceID = 602;
       this.BitmapIndex = 2;
       this.guidanceViewerHost = new ElementHost();
@@ -150,11 +151,12 @@ namespace Microsoft.SpecExplorer.VS
       this.UserControl.ControlModel.AssistedProcedureRequested += new EventHandler<AssistedProcedureRequestEventArgs>(this.AssistedProcedureRequestCallBack);
     }
 
+
     private void LoadGuidanceFiles()
     {
       try
       {
-        foreach (string file in Directory.GetFiles(Path.Combine(this.sePackage.Session.InstallDir, Microsoft.SpecExplorer.Resources.WorkflowsDirectory), Microsoft.SpecExplorer.Resources.WorkflowFileExtension, SearchOption.AllDirectories))
+        foreach (string file in Directory.GetFiles(Path.Combine(this.sePackage.Session.InstallDir, Resources.WorkflowsDirectory), Resources.WorkflowFileExtension, SearchOption.AllDirectories))
         {
           try
           {

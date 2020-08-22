@@ -235,6 +235,8 @@ namespace Microsoft.SpecExplorer
             return toolWindow;
         }
 
+        internal string ActivityCompletionStatus { get; set; }
+
         private void OpenSpecExplorerHomePage(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("http://go.microsoft.com/fwlink/?LinkID=166911");
@@ -1124,10 +1126,52 @@ namespace Microsoft.SpecExplorer
             throw new NotImplementedException();
         }
 
-        public int QuerySaveSolutionProps(IVsHierarchy pHierarchy, VSQUERYSAVESLNPROPS[] pqsspSave)
+        public int QuerySaveSolutionProps([In] IVsHierarchy pHierarchy, [Out] VSQUERYSAVESLNPROPS[] pqsspSave)
         {
-            throw new NotImplementedException();
+            pqsspSave[0] = !this.IsSolutionHierarchy(pHierarchy) ? VSQUERYSAVESLNPROPS.QSP_HasNoProps : (this.SolutionHasDirtyProps ? VSQUERYSAVESLNPROPS.QSP_HasDirtyProps : VSQUERYSAVESLNPROPS.QSP_HasNoDirtyProps);
+            return 0;
         }
+
+        private bool IsSolutionHierarchy(IVsHierarchy hierarchy)
+        {
+            return this.ToDteProject(hierarchy) == null;
+        }
+
+        internal Project ToDteProject(IVsHierarchy hierarchy)
+        {
+            object pvar = (object)null;
+            if (hierarchy != null && hierarchy.GetProperty(4294967294U, -2027, out pvar) >= 0)
+                return (Project)pvar;
+            return (Project)null;
+        }
+
+        private bool SolutionHasDirtyProps
+        {
+            get
+            {
+                WorkflowToolWindow toolWindow = this.FindToolWindow<WorkflowToolWindow>();
+                if (toolWindow.IsWindowContentLoaded)
+                    return true;//this.ActivityCompletionStatus != toolWindow.GuidanceActivityCompletionStatus;
+                return false;
+            }
+        }
+
+        internal void ExecuteSEVSCommand(uint procedureId)
+        {
+            IVsUIShell service = (IVsUIShell)this.GetService(typeof(SVsUIShell));
+            Guid specExplorerCmdSet = GuidList.guidSpecExplorerCmdSet;
+            object pvaIn = (object)null;
+            ErrorHandler.ThrowOnFailure(service.PostExecCommand(ref specExplorerCmdSet, procedureId, 0U, ref pvaIn));
+        }
+
+        internal string LastUsedGuidance
+        {
+            get
+            {
+                return this.lastUsedGuidance;
+            }
+        }
+
 
         public int SaveSolutionProps(IVsHierarchy pHierarchy, IVsSolutionPersistence pPersistence)
         {

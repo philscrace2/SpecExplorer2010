@@ -215,6 +215,7 @@
     <Compile Include="VS\StateComparisonView.cs" />
     <Compile Include="VS\StepBrowserToolWindow.cs" />
     <Compile Include="VS\VocabularyVisitor.cs" />
+    <Compile Include="VS\WorkflowToolWindow.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
