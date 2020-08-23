@@ -124,6 +124,11 @@
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SeVersion.cs" />
     <Compile Include="MachineExecuteItem.cs" />
     <Compile Include="TaskTypes.cs" />
@@ -131,8 +136,8 @@
     <Compile Include="PackageExtensionMethods.cs" />
     <Compile Include="FileNames.cs" />
     <Compile Include="GlobalService.cs" />
-    <Compile Include="Resources.cs" />
     <Compile Include="VS\ActionDeclaration.cs" />
+    <Compile Include="VS\StepBrowserToolWindow.cs" />
     <Compile Include="VS\VocabularyVisitor.cs" />
     <Compile Include="VS\ActionDeclarationBuilder.cs" />
     <Compile Include="VS\ActionSelectionControlModel.cs" />
@@ -164,7 +169,7 @@
     <Compile Include="VS\ExplorationManagerToolWindow.cs" />
     <Compile Include="VS\ExtensionManager.cs" />
     <Compile Include="VS\CordDocument.cs" />
-    <Compile Include="VS\SpecExplorerPackage.cs" />
+    <Compile Include="SpecExplorerPackage.cs" />
     <Compile Include="VS\IAssistedProcedure.cs" />
     <Compile Include="VS\AddActionAssistedProcedure.cs" />
     <Compile Include="VS\DeclareRuleAssistedProcedure.cs" />
@@ -182,11 +187,10 @@
     <Compile Include="VS\ViewDocumentFactory.cs" />
     <Compile Include="VS\StateBrowserToolWindow.cs" />
     <Compile Include="VS\StateComparisonView.cs" />
-    <Compile Include="VS\StepBrowserToolWindow.cs" />
     <Compile Include="VS\SafeNativeMethods.cs" />
     <Compile Include="VS\EditorFactory.cs" />
-    <Compile Include="VS\GuidList.cs" />
-    <Compile Include="VS\PkgCmdIDList.cs" />
+    <Compile Include="GuidList.cs" />
+    <Compile Include="PkgCmdIDList.cs" />
     <Compile Include="VS\WorkflowToolWindow.cs" />
     <Compile Include="VS\AssistedProcedureReportWindow.cs">
       <DependentUpon>assistedprocedurereportwindow.xaml</DependentUpon>
@@ -231,8 +235,16 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources.resx" />
-    <EmbeddedResource Include="SpecExplorer.resx" />
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Page Include="VS\actionselectioncontrol.xaml">
@@ -270,6 +282,16 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="VSPackage5.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="assistedprocedures\images\classicon.gif" />
     <Content Include="assistedprocedures\images\eventicon.gif" />
     <Content Include="assistedprocedures\images\foldericon.gif" />
@@ -279,6 +301,19 @@
     <Content Include="assistedprocedures\images\namespaceicon.gif" />
     <Content Include="assistedprocedures\images\staticicon.gif" />
     <Content Include="assistedprocedures\images\warning.ico" />
+    <Content Include="Resource\Images_32bit.bmp" />
+    <Content Include="Resource\Package.ico" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <UseCodebase>true</UseCodebase>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

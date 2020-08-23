@@ -44,7 +44,7 @@ namespace Microsoft.SpecExplorer.VS
     private void AddEventHandlers()
     {
       this.viewDocumentControl.BrowseStates += new EventHandler<StatesBrowserEventArgs>(this.OnBrowseStates);
-      this.viewDocumentControl.BrowseStep += new EventHandler<StepBrowserEventArgs>(this.OnBrowseStep);
+      //this.viewDocumentControl.BrowseStep += new EventHandler<StepBrowserEventArgs>(this.OnBrowseStep);
       this.viewDocumentControl.CompareStates += new EventHandler<CompareStateEventArgs>(this.OnCompareStates);
       this.viewDocumentControl.InvokeViewDefinitionManager += new EventHandler(this.OnInvokeViewDefinitionManager);
       ViewDocumentControl viewDocumentControl = this.viewDocumentControl;
@@ -61,15 +61,15 @@ namespace Microsoft.SpecExplorer.VS
       this.package.ShowViewDefinitionDialog(sender, e);
     }
 
-    private void OnBrowseStep(object sender, StepBrowserEventArgs e)
-    {
-      StepBrowserToolWindow toolWindow = this.package.FindToolWindow(typeof (StepBrowserToolWindow), 0, true) as StepBrowserToolWindow;
-      toolWindow.LoadSteps(e.BrowserEdges, e.StepLabel);
-      IVsWindowFrame frame = toolWindow.Frame as IVsWindowFrame;
-      if (frame == null)
-        return;
-      this.package.AssertOk(frame.Show());
-    }
+    //private void OnBrowseStep(object sender, StepBrowserEventArgs e)
+    //{
+    //  StepBrowserToolWindow toolWindow = this.package.FindToolWindow(typeof (StepBrowserToolWindow), 0, true) as StepBrowserToolWindow;
+    //  toolWindow.LoadSteps(e.BrowserEdges, e.StepLabel);
+    //  IVsWindowFrame frame = toolWindow.Frame as IVsWindowFrame;
+    //  if (frame == null)
+    //    return;
+    //  this.package.AssertOk(frame.Show());
+    //}
 
     private void OnBrowseStates(object sender, StatesBrowserEventArgs e)
     {

@@ -32,7 +32,7 @@ namespace Microsoft.SpecExplorer.VS
     public WorkflowToolWindow()
       : base((System.IServiceProvider) null)
     {
-      this.Caption = Microsoft.SpecExplorer.Resources.WorkflowToolWindowTitle;
+      this.Caption = Resources.WorkflowToolWindowTitle;
       this.BitmapResourceID = 602;
       this.BitmapIndex = 2;
       this.guidanceViewerHost = new ElementHost();
