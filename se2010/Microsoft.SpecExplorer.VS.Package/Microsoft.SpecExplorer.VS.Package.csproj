@@ -34,16 +34,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.ActionMachines">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.dll</HintPath>
+      <HintPath>.\Microsoft.ActionMachines.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ActionMachines.Cord">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.Cord.dll</HintPath>
+      <HintPath>.\Microsoft.ActionMachines.Cord.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.Core">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll</HintPath>
+      <HintPath>.\Microsoft.SpecExplorer.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.VS.Common">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
+      <HintPath>.\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -95,9 +95,25 @@
       <HintPath>.\Microsoft.VisualStudio.VSHelp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xrt">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.Xrt.dll</HintPath>
+      <HintPath>.\Microsoft.Xrt.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Z3, Version=2.0.31112.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\Microsoft.Z3.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
+    <Reference Include="System.Compiler, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\System.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Compiler.Framework, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\System.Compiler.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Compiler.Runtime, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\System.Compiler.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
@@ -112,15 +128,23 @@
     <Reference Include="WindowsBase" />
     <Reference Include="EnvDTE80" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="Microsoft.SpecExplorer.ObjectModel" />
+    <Reference Include="Microsoft.SpecExplorer.ObjectModel">
+      <HintPath>.\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
+    </Reference>
     <Reference Include="VSLangProj80" />
-    <Reference Include="Microsoft.Xrt.Runtime" />
+    <Reference Include="Microsoft.Xrt.Runtime">
+      <HintPath>.\Microsoft.Xrt.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System.Design" />
     <Reference Include="Microsoft.VisualStudio.VSHelp80" />
     <Reference Include="System.Xml" />
     <Reference Include="VSLangProj" />
-    <Reference Include="Microsoft.SpecExplorer.Runtime" />
-    <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio" />
+    <Reference Include="Microsoft.SpecExplorer.Runtime">
+      <HintPath>.\Microsoft.SpecExplorer.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio">
+      <HintPath>.\Microsoft.SpecExplorer.Runtime.VisualStudio.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
@@ -289,6 +313,7 @@
   <ItemGroup>
     <VSCTCompile Include="VSPackage5.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>

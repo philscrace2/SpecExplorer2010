@@ -47,9 +47,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\PublicAssemblies\v4.0\Microsoft.SpecExplorer.DynamicTraversal.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\PublicAssemblies\v4.0\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
+    <Reference Include="Microsoft.SpecExplorer.ObjectModel">
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -101,9 +100,22 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\spex\source\SpecExplorer2010\se2010\Microsoft.SpecExplorer.VS.Package\Microsoft.Xrt.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Z3">
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\Microsoft.Z3.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Compiler, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\System.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Compiler.Framework">
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\System.Compiler.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Compiler.Runtime">
+      <HintPath>..\..\..\..\..\Users\pls2\Desktop\System.Compiler.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />

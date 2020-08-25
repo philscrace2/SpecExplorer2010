@@ -8,7 +8,6 @@ using EnvDTE;
 using Microsoft.ActionMachines;
 using Microsoft.ActionMachines.Cord;
 using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.SpecExplorer.VS;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Xrt;

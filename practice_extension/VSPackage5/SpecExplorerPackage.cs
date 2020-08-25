@@ -158,6 +158,17 @@ namespace Microsoft.SpecExplorer
             RegisterVSService();
             RegisterHelps();
             RegisterExplorationManagerCommands();
+
+            if (this.session == null)
+            {
+                Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
+                //session.Application.Setup.Add((IComponent)new CordCompletionProvider(this));
+                this.session = (ISession)session;
+                //((IServiceContainer)this).AddService(typeof(SGlobalService), (object)new GlobalService((ComponentBase)session), true);
+                //if (this.SessionInitialized != null)
+                //    this.SessionInitialized((object)this, (EventArgs)null);
+            }
+            //this.InitializeScriptDesignTime();
             // Microsoft.SpecExplorer.Session session = new Microsoft.SpecExplorer.Session((IHost)this);
 
 
