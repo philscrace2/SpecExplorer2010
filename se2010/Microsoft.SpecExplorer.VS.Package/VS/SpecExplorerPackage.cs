@@ -39,33 +39,33 @@ using VSLangProj80;
 
 namespace Microsoft.SpecExplorer.VS
 {
-  //[ProvideToolWindow(typeof (StateComparisonView), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
-  //[ProvideKeyBindingTable("04C7681D-A337-4705-8AD9-2206D31A9F7B", 508)]
-  //[ProvideEditorFactory(typeof (EditorFactory), 503, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
-  //[ProvideToolWindow(typeof (StepBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
+  [ProvideToolWindow(typeof (StateComparisonView), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
+  [ProvideKeyBindingTable("04C7681D-A337-4705-8AD9-2206D31A9F7B", 508)]
+  [ProvideEditorFactory(typeof (EditorFactory), 503, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
+  [ProvideToolWindow(typeof (StepBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
   [ProvideToolWindow(typeof (WorkflowToolWindow), Orientation = ToolWindowOrientation.none, Style = VsDockStyle.Tabbed, Width = 250, Window = "{B1E99781-AB81-11D0-B683-00AA00A3EE26}")]
   [ProvideToolWindow(typeof (ExplorationManagerToolWindow), Style = VsDockStyle.Tabbed, Window = "{3AE79031-E1BC-11D0-8F78-00A0C9110057}")]
   [PackageRegistration(UseManagedResourcesOnly = true)]
-  //[DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
+  [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
   //[InstalledProductRegistration(false, "Spec Explorer for Visual Studio 2010 (version 3.5.3146.0)", "Spec Explorer Modeling and Testing Environment, (c) 2009 Microsoft Corporation.", "3.5.3146.0", IconResourceID = 600)]
   [ProvideLoadKey("Standard", "2.0", "Spec Explorer for VS", "Microsoft", 400)]
-  //[ProvideMenuResource(1000, 32)]
+  [ProvideMenuResource(1000, 32)]
   [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
-  //[ProvideToolWindow(typeof (StateBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
-  //[ProvideEditorExtension(typeof (EditorFactory), ".cord", 32)]
-  //[ProvideEditorLogicalView(typeof (EditorFactory), "{7651A703-06E5-11D1-8EBD-00A0C90F26EA}", IsTrusted = true)]
-  //[ProvideEditorFactory(typeof (ViewDocumentFactory), 509, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
-  //[ProvideEditorExtension(typeof (ViewDocumentFactory), ".seexpl", 32)]
-  //[ProvideEditorLogicalView(typeof (ViewDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
-  //[ProvideEditorFactory(typeof (SummaryDocumentFactory), 511, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
-  //[ProvideEditorExtension(typeof (SummaryDocumentFactory), ".sesum", 32)]
-  //[ProvideEditorLogicalView(typeof (SummaryDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
+  [ProvideToolWindow(typeof (StateBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
+  [ProvideEditorExtension(typeof (EditorFactory), ".cord", 32)]
+  [ProvideEditorLogicalView(typeof (EditorFactory), "{7651A703-06E5-11D1-8EBD-00A0C90F26EA}", IsTrusted = true)]
+  [ProvideEditorFactory(typeof (ViewDocumentFactory), 509, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
+  [ProvideEditorExtension(typeof (ViewDocumentFactory), ".seexpl", 32)]
+  [ProvideEditorLogicalView(typeof (ViewDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
+  [ProvideEditorFactory(typeof (SummaryDocumentFactory), 511, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
+  [ProvideEditorExtension(typeof (SummaryDocumentFactory), ".sesum", 32)]
+  [ProvideEditorLogicalView(typeof (SummaryDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
   [ProvideService(typeof (SGlobalService))]
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
   //[Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(GuidList.guidVSPackage5PkgString)]
-  //[ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
+  [ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
   public sealed class SpecExplorerPackage : Package, IHost, IDisposable, IVsSolutionEvents, IVsTrackProjectDocumentsEvents2, IVsUpdateSolutionEvents, IVsPersistSolutionProps, IVsPersistSolutionOpts
   {
     private bool loggingEnabled = true;
@@ -851,15 +851,14 @@ namespace Microsoft.SpecExplorer.VS
       this.RegisterVSService();
       this.RegisterDummyCommands();
       this.InitializeSession();
-      
-      //this.RegisterViewDefinitionManagerCommands();
-      //this.RegisterExplorationManagerCommands();
-      //this.RegisterWorkflowToolWindow();
-      //this.RegisterAddAction();
-      //this.RegisterDeclareRule();
-      //this.RegisterHelps();
-      //this.editorFactory = new EditorFactory(this);
-      //this.RegisterEditorFactory((IVsEditorFactory) this.editorFactory);
+      this.RegisterViewDefinitionManagerCommands();
+      this.RegisterExplorationManagerCommands();
+      this.RegisterWorkflowToolWindow();
+      this.RegisterAddAction();
+      this.RegisterDeclareRule();
+      this.RegisterHelps();
+      this.editorFactory = new EditorFactory(this);
+      this.RegisterEditorFactory((IVsEditorFactory)this.editorFactory);
       
       foreach (Project allRealProject in ProjectUtils.GetAllRealProjects(this.DTE))
       {
@@ -881,7 +880,7 @@ namespace Microsoft.SpecExplorer.VS
       this.Assert(service2 != null, "Failed to retrieve IVsTrackProjectDocumentsEvents2 service.");
       uint pdwCookie2;
       this.AssertOk(service2.AdviseTrackProjectDocumentsEvents((IVsTrackProjectDocumentsEvents2) this, out pdwCookie2));
-      this.Assert(0U != pdwCookie2);
+      this.Assert(0 != pdwCookie2);
     }
 
     private void RegisterDummyCommands()

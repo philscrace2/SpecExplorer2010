@@ -160,15 +160,31 @@
     <Compile Include="PackageExtensionMethods.cs" />
     <Compile Include="FileNames.cs" />
     <Compile Include="GlobalService.cs" />
+    <Compile Include="VS\ActionConfigClauseResolver.cs" />
     <Compile Include="VS\ActionDeclaration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="VS\ActionDeclarationBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\ActionSelectionControl.cs" />
+    <Compile Include="VS\ActionSelectionControlModel.cs" />
+    <Compile Include="VS\ActionSelectionItem.cs" />
+    <Compile Include="VS\AddActionAssistedProcedure.cs" />
+    <Compile Include="VS\AddActionWizardController.cs" />
+    <Compile Include="VS\AddActionWizardData.cs" />
+    <Compile Include="VS\AssistedProcedureReportWindow.cs" />
+    <Compile Include="VS\AssistedProcedureWizardWindow.cs" />
+    <Compile Include="VS\CodeElementAndContainerPair.cs" />
+    <Compile Include="VS\CodeElementExpandOptions.cs" />
+    <Compile Include="VS\CodeElementItem.cs" />
+    <Compile Include="VS\CodeElementItemType.cs" />
     <Compile Include="VS\CodeElementTypeResolver.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\CodeElementViewer.cs" />
+    <Compile Include="VS\CodeElementViewerModel.cs" />
+    <Compile Include="VS\ConfigInfo.cs" />
     <Compile Include="VS\CordCompletionProvider.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -178,6 +194,7 @@
     <Compile Include="VS\CordSyntaxElementBuilder.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\DeclareRuleAssistedProcedure.cs" />
     <Compile Include="VS\EditorFactory.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -190,18 +207,34 @@
     <Compile Include="VS\ExtensionManager.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\GenericSelectionControl.cs" />
+    <Compile Include="VS\GenericUserControlWindow.cs" />
     <Compile Include="VS\GuidList.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\IAssistedProcedure.cs" />
+    <Compile Include="VS\ICordSyntaxElementInfo.cs" />
+    <Compile Include="VS\ItemNameInputValidator.cs" />
+    <Compile Include="VS\NullableBooleanConverter.cs" />
+    <Compile Include="VS\PackageScriptsManipulator.cs" />
     <Compile Include="VS\PkgCmdIDList.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\ProcedureType.cs" />
+    <Compile Include="VS\ProjectInfo.cs" />
     <Compile Include="VS\ProjectUtils.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\ProvideSolutionProps.cs" />
+    <Compile Include="VS\RuleDeclarationWizardController.cs" />
+    <Compile Include="VS\RuleDeclarationWizardData.cs" />
+    <Compile Include="VS\SafeNativeMethods.cs" />
+    <Compile Include="VS\ScriptInfo.cs" />
+    <Compile Include="VS\ScriptManipulationReport.cs" />
     <Compile Include="VS\SolutionBuildEventArgs.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\SourceBindingTypeProvider.cs" />
     <Compile Include="VS\SpecExplorerPackage.cs" />
     <Compile Include="ErrorReporting\ErrorReportBuilder.cs" />
     <Compile Include="ErrorReporting\WER_REGISTER_FILE_TYPE.cs" />
@@ -218,6 +251,7 @@
     <Compile Include="VS\StateComparisonView.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\StepBrowserToolWindow.cs" />
     <Compile Include="VS\SummaryDocument.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -227,6 +261,10 @@
     <Compile Include="VS\SummaryDocumentFactory.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="VS\TypeBindingSelectionControlModel.cs" />
+    <Compile Include="VS\TypeBindingSelectionWindow.cs" />
+    <Compile Include="VS\TypeMapControl.cs" />
+    <Compile Include="VS\TypeMapUnit.cs" />
     <Compile Include="VS\ViewDocument.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -252,7 +290,40 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="VS\actionselectioncontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\assistedprocedurereportwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\assistedprocedurewizardwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\codeelementviewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\genericselectioncontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\genericusercontrolwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\typebindingselectionwindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="VS\typemapcontrol.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
