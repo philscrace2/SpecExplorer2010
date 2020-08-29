@@ -196,7 +196,7 @@ namespace Microsoft.SpecExplorer.VS
       }
       if (!flag)
         return;
-      this.NotificationDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Project {0} was created by previous version of {1}. \r\nThe project file has been converted. Please save it and reopen your solution. \r\nFor more information, please check release notes", (object) project, (object) Microsoft.SpecExplorer.Resources.SpecExplorer));
+      this.NotificationDialog(Resources.SpecExplorer, string.Format("Project {0} was created by previous version of {1}. \r\nThe project file has been converted. Please save it and reopen your solution. \r\nFor more information, please check release notes", (object) project, (object) Microsoft.SpecExplorer.Resources.SpecExplorer));
     }
 
     private bool CheckAndConvertProjectItem(ProjectItem projectItem)
@@ -211,7 +211,7 @@ namespace Microsoft.SpecExplorer.VS
           if (FileNames.HasScriptExtension(projectItem.Name) && projectItem.Properties != null)
           {
             Property property = projectItem.Properties.Item((object) str);
-            if (property != null && property != null && !string.IsNullOrEmpty(property.ToString()))
+            if (property != null && !string.IsNullOrEmpty(property.ToString()))
             {
               flag = true;
             }
@@ -249,9 +249,9 @@ namespace Microsoft.SpecExplorer.VS
     }
 
     private bool FilterProjectKind(Project project)
-    {
-      if (project.Kind != "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{66A2671D-8FB5-11D2-AA7E-00C04F688DDE}")
-        return project.Kind != "{67294A52-A4F0-11D2-AA88-00C04F688DDE}";
+    { 
+        if (project.Kind != "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" && project.Kind != "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{66A2671D-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{67294A52-A4F0-11D2-AA88-00C04F688DDE}")
+            return true;
       return false;
     }
 
@@ -434,11 +434,30 @@ namespace Microsoft.SpecExplorer.VS
 
     private void RegisterExplorationManagerCommands()
     {
-      OleMenuCommandService service = this.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
-      if (service == null)
-        return;
-      OleMenuCommand oleMenuCommand = new OleMenuCommand(new EventHandler(this.ShowExplorationManagerToolWindow), new CommandID(GuidList.guidSpecExplorerCmdSet, 262));
-      service.AddCommand((MenuCommand) oleMenuCommand);
+      //OleMenuCommandService service = this.GetService(typeof (IMenuCommandService)) as OleMenuCommandService;
+      //if (service == null)
+      //  return;
+      //OleMenuCommand oleMenuCommand = new OleMenuCommand(new EventHandler(this.ShowExplorationManagerToolWindow), new CommandID(GuidList.guidSpecExplorerCmdSet, 262));
+      //service.AddCommand((MenuCommand) oleMenuCommand);
+
+      OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+      if (null != mcs)
+      {
+          // Create the command for the menu item.
+          CommandID menuCommandID = new CommandID(GuidList.guidSpecExplorerCmdSet, (int)PkgCmdIDList.cmdidExplorationManagerToolWindow);
+          MenuCommand menuItem = new MenuCommand(this.ShowExplorationManagerToolWindow, menuCommandID);
+          mcs.AddCommand(menuItem);
+      }
+
+      //OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+      //if ( null != mcs )
+      //{
+      //    // Create the command for the menu item.
+      //    CommandID menuCommandID = new CommandID(GuidList.guidVSPackage5CmdSet, (int)PkgCmdIDList.cmdidMyCommand);
+      //    MenuCommand menuItem = new MenuCommand(MenuItemCallback, menuCommandID );
+      //    mcs.AddCommand( menuItem );
+      //}
+
     }
 
     private void ShowExplorationManagerToolWindow(object sender, EventArgs e)
