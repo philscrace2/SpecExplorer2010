@@ -49,7 +49,7 @@ namespace Microsoft.SpecExplorer.VS
   [DefaultRegistryRoot("Software\\Microsoft\\VisualStudio\\10.0")]
   //[InstalledProductRegistration(false, "Spec Explorer for Visual Studio 2010 (version 3.5.3146.0)", "Spec Explorer Modeling and Testing Environment, (c) 2009 Microsoft Corporation.", "3.5.3146.0", IconResourceID = 600)]
   [ProvideLoadKey("Standard", "2.0", "Spec Explorer for VS", "Microsoft", 400)]
-  [ProvideMenuResource(1000, 32)]
+  //[ProvideMenuResource(1000, 32)]
   [ProvideAutoLoad("{f1536ef8-92ec-443c-9ed7-fdadf150da82}")]
   [ProvideToolWindow(typeof (StateBrowserToolWindow), Height = 480, MultiInstances = false, Orientation = ToolWindowOrientation.Right, Style = VsDockStyle.Tabbed, Transient = true, Width = 640, Window = "{4a9b7e51-aa16-11d0-a8c5-00a0c921a4d2}")]
   [ProvideEditorExtension(typeof (EditorFactory), ".cord", 32)]
@@ -444,11 +444,11 @@ namespace Microsoft.SpecExplorer.VS
       if (null != mcs)
       {
           // Create the command for the menu item.
-          CommandID menuCommandID = new CommandID(GuidList.guidSpecExplorerCmdSet, (int)PkgCmdIDList.cmdidExplorationManagerToolWindow);
+          CommandID menuCommandID = new CommandID(GuidList.guidSpecExplorerPackageCmdSet, (int)PkgCmdIDList.cmdidExplorationManagerToolWindow);
           MenuCommand menuItem = new MenuCommand(this.ShowExplorationManagerToolWindow, menuCommandID);
           mcs.AddCommand(menuItem);
       }
-
+      
       //OleMenuCommandService mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
       //if ( null != mcs )
       //{

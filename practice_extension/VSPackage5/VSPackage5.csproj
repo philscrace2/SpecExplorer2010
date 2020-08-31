@@ -124,7 +124,6 @@
     <Reference Include="System.Compiler.Runtime">
       <HintPath>..\..\..\..\..\..\..\Libraries\System.Compiler.Runtime.dll</HintPath>
     </Reference>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
