@@ -1455,15 +1455,16 @@ namespace Microsoft.SpecExplorer.VS
         }
       }
     }
-
+     
     internal bool BuildProject(Project project)
     {
       this.currentTaskCategory = TaskCategory.BuildCompile;
       try
       {
         SolutionConfiguration2 activeConfiguration = this.DTE.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
+        string s = activeConfiguration.PlatformName;
         this.Assert(activeConfiguration != null);
-        this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
+        this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration.Name + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
       }
       catch (COMException ex)
       {
