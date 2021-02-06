@@ -62,7 +62,6 @@ namespace Microsoft.SpecExplorer.VS
   [ProvideEditorLogicalView(typeof (SummaryDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
   [ProvideService(typeof (SGlobalService))]
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-  //[Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(GuidList.guidVSPackage5PkgString)]
   [ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
@@ -249,8 +248,9 @@ namespace Microsoft.SpecExplorer.VS
     }
 
     private bool FilterProjectKind(Project project)
-    { 
-        if (project.Kind != "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" && project.Kind != "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{66A2671D-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{67294A52-A4F0-11D2-AA88-00C04F688DDE}")
+    {
+        //project.Kind != "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}" &&
+        if (project.Kind != "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{66A2671D-8FB5-11D2-AA7E-00C04F688DDE}" && project.Kind != "{67294A52-A4F0-11D2-AA88-00C04F688DDE}")
             return true;
       return false;
     }

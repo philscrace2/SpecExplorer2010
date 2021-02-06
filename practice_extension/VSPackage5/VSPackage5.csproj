@@ -232,6 +232,7 @@
   <ItemGroup>
     <VSCTCompile Include="VSPackage5.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
