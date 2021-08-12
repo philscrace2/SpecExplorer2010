@@ -33,17 +33,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ActionMachines">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.dll</HintPath>
+    <Reference Include="Microsoft.ActionMachines, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.ActionMachines.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ActionMachines.Cord">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.Cord.dll</HintPath>
+    <Reference Include="Microsoft.ActionMachines.Cord, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.ActionMachines.Cord.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SpecExplorer.Core">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll</HintPath>
+    <Reference Include="Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.SpecExplorer.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SpecExplorer.VS.Common">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
+    <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.SpecExplorer.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.SpecExplorer.Runtime.VisualStudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.VS.Common, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -94,8 +103,14 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>.\Microsoft.VisualStudio.VSHelp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xrt">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.Xrt.dll</HintPath>
+    <Reference Include="Microsoft.Xrt, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.Xrt.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrt.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.Xrt.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Z3, Version=2.0.31112.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <HintPath>packages\SpexPackage.1.0.1\lib\Microsoft.Z3.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xaml" />
@@ -112,15 +127,11 @@
     <Reference Include="WindowsBase" />
     <Reference Include="EnvDTE80" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="Microsoft.SpecExplorer.ObjectModel" />
     <Reference Include="VSLangProj80" />
-    <Reference Include="Microsoft.Xrt.Runtime" />
     <Reference Include="System.Design" />
     <Reference Include="Microsoft.VisualStudio.VSHelp80" />
     <Reference Include="System.Xml" />
     <Reference Include="VSLangProj" />
-    <Reference Include="Microsoft.SpecExplorer.Runtime" />
-    <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio" />
     <Reference Include="System.Drawing" />
   </ItemGroup>
   <ItemGroup>
@@ -268,7 +279,10 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="assistedprocedures\images\classicon.gif" />
     <Content Include="assistedprocedures\images\eventicon.gif" />
