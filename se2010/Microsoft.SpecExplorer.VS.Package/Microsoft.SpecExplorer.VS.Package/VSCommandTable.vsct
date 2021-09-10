@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+  
+  <!-- Adds a reference to the KnownMonikers in the ImageCatalog for use in the <button> elements -->
+  <Include href="KnownImageIds.vsct"/>
+
+  <Commands package="guidPackage">
+	<Menus>
+		<Menu guid="guidTestCommandPackageCmdSet2" id="TopLevelMenu2" priority="0x700" type="Menu">
+			<Parent guid="guidSHLMainMenu"
+					id="IDG_VS_MM_TOOLSADDINS" />
+			<Strings>
+				  <ButtonText>Spec Explorer</ButtonText>
+			  </Strings>
+		 </Menu>
+	 </Menus>
+    <Groups>
+      <Group guid="guidMyCommandPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <!-- Use the Command Explorer extension to find all location to place your group in
+             Get it here https://marketplace.visualstudio.com/items?itemName=MadsKristensen.commandexplorer -->
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      </Group>
+		
+	  <Group guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" priority="0x0600">
+        <Parent guid="guidTestCommandPackageCmdSet2" id="TopLevelMenu2"/>
+      </Group>
+    </Groups>	
+
+    <Buttons>
+      <Button guid="guidMyCommandPackageCmdSet" id="MyCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidMyCommandPackageCmdSet" id="MyMenuGroup" />
+        <!-- Use a KnownMoniker as icon. 
+             See more here https://marketplace.visualstudio.com/items?itemName=MadsKristensen.KnownMonikersExplorer -->
+        <Icon guid="ImageCatalogGuid" id="ButtonClick" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>My Command</ButtonText>
+        </Strings>
+      </Button>
+		<Button guid="guidTestCommandPackageCmdSet2" id="ExplorationManagerCommandId" priority="0x0100" type="Button">
+			<Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+			<Icon guid="guidImages" id="bmpPic1" />
+			<Strings>
+				<ButtonText>Exploration Manager</ButtonText>
+			</Strings>
+		</Button>
+
+		<Button guid="guidTestCommandPackageCmdSet2" id="HomePageCommandId" priority="0x0200" type="Button">
+			<Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+			<Icon guid="guidImages" id="bmpPic1" />
+			<Strings>
+				<ButtonText>Home Page</ButtonText>
+			</Strings>
+		</Button>
+
+		<Button guid="guidTestCommandPackageCmdSet2" id="ForumCommandId" priority="0x0300" type="Button">
+			<Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+			<Icon guid="guidImages" id="bmpPic1" />
+			<Strings>
+				<ButtonText>Online Forum</ButtonText>
+			</Strings>
+		</Button>
+
+		<Button guid="guidTestCommandPackageCmdSet2" id="HelpCommandId" priority="0x0400" type="Button">
+			<Parent guid="guidTestCommandPackageCmdSet2" id="MyMenuGroup2" />
+			<Icon guid="guidImages" id="bmpPic1" />
+			<Strings>
+				<ButtonText>Help</ButtonText>
+			</Strings>
+		</Button>
+    </Buttons>
+  </Commands>
+
+  <KeyBindings>
+    <KeyBinding guid="guidMyCommandPackageCmdSet" id="MyCommandId" editor="guidVSStd97" key1="K" mod1="Control" key2="0" mod2="Control" />
+  </KeyBindings>
+
+  <Symbols>
+    <GuidSymbol name="guidPackage" value="{fa24d542-0b4d-4f6b-ac03-24ff47c11b76}" />
+	  
+	<GuidSymbol name="guidTestCommandPackageCmdSet2" value="{3a3e93b4-11bb-41f5-99d1-d2083ed60672}">
+	  <IDSymbol name="MyMenuGroup2" value="0x1020" />
+      <IDSymbol name="TopLevelMenu2" value="0x1021"/>
+	  <IDSymbol name="HomePageCommandId" value="513" />
+	  <IDSymbol name="ForumCommandId" value="516" />
+	  <IDSymbol name="HelpCommandId" value="514" />
+	  <IDSymbol name="ExplorationManagerCommandId" value="262" />	  
+    </GuidSymbol>
+
+    <GuidSymbol name="guidMyCommandPackageCmdSet" value="{2b40859b-27f8-4dc6-85b1-f253386aa5f6}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="MyCommandId" value="0x0100" />	  
+    </GuidSymbol>
+	<GuidSymbol name="guidImages" value="{6825ff1d-f56e-4039-ac9d-1b186ffcd5e8}" >
+		  <IDSymbol name="bmpPic1" value="1" />
+		  <IDSymbol name="bmpPic2" value="2" />
+		  <IDSymbol name="bmpPicSearch" value="3" />
+		  <IDSymbol name="bmpPicX" value="4" />
+		  <IDSymbol name="bmpPicArrows" value="5" />
+	</GuidSymbol>
+  </Symbols>
+</CommandTable>

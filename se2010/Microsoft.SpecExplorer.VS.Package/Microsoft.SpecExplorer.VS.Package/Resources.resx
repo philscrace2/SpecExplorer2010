@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ExplorationFinished" xml:space="preserve">
+    <value>Exploration done.</value>
+  </data>
+  <data name="WorkflowsDirectory" xml:space="preserve">
+    <value>Guidance</value>
+  </data>
+  <data name="SEMainAssemblyName" xml:space="preserve">
+    <value>Microsoft.SpecExplorer.VS.Package.dll</value>
+  </data>
+  <data name="TestCodeGenerationInProgressFormat" xml:space="preserve">
+    <value>Test code generation of machine '{0}' is in progress ...</value>
+  </data>
+  <data name="AbortingExploration" xml:space="preserve">
+    <value>Aborting operation. This may take a while to complete.</value>
+  </data>
+  <data name="CanNotCreateWindow" xml:space="preserve">
+    <value>Can not create tool window.</value>
+  </data>
+  <data name="ValidationFailed" xml:space="preserve">
+    <value>Validation failed (see error list).</value>
+  </data>
+  <data name="BuildProjectSucceededFormat" xml:space="preserve">
+    <value>Build project '{0}' succeeded.</value>
+  </data>
+  <data name="ExplorationManagerToolWindowTitle" xml:space="preserve">
+    <value>Exploration Manager</value>
+  </data>
+  <data name="OnTheFlyReplayAborted" xml:space="preserve">
+    <value>On-The-Fly replay aborted.</value>
+  </data>
+  <data name="TestCodeGenerationSucceededFormat" xml:space="preserve">
+    <value>Test code generation of machine '{0}' succeeded.</value>
+  </data>
+  <data name="WorkflowFileExtension" xml:space="preserve">
+    <value>*.seguidance</value>
+  </data>
+  <data name="ValidatingMachineFormat" xml:space="preserve">
+    <value>Validating machine '{0}' ...</value>
+  </data>
+  <data name="InvalidMachineExplorationResultFormat" xml:space="preserve">
+    <value>Exploration result of machine '{0}' is invalid.</value>
+  </data>
+  <data name="ValidationInProgress" xml:space="preserve">
+    <value>Validation in progress ...</value>
+  </data>
+  <data name="ExecutionFinished" xml:space="preserve">
+    <value>Execution finished.</value>
+  </data>
+  <data name="StepBrowserToolWindow" xml:space="preserve">
+    <value>Step Browser</value>
+  </data>
+  <data name="SummaryTemplate" xml:space="preserve">
+    <value>&lt;html&gt;
+&lt;head&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=utf-8" /&gt;
+    &lt;title&gt;Explored Machine(s) Summary&lt;/title&gt;
+    &lt;style type="text/css"&gt;
+        BODY
+        {
+            background-color: white;
+            font-family: "Verdana" , sans-serif;
+            font-size: 100%;
+            margin-left: 0px;
+            margin-top: 0px;
+        }
+        P
+        {
+            font-family: "Verdana" ,sans-serif;
+            font-size: 80%;
+            line-height: 12pt;
+            margin-bottom: 0px;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+        .note
+        {
+            background-color: #ffffff;
+            color: #336699;
+            font-family: "Verdana" ,sans-serif;
+            font-size: 100%;
+            margin-bottom: 0px;
+            margin-left: 0px;
+            margin-top: 0px;
+            padding-right: 10px;
+        }
+        .infotable
+        {
+            background-color: #f0f0e0;
+            border-bottom: #ffffff 0px solid;
+            border-collapse: collapse;
+            border-left: #ffffff 0px solid;
+            border-right: #ffffff 0px solid;
+            border-top: #ffffff 0px solid;
+            font-size: 70%;
+            margin-left: 10px;
+        }
+        .issuetitle
+        {
+            background-color: #ffffff;
+            border-bottom: #dcdcdc 1px solid;
+            border-top: #dcdcdc 1px;
+            color: #003366;
+            font-weight: normal;
+        }
+        .header
+        {
+            background-color: #cecf9c;
+            border-bottom: #ffffff 1px solid;
+            border-left: #ffffff 1px solid;
+            border-right: #ffffff 1px solid;
+            border-top: #ffffff 1px solid;
+            color: #000000;
+            font-weight: bold;
+        }
+        .issuenone
+        {
+            background-color: #ffffff;
+            border-bottom: 0px;
+            border-left: 0px;
+            border-right: 0px;
+            border-top: 0px;
+            color: #000000;
+            font-weight: normal;
+        }
+        .content
+        {
+            background-color: #e7e7ce;
+            border-bottom: #ffffff 1px solid;
+            border-left: #ffffff 1px solid;
+            border-right: #ffffff 1px solid;
+            border-top: #ffffff 1px solid;
+            padding-left: 3px;
+        }
+        .issuecontent
+        {
+            background-color: #ffffff;
+            border-bottom: #dcdcdc 1px solid;
+            border-top: #dcdcdc 1px solid;
+            padding-left: 3px;
+        }
+        H1
+        {
+            background-color: #003366;
+            border-bottom: #336699 6px solid;
+            color: #ffffff;
+            font-size: 130%;
+            font-weight: normal;
+            margin: 0em0em0em-20px;
+            padding-bottom: 8px;
+            padding-left: 30px;
+            padding-top: 16px;
+        }
+        H2
+        {
+            color: #000000;
+            font-size: 80%;
+            font-weight: bold;
+            margin-bottom: 3px;
+            margin-left: 10px;
+            margin-top: 20px;
+            padding-left: 0px;
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body style="margin: 0px;"&gt;
+    &lt;h1&gt;
+        %SUMMARYHEADERBLOCK%&amp;nbsp;Summary&lt;/h1&gt;
+    &lt;p&gt;
+        &lt;span class="note"&gt;&lt;b&gt;Start time:  %STARTTIMESTAMP%&lt;/b&gt;
+            &lt;br /&gt;
+            &lt;b&gt;End time: &amp;nbsp;&amp;nbsp;%ENDTIMESTAMP%&lt;/b&gt;&lt;br /&gt;
+        &lt;/span&gt;
+    &lt;/p&gt;
+    &lt;h2&gt;
+        Summary&lt;/h2&gt;
+    &lt;table cellpadding="2" cellspacing="0" width="98%" border="1" class="infotable"&gt;
+        &lt;tr style="height: 25px"&gt;
+            &lt;td nowrap="nowrap" class="header" width="350px"&gt;
+                Successfully %TASKTYPEBLOCK% Machine(s):
+            &lt;/td&gt;
+            &lt;td nowrap="nowrap" class="header"&gt;
+                %NUMBEROFFINISHEDEXPLOREDMACHINES%
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr style="height: 25px"&gt;
+            &lt;td nowrap="1" class="header"&gt;
+                Failed %TASKTYPEBLOCK% Machine(s):
+            &lt;/td&gt;
+            &lt;td nowrap="nowrap" class="header"&gt;
+                %NUMBEROFFAILEDEXPLOREDMACHINES%
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr style="height: 25px"&gt;
+            &lt;td nowrap="nowrap" class="header"&gt;
+                Aborted %TASKTYPEBLOCK% Machine(s):
+            &lt;/td&gt;
+            &lt;td nowrap="nowrap" class="header"&gt;
+                %NUMBEROFABORTEDEXPLOREDMACHINES%
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr style="height: 25px"&gt;
+            &lt;td nowrap="nowrap" class="header"&gt;
+                Ignored %TASKTYPEBLOCK% Machine(s):
+            &lt;/td&gt;
+            &lt;td nowrap="nowrap" class="header"&gt;
+                %NUMBEROFIGNOREDEXPLOREDMACHINES%
+            &lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+    %SUCCESSFULLYEXPLOREDMACHINEBLOCK% %FAILEDEXPLOREDMACHINEBLOCK% %ABORTEDEXPLOREDMACHINEBLOCK%
+    %IGNOREDEXPLOREDMACHINEBLOCK%
+&lt;/body&gt;
+&lt;/html&gt;
+</value>
+  </data>
+  <data name="ApplicationName" xml:space="preserve">
+    <value>Spec Explorer 2010</value>
+  </data>
+  <data name="ExplorationMachineSucceededFormat" xml:space="preserve">
+    <value>Exploration of machine '{0}' succeeded.</value>
+  </data>
+  <data name="ExplorationAborted" xml:space="preserve">
+    <value>Exploration aborted. Partial exploration result may have inaccurate state/step information.</value>
+  </data>
+  <data name="ExecutionAborted" xml:space="preserve">
+    <value>Execution aborted</value>
+  </data>
+  <data name="SkippingFailedProjectMachineFormat" xml:space="preserve">
+    <value>Skipping machine '{0}' because build project '{1}' failed.</value>
+  </data>
+  <data name="BuildingProjectFormat" xml:space="preserve">
+    <value>Building project '{0}'.</value>
+  </data>
+  <data name="OnTheFlyTestAborted" xml:space="preserve">
+    <value>On-The-Fly test aborted.</value>
+  </data>
+  <data name="ExplorationMachineFailedFormat" xml:space="preserve">
+    <value>Exploration of machine '{0}' failed.</value>
+  </data>
+  <data name="OnTheFlyTestFinished" xml:space="preserve">
+    <value>On-The-Fly test finished.</value>
+  </data>
+  <data name="TestCodeGenerationAborted" xml:space="preserve">
+    <value>Test code generation is aborted.</value>
+  </data>
+  <data name="MachineResultUpToDateFormat" xml:space="preserve">
+    <value>All inputs for machine '{0}' are up-to-date.</value>
+  </data>
+  <data name="FailedToBuildProject" xml:space="preserve">
+    <value>Failed to build project: another build process may be already in progress</value>
+  </data>
+  <data name="WorkflowLoadingFailure" xml:space="preserve">
+    <value>Failed loading Modeling Guidance from file :</value>
+  </data>
+  <data name="PostProcessorAborted" xml:space="preserve">
+    <value>{0} aborted.</value>
+  </data>
+  <data name="StatesBrowserToolWindowTitle" xml:space="preserve">
+    <value>State Browser</value>
+  </data>
+  <data name="WorkflowToolWindowTitle" xml:space="preserve">
+    <value>Spec Explorer Modeling Guidance</value>
+  </data>
+  <data name="SpecExplorer" xml:space="preserve">
+    <value>Spec Explorer</value>
+  </data>
+  <data name="ExploringMachineFormat" xml:space="preserve">
+    <value>Exploring machine '{0}' ...</value>
+  </data>
+  <data name="ValidationMachineSucceededFormat" xml:space="preserve">
+    <value>Validation of machine '{0}' succeeded.</value>
+  </data>
+  <data name="BuildProjectFailedFormat" xml:space="preserve">
+    <value>Build project '{0}' failed.</value>
+  </data>
+  <data name="SkippingNoProjectMachineFormat" xml:space="preserve">
+    <value>Skipping machine '{0}' because cannot retrieve model project of the machine.</value>
+  </data>
+  <data name="OnTheFlyTestInProgress" xml:space="preserve">
+    <value>On-The-Fly test in progress.</value>
+  </data>
+  <data name="ValidationMachineFailedFormat" xml:space="preserve">
+    <value>Validation of machine '{0}' failed.</value>
+  </data>
+  <data name="ValidationSucceeded" xml:space="preserve">
+    <value>Validation succeeded.</value>
+  </data>
+  <data name="ExtensionDirectoryName" xml:space="preserve">
+    <value>Extensions</value>
+  </data>
+  <data name="ExplorationInProgress" xml:space="preserve">
+    <value>Exploration in progress...</value>
+  </data>
+  <data name="StateComparisonWindowTitle" xml:space="preserve">
+    <value>State Comparison</value>
+  </data>
+  <data name="SaveOfReadOnlyFileFormat" xml:space="preserve">
+    <value>The file {0} cannot be saved because it is write-protected. Do you want to remove the write-protection and overwrite the file?</value>
+  </data>
+  <data name="OnTheFlyReplayInProgress" xml:space="preserve">
+    <value>On-The-Fly replay in progress...</value>
+  </data>
+  <data name="CodeGenerationTimeout" xml:space="preserve">
+    <value>Code Generation time of {0} seconds has expired. Please increase the value of switch CodeGenerationTimeout.</value>
+  </data>
+  <data name="TestCodeGenerationFailedFormat" xml:space="preserve">
+    <value>Failed to generate test code for machine '{0}'.</value>
+  </data>
+  <data name="OnTheFlyReplayFinished" xml:space="preserve">
+    <value>On-The-Fly replay finished.</value>
+  </data>
+  <data name="ToolWindowTitle" xml:space="preserve">
+    <value>Exploration Result</value>
+  </data>
+</root>

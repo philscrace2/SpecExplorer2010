@@ -1,8 +1,9 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.438
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30523.141
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.SpecExplorer.VS.Package", "Microsoft.SpecExplorer.VS.Package.csproj", "{BE492BCB-27DA-429D-8070-3376ABDD1C65}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.SpecExplorer.VS.Package", "Microsoft.SpecExplorer.VS.Package\Microsoft.SpecExplorer.VS.Package.csproj", "{2A7CF050-FC43-4425-9A60-61E184F0B33C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BE492BCB-27DA-429D-8070-3376ABDD1C65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE492BCB-27DA-429D-8070-3376ABDD1C65}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE492BCB-27DA-429D-8070-3376ABDD1C65}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE492BCB-27DA-429D-8070-3376ABDD1C65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7CF050-FC43-4425-9A60-61E184F0B33C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7CF050-FC43-4425-9A60-61E184F0B33C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7CF050-FC43-4425-9A60-61E184F0B33C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7CF050-FC43-4425-9A60-61E184F0B33C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E0939FE0-6753-4CF2-9A6A-79280A45FC2D}
+		SolutionGuid = {19DF2D3A-A26D-4B20-8A66-40C362D9B470}
 	EndGlobalSection
 EndGlobal
