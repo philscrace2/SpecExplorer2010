@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="CustomCommandSample.b533325b-3cbb-40bc-a4e8-9f4221c0b01c" Version="1.0" Language="en-US" Publisher="Mads Kristensen" />
-        <DisplayName>Custom Command Sample</DisplayName>
-        <Description xml:space="preserve">Shows how to hook up a command in VS</Description>
+        <Identity Id="CustomCommandSample.b533325b-3cbb-40bc-a4e8-9f4221c0b01c" Version="1.0" Language="en-US" Publisher="Phil Scrace" />
+        <DisplayName>Spex</DisplayName>
+        <Description xml:space="preserve">Show how to hook up Spex</Description>
         <MoreInfo>https://github.com/madskristensen/CustomCommandSample</MoreInfo>
-        <License>Resources1\LICENSE</License>
         <Icon>Resources1\Icon128x128.png</Icon>
-        <PreviewImage>Resources\Icon128x128.png</PreviewImage>
+        <PreviewImage>Resources1\Icon128x128.png</PreviewImage>
         <Tags>sample, command</Tags>
     </Metadata>
     <Installation>
