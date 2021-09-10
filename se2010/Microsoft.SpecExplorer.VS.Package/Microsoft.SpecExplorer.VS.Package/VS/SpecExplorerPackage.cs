@@ -63,7 +63,7 @@ namespace Microsoft.SpecExplorer.VS
   [ProvideService(typeof (SGlobalService))]
   [Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
   [ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
-  public sealed class SpecExplorerPackage : AsyncPackage, IHost, IDisposable, IVsSolutionEvents, IVsTrackProjectDocumentsEvents2, IVsUpdateSolutionEvents, IVsPersistSolutionProps, IVsPersistSolutionOpts
+  public sealed class SpecExplorerPackage : Package, IHost, IDisposable, IVsSolutionEvents, IVsTrackProjectDocumentsEvents2, IVsUpdateSolutionEvents, IVsPersistSolutionProps, IVsPersistSolutionOpts
   {
     private bool loggingEnabled = true;
     private VerbosityLevel verbosity = (VerbosityLevel) 2;
@@ -843,7 +843,7 @@ namespace Microsoft.SpecExplorer.VS
 
     public event EventHandler SessionDisposed;
 
-     protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+    protected override void Initialize()
      {
       base.Initialize();
       this.RegisterVSService();
