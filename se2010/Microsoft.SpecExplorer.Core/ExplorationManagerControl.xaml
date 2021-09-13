@@ -1,0 +1,219 @@
+<UserControl x:Class="Microsoft.SpecExplorer.ExplorationManagerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Microsoft.SpecExplorer"
+             x:Name="explorationManagerWindow">
+  <FrameworkElement.Resources>
+    <DataTemplate x:Key="HeaderTemplateArrowUp">
+      <DockPanel>
+        <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+        <Path x:Name="arrow" StrokeThickness="1" Fill="Gray" Data="M 5,10 L 15,10 10,5 5,10 "/>
+      </DockPanel>
+    </DataTemplate>
+    <DataTemplate x:Key="HeaderTemplateArrowDown">
+      <DockPanel>
+        <TextBlock HorizontalAlignment="Center" Text="{Binding}"/>
+        <Path x:Name="arrow" StrokeThickness="1" Fill="Gray" Data="M 5,5 L 10,10 15,5 5,5 "/>
+      </DockPanel>
+    </DataTemplate>
+    <Style x:Key="toolbarImageStyle" TargetType="{x:Type Image}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type Button}, AncestorLevel=1}, Path=IsEnabled}"
+                     Value="False">
+          <Setter Property="UIElement.Opacity" Value="0.20"/>
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="toolBarTrayStyle" TargetType="{x:Type ToolBarTray}">
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding ElementName=explorationManagerWindow, Path=IsAvailableView}" Value="False">
+          <Setter Property="UIElement.IsEnabled" Value="false"/>
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+    <Label x:Key="disabledView">
+      Currently no machines are available to display in Spec Explorer Exploration Manager View.
+    </Label>
+    <ListView x:Key="enabledView" SelectionChanged="MachineSelectionChanged" SelectedIndex="0"
+              ItemsSource="{Binding ElementName=explorationManagerWindow, Path=Machines}">
+      <ItemsControl.ItemContainerStyle>
+        <Style TargetType="{x:Type ListViewItem}">
+          <Setter Property="Control.HorizontalContentAlignment" Value="Stretch"/>
+        </Style>
+      </ItemsControl.ItemContainerStyle>
+      <ListView.View>
+        <GridView>
+          <GridViewColumn DisplayMemberBinding="{Binding Name}">
+            <GridViewColumnHeader Click="SortClick" Tag="Name" Content="Machine"/>
+          </GridViewColumn>
+          <GridViewColumn DisplayMemberBinding="{Binding TestEnabled}">
+            <GridViewColumnHeader Click="SortClick" Tag="TestEnabled" Content="Test Enabled"/>
+          </GridViewColumn>
+          <GridViewColumn DisplayMemberBinding="{Binding Description}">
+            <GridViewColumnHeader Click="SortClick" Tag="Description" Content="Description"/>
+          </GridViewColumn>
+          <GridViewColumn DisplayMemberBinding="{Binding Group}">
+            <GridViewColumnHeader Click="SortClick" Tag="Group" Content="Group"/>
+          </GridViewColumn>
+          <GridViewColumn DisplayMemberBinding="{Binding Container.Name}">
+            <GridViewColumnHeader Click="SortClick" Tag="Container.Name" Content="Project"/>
+          </GridViewColumn>
+          <GridViewColumn DisplayMemberBinding="{Binding RecommendedViews}">
+            <GridViewColumnHeader Click="SortClick" Tag="RecommendedViews" Content="Recommended Views"/>
+          </GridViewColumn>
+        </GridView>
+      </ListView.View>
+      <FrameworkElement.ContextMenu>
+        <ContextMenu>
+          <UIElement.CommandBindings>
+            <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="ExploreCommandExecuted"
+                            Command="local:ExplorationManagerControl.ExploreSelectedMachineCommand"/>
+            <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="ReexploreCommandExecuted"
+                            Command="local:ExplorationManagerControl.ReexploreSelectedMachineCommand"/>
+            <CommandBinding CanExecute="GenerateTestCodeCommandCanExecute" Executed="GenerateTestCodeCommandExecuted"
+                            Command="local:ExplorationManagerControl.GenerateTestCodeForSelectedMachineCommand"/>
+            <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="OnTheFlyTestCommandExecuted"
+                            Command="local:ExplorationManagerControl.OnTheFlyTestSelectedMachineCommand"/>
+            <CommandBinding CanExecute="OnTheFlyReplayCommandCanExecute" Executed="OnTheFlyReplayCommandExecuted"
+                            Command="local:ExplorationManagerControl.OnTheFlyReplayCommand"/>
+            <CommandBinding CanExecute="NavigateToMachineCommandCanExecute" Executed="NavigateToMachineCommandExecuted"
+                            Command="local:ExplorationManagerControl.NavigateToMachineCommand"/>
+            <CommandBinding CanExecute="PropertiesCommandCanExecute" Executed="PropertiesCommandExecuted"
+                            Command="ApplicationCommands.Properties"/>
+            <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="PerformCheckedTasksCommandExecuted"
+                            Command="local:ExplorationManagerControl.PerformCheckedTasks"/>
+          </UIElement.CommandBindings>
+          <MenuItem Header="Explore" Command="local:ExplorationManagerControl.ExploreSelectedMachineCommand"/>
+          <MenuItem Header="Re-explore" Command="local:ExplorationManagerControl.ReexploreSelectedMachineCommand"/>
+          <MenuItem Header="Run On-The-Fly">
+            <MenuItem Header="New Test" Command="local:ExplorationManagerControl.OnTheFlyTestSelectedMachineCommand"/>
+            <MenuItem Header="Replay Test..." Command="local:ExplorationManagerControl.OnTheFlyReplayCommand"/>
+          </MenuItem>
+          <MenuItem Header="Generate Test Code"
+                    Command="local:ExplorationManagerControl.GenerateTestCodeForSelectedMachineCommand"/>
+          <MenuItem x:Name="performUserTask" Header="Perform User Task">
+            <MenuItem Header="Perform Checked Tasks" Command="local:ExplorationManagerControl.PerformCheckedTasks"/>
+            <Separator/>
+          </MenuItem>
+          <Separator/>
+          <MenuItem Header="Go To Machine Definition"
+                    Command="local:ExplorationManagerControl.NavigateToMachineCommand"/>
+          <Separator/>
+          <MenuItem Header="Properties" Command="ApplicationCommands.Properties"/>
+        </ContextMenu>
+      </FrameworkElement.ContextMenu>
+    </ListView>
+  </FrameworkElement.Resources>
+  <UIElement.CommandBindings>
+    <CommandBinding CanExecute="ClearFilterCommandCanExecute" Executed="ClearFilterCommandExecuted"
+                    Command="local:ExplorationManagerControl.ClearFilterCommand"/>
+    <CommandBinding CanExecute="ValidateCommandCanExecute" Executed="ValidateCommandExecuted"
+                    Command="local:ExplorationManagerControl.ValidateCommand"/>
+    <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="ExploreCommandExecuted"
+                    Command="local:ExplorationManagerControl.ExploreCommand"/>
+    <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="ReexploreCommandExecuted"
+                    Command="local:ExplorationManagerControl.ReexploreCommand"/>
+    <CommandBinding CanExecute="ExploreCommandCanExecute" Executed="OnTheFlyTestCommandExecuted"
+                    Command="local:ExplorationManagerControl.OnTheFlyTestCommand"/>
+    <CommandBinding CanExecute="GenerateTestCodeCommandCanExecute" Executed="GenerateTestCodeCommandExecuted"
+                    Command="local:ExplorationManagerControl.GenerateTestCodeCommand"/>
+    <CommandBinding CanExecute="AbortTaskCommandCanExecute" Executed="AbortTaskCommandExecuted"
+                    Command="local:ExplorationManagerControl.AbortTaskCommand"/>
+  </UIElement.CommandBindings>
+  <Grid x:Name="machineViewGrid">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition/>
+    </Grid.ColumnDefinitions>
+    <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Stretch">
+      <ToolBarTray Style="{StaticResource toolBarTrayStyle}" IsLocked="true">
+        <ToolBar Name="explorationManagerToolBar" OverflowMode="Never">
+          <Button Name="validateButton" Command="local:ExplorationManagerControl.ValidateCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Validate script(s)">
+            <Image Source="..\Resources\Check.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Button Name="exploreButton" Command="local:ExplorationManagerControl.ExploreCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Explore">
+            <Image Source="..\Resources\Explore.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Button Name="reexploreButton" Command="local:ExplorationManagerControl.ReexploreCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Re-explore">
+            <Image Source="..\Resources\Reexplore.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Button Name="OnTheFlyButton" Command="local:ExplorationManagerControl.OnTheFlyTestCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Run On-The-Fly Test">
+            <Image Source="..\Resources\OnTheFlyTest.bmp" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Button Name="generateTestCodeButton" Command="local:ExplorationManagerControl.GenerateTestCodeCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Generate Test Code">
+            <Image Source="..\Resources\TestGen.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Separator/>
+          <Button Name="stopButton" Command="local:ExplorationManagerControl.AbortTaskCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Stop">
+            <Image Source="..\Resources\Stop.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Separator/>
+          <ComboBox SelectionChanged="FilterSelectionChanged" Name="filterComboBox" IsReadOnly="true" SelectedIndex="0"
+                    Width="100" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    ItemsSource="{Binding ElementName=explorationManagerWindow, Path=FilterTexts}"
+                    ToolTip="Filter Column"/>
+          <TextBox TextChanged="SearchTextBox_TextChanged" Name="searchTextBox" Width="100"
+                   HorizontalAlignment="Center" VerticalAlignment="Center" ToolTip="Filter Text">
+            <FrameworkElement.Resources>
+              <VisualBrush x:Key="HelpBrush" TileMode="None" Opacity="0.4" Stretch="None" AlignmentX="Left">
+                <VisualBrush.Visual>
+                  <TextBlock FontStyle="Italic" Text="&lt;Type keyword&gt;"/>
+                </VisualBrush.Visual>
+              </VisualBrush>
+            </FrameworkElement.Resources>
+            <FrameworkElement.Style>
+              <Style TargetType="{x:Type TextBox}">
+                <Style.Triggers>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="TextBox.Text" Value="{x:Null}"/>
+                      <Condition Property="UIElement.IsKeyboardFocused" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Control.Background" Value="{StaticResource HelpBrush}"/>
+                  </MultiTrigger>
+                  <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                      <Condition Property="TextBox.Text" Value=""/>
+                      <Condition Property="UIElement.IsKeyboardFocused" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="Control.Background" Value="{StaticResource HelpBrush}"/>
+                  </MultiTrigger>
+                </Style.Triggers>
+              </Style>
+            </FrameworkElement.Style>
+          </TextBox>
+          <Button Name="clearSearchTextButton" Command="local:ExplorationManagerControl.ClearFilterCommand"
+                  ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
+                  ToolTip="Clear Filter">
+            <Image Source="..\Resources\Clear.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+          <Separator/>
+          <Button Click="RefreshButton_Click" Name="refreshButton" ToolTipService.ShowOnDisabled="true"
+                  ToolTip="Refresh">
+            <Image Source="..\Resources\Refresh.ico" Style="{StaticResource toolbarImageStyle}"/>
+          </Button>
+        </ToolBar>
+      </ToolBarTray>
+    </StackPanel>
+    <StackPanel Grid.Row="1" Grid.Column="0" Height="Auto" Background="LightYellow" Orientation="Horizontal">
+      <Image Source="..\Resources\Info.ico" HorizontalAlignment="Left"/>
+      <Label x:Name="informationBar" x:FieldModifier="private"/>
+    </StackPanel>
+  </Grid>
+</UserControl>

@@ -1,0 +1,101 @@
+<UserControl x:Class="Microsoft.SpecExplorer.Viewer.StateComparisonControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Name="stateComparisonControl" BorderThickness="1" BorderBrush="Gainsboro" Height="224"
+             Width="476">
+  <FrameworkElement.Resources>
+    <SolidColorBrush x:Key="MatchedLineBrush" Color="Transparent"/>
+    <SolidColorBrush x:Key="LeftLineBrush" Color="#33FF0000"/>
+    <SolidColorBrush x:Key="RightLineBrush" Color="#33FFFF00"/>
+    <LinearGradientBrush x:Key="PairBrush">
+      <GradientStop Color="#00FF0000" Offset="0"/>
+      <GradientStop Color="#99FF0000" Offset="0.05"/>
+      <GradientStop Color="#99FFFF00" Offset="0.95"/>
+      <GradientStop Color="#00FFFF00" Offset="1"/>
+      <LinearGradientBrush.EndPoint>
+        <Point Y="1"/>
+      </LinearGradientBrush.EndPoint>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="MatchedHeadBrush" Color="Transparent"/>
+    <LinearGradientBrush x:Key="LeftHeadBrush">
+      <GradientStop Color="#FFFF0000" Offset="0"/>
+      <GradientStop Color="#00FF0000" Offset="1"/>
+      <LinearGradientBrush.EndPoint>
+        <Point X="1"/>
+      </LinearGradientBrush.EndPoint>
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="RightHeadBrush">
+      <GradientStop Color="#FFFFFF00" Offset="0"/>
+      <GradientStop Color="#00FFFF00" Offset="1"/>
+      <LinearGradientBrush.EndPoint>
+        <Point X="1"/>
+      </LinearGradientBrush.EndPoint>
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="LeftWordBrush" Color="Red"/>
+    <SolidColorBrush x:Key="RightWordBrush" Color="Yellow"/>
+    <Style x:Key="LineStyle" TargetType="{x:Type TextBlock}">
+      <Setter Property="FrameworkElement.Margin" Value="0"/>
+    </Style>
+    <Style x:Key="HeadStyle" TargetType="{x:Type TextBlock}">
+      <Setter Property="FrameworkElement.Width" Value="40"/>
+      <Setter Property="TextBlock.Padding" Value="0,0,7,0"/>
+      <Setter Property="TextBlock.TextAlignment" Value="Right"/>
+    </Style>
+    <Style x:Key="MatchedLineStyle" TargetType="{x:Type TextBlock}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource MatchedLineBrush}"/>
+    </Style>
+    <Style x:Key="LeftLineStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource LineStyle}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource LeftLineBrush}"/>
+    </Style>
+    <Style x:Key="RightLineStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource LineStyle}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource RightLineBrush}"/>
+    </Style>
+    <Style x:Key="MatchedHeadStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource HeadStyle}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource MatchedHeadBrush}"/>
+    </Style>
+    <Style x:Key="LeftHeadStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource HeadStyle}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource LeftHeadBrush}"/>
+    </Style>
+    <Style x:Key="RightHeadStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource HeadStyle}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource RightHeadBrush}"/>
+    </Style>
+    <Style x:Key="LeftWordStyle" TargetType="{x:Type TextBlock}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource LeftWordBrush}"/>
+    </Style>
+    <Style x:Key="RightWordStyle" TargetType="{x:Type TextBlock}">
+      <Setter Property="TextBlock.Background" Value="{StaticResource RightWordBrush}"/>
+    </Style>
+  </FrameworkElement.Resources>
+  <DockPanel>
+    <ToolBar Height="Auto" VerticalAlignment="Top" DockPanel.Dock="Top">
+      <ComboBox SelectionChanged="ComboBox_SelectionChanged" x:Name="showWhichComboBox" SelectedIndex="0"
+                Width="100" IsReadOnly="true"
+                ItemsSource="{Binding ElementName=stateComparisonControl, Path=ShowTextCollection}"/>
+      <Separator/>
+      <ToggleButton IsChecked="{Binding ElementName=stateComparisonControl, Path=IntraLine}">Intra-Line</ToggleButton>
+      <Separator/>
+      <Border HorizontalAlignment="Left" Margin="0,0,0,0" Padding="3" Background="White" BorderBrush="Black"
+              BorderThickness="0.5" VerticalAlignment="Top">
+        <TextBlock>
+          <TextBlock>
+            <Bold>Legend:</Bold>
+          </TextBlock>
+          <TextBlock Padding="3,0,3,0" Margin="1" Background="#33666677">
+            <Rectangle Width="7" Height="7" Stroke="Black" StrokeThickness="0.5" Margin="2,0,1,1" Fill="Red"/>
+            <TextBlock Text="{Binding ElementName=stateComparisonControl, Path=LeftTitle}"/>
+          </TextBlock>
+          <TextBlock Padding="3,0,3,0" Margin="1" Background="#33666677">
+            <Rectangle Width="7" Height="7" Stroke="Black" StrokeThickness="0.5" Margin="2,0,1,1"
+                       VerticalAlignment="Center" Fill="Yellow"/>
+            <TextBlock Text="{Binding ElementName=stateComparisonControl, Path=RightTitle}"/>
+          </TextBlock>
+        </TextBlock>
+      </Border>
+    </ToolBar>
+    <TextBlock x:Name="informationBar" x:FieldModifier="private" TextWrapping="Wrap" Height="Auto"
+               VerticalAlignment="Center" DockPanel.Dock="Top" Background="Pink"/>
+    <ScrollViewer Background="White" MinHeight="50" HorizontalScrollBarVisibility="Auto" Margin="1">
+      <StackPanel x:Name="documentContent" Margin="10,3,7,7"/>
+    </ScrollViewer>
+  </DockPanel>
+</UserControl>

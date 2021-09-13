@@ -60,10 +60,10 @@ namespace Microsoft.SpecExplorer.VS
   [ProvideEditorFactory(typeof (SummaryDocumentFactory), 511, TrustLevel = __VSEDITORTRUSTLEVEL.ETL_AlwaysTrusted)]
   [ProvideEditorExtension(typeof (SummaryDocumentFactory), ".sesum", 32)]
   [ProvideEditorLogicalView(typeof (SummaryDocumentFactory), "{00000000-0000-0000-0000-000000000000}", IsTrusted = true)]
-  [ProvideService(typeof (SGlobalService))]
+  [ProvideService(typeof (SGlobalService))]  
   [Guid("f9b9b97b-5213-4c39-b0df-9b44a2b97c58")]
   [ProvideSolutionProps("SpecExplorer.ActivityCompletionStatus")]
-  public sealed class SpecExplorerPackage : Package, IHost, IDisposable, IVsSolutionEvents, IVsTrackProjectDocumentsEvents2, IVsUpdateSolutionEvents, IVsPersistSolutionProps, IVsPersistSolutionOpts
+  public sealed class SpecExplorerPackage : Package, IHost, IDisposable, IVsSolutionEvents, IVsTrackProjectDocumentsEvents2, IVsUpdateSolutionEvents2, IVsPersistSolutionProps, IVsPersistSolutionOpts
   {
     private bool loggingEnabled = true;
     private VerbosityLevel verbosity = (VerbosityLevel) 2;
@@ -1350,7 +1350,7 @@ namespace Microsoft.SpecExplorer.VS
 
     public int OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
     {
-      return 0;
+       return 0;
     }
 
     public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
@@ -2355,5 +2355,15 @@ namespace Microsoft.SpecExplorer.VS
         }
       }
     }
-  }
+
+        public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
+        {
+            return VSConstants.S_OK;
+        }
+
+        public int UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
+        {
+            return VSConstants.S_OK;
+        }
+    }
 }

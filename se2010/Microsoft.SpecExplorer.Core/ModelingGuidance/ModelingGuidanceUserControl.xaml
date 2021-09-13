@@ -1,0 +1,221 @@
+<UserControl x:Class="Microsoft.SpecExplorer.ModelingGuidance.ModelingGuidanceUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Microsoft.SpecExplorer.ModelingGuidance"
+             x:Name="userControl">
+  <FrameworkElement.DataContext>
+    <local:GuidanceControlModel x:Name="viewerModel"/>
+  </FrameworkElement.DataContext>
+  <FrameworkElement.Resources>
+    <local:ItemWidthConverter x:Key="widthConverter"/>
+    <local:ValueToVisibilityConverter x:Key="valueToVisibilityConverter"/>
+    <Style TargetType="{x:Type FlowDocumentScrollViewer}">
+      <Setter Property="FlowDocumentScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+      <Setter Property="FlowDocumentScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+      <Setter Property="FrameworkElement.Width"
+              Value="{Binding ElementName=userControl, Path=ActualWidth, Converter={StaticResource widthConverter}, ConverterParameter=0.9, Mode=OneWay}"/>
+    </Style>
+    <Style TargetType="{x:Type Hyperlink}">
+      <Setter Property="Hyperlink.Command"
+              Value="{Binding ElementName=viewerModel, Path=AssistedProcedureCommand}"/>
+    </Style>
+    <Style TargetType="{x:Type Expander}">
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Expander}">
+            <Grid>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition x:Name="ContentRow" Height="0"/>
+              </Grid.RowDefinitions>
+              <ContentPresenter Grid.Column="1" ContentSource="Header" RecognizesAccessKey="true"/>
+              <ContentPresenter x:Name="Content" Grid.Row="1"/>
+            </Grid>
+            <ControlTemplate.Triggers>
+              <Trigger Property="Expander.IsExpanded" Value="true">
+                <Setter TargetName="ContentRow" Value="{Binding ElementName=Content, Path=DesiredHeight}"
+                        Property="RowDefinition.Height"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <Style TargetType="{x:Type ListBox}">
+      <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+    </Style>
+    <Style x:Key="activityItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+      <Setter Property="FrameworkElement.Width"
+              Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource widthConverter}, ConverterParameter=0.95}"/>
+      <Setter Property="ListBoxItem.IsSelected" Value="{Binding Path=IsSelected}"/>
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type ListBoxItem}">
+            <ContentPresenter/>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    <DataTemplate x:Key="stepItemHeaderTemplate">
+      <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource widthConverter}, ConverterParameter=0.9}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto"/>
+          <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Column="0" Margin="2,0" Text="{Binding Index}"
+                   Visibility="{Binding IsInstructive, Converter={StaticResource valueToVisibilityConverter}}">
+          <TextBlock Text="."/>
+        </TextBlock>
+        <TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding Title}">
+          <TextBlock Text=" [Optional]" FontStyle="Italic"
+                     Visibility="{Binding IsOptional, Converter={StaticResource valueToVisibilityConverter}}"/>
+        </TextBlock>
+      </Grid>
+    </DataTemplate>
+    <DataTemplate x:Key="flowDocumentContentTemplate">
+      <FlowDocumentScrollViewer Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource widthConverter}, ConverterParameter=0.9}">
+        <FlowDocument PagePadding="0" FontFamily="{x:Static SystemFonts.CaptionFontFamily}"
+                      FontSize="{x:Static SystemFonts.CaptionFontSize}" Tag="{Binding}"/>
+      </FlowDocumentScrollViewer>
+    </DataTemplate>
+    <Style x:Key="copyCodeButtonStyle" TargetType="{x:Type Button}">
+      <Setter Property="Control.Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <StackPanel Orientation="Horizontal">
+              <Image Source="..\Resources\SnipImage.ico" Margin="3,0"/>
+              <TextBlock Text="Copy Code" TextDecorations="Underline"/>
+            </StackPanel>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="FrameworkElement.ToolTip" Value="Click to copy code to the clip-board"/>
+      <Setter Property="ButtonBase.Command" Value="{Binding ElementName=viewerModel, Path=CopyCodeCommand}"/>
+      <Style.Triggers>
+        <Trigger Property="UIElement.IsMouseOver" Value="true">
+          <Setter Property="FrameworkElement.Cursor" Value="Hand"/>
+          <Setter Property="Control.FontWeight" Value="Bold"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <DataTemplate x:Key="codeBlockContentTemplate">
+      <StackPanel Background="LightGray">
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+          </Grid.ColumnDefinitions>
+          <TextBlock FontWeight="Bold" Grid.Column="0" Height="Auto" Text="{Binding Path=Language}"/>
+          <Button Style="{StaticResource copyCodeButtonStyle}" Grid.Column="1" HorizontalAlignment="Right"
+                  CommandParameter="{Binding Path=RawText}"/>
+        </Grid>
+        <Separator/>
+        <Label ContentTemplate="{StaticResource flowDocumentContentTemplate}"
+               Content="{Binding Path=FormattedText}"/>
+      </StackPanel>
+    </DataTemplate>
+    <Style x:Key="stepItemContentStyle" TargetType="{x:Type TreeViewItem}">
+      <Style.Triggers>
+        <Trigger Property="HeaderedItemsControl.Header" Value="{x:Null}">
+          <Setter Property="UIElement.Visibility" Value="Collapsed"/>
+        </Trigger>
+        <Trigger Property="FrameworkElement.Tag" Value="Code">
+          <Setter Property="HeaderedItemsControl.HeaderTemplate" Value="{StaticResource codeBlockContentTemplate}"/>
+        </Trigger>
+        <Trigger Property="FrameworkElement.Tag" Value="{x:Null}">
+          <Setter Property="HeaderedItemsControl.HeaderTemplate" Value="{StaticResource flowDocumentContentTemplate}"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="stepItemStyle" TargetType="{x:Type TreeViewItem}">
+      <Setter Property="FrameworkElement.Width"
+              Value="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType=ContentControl}, Converter={StaticResource widthConverter}, ConverterParameter=0.95}"/>
+      <Setter Property="FrameworkElement.HorizontalAlignment" Value="Left"/>
+      <Setter Property="HeaderedItemsControl.HeaderTemplate" Value="{StaticResource stepItemHeaderTemplate}"/>
+      <Setter Property="HeaderedItemsControl.Header" Value="{Binding}"/>
+      <Setter Property="ItemsControl.ItemContainerStyle" Value="{StaticResource stepItemContentStyle}"/>
+    </Style>
+    <DataTemplate x:Key="stepItemTemplate">
+      <StackPanel Margin="0,3">
+        <TreeViewItem Style="{StaticResource stepItemStyle}"
+                      Visibility="{Binding Path=HasContent, Converter={StaticResource valueToVisibilityConverter}, ConverterParameter=True}">
+          <TreeViewItem Header="{Binding StepDetails}"/>
+          <TreeViewItem Tag="Code" Header="{Binding Code}"/>
+        </TreeViewItem>
+        <TreeViewItem Style="{StaticResource stepItemStyle}"
+                      Visibility="{Binding Path=HasContent, Converter={StaticResource valueToVisibilityConverter}, ConverterParameter=False}"/>
+      </StackPanel>
+    </DataTemplate>
+  </FrameworkElement.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition/>
+    </Grid.RowDefinitions>
+    <Grid Row="0" Margin="0,4">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition/>
+      </Grid.ColumnDefinitions>
+      <Label Grid.Column="0" Content="Guidance :"/>
+      <ComboBox x:Name="guidanceComboBox" DisplayMemberPath="Description" Grid.Column="1" Margin="8,0,0,0"
+                ToolTip="{Binding Path=SelectedItem.Explanation, RelativeSource={RelativeSource Self}}"
+                ItemsSource="{Binding GuidanceList}" SelectedItem="{Binding SelectedGuidance}">
+        <FrameworkElement.Resources>
+          <Style TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="FrameworkElement.ToolTip" Value="{Binding Explanation}"/>
+          </Style>
+        </FrameworkElement.Resources>
+      </ComboBox>
+    </Grid>
+    <ListBox x:Name="activitiesPanel" Grid.Row="1" SelectionMode="Single" BorderThickness="0"
+             ItemContainerStyle="{StaticResource activityItemContainerStyle}"
+             ItemsSource="{Binding SelectedGuidance.Structure}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                    IsExpanded="{Binding Path=IsSelected}">
+            <HeaderedContentControl.Header>
+              <ToggleButton HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                            IsChecked="{Binding Path=IsSelected}" ToolTip="{Binding Path=Activity.Explanation}">
+                <StackPanel HorizontalAlignment="Stretch" Margin="0,0,0,7">
+                  <CheckBox HorizontalAlignment="Left" Content="Completed" ToolTip="Mark As Completed"
+                            IsChecked="{Binding Path=IsCompleted}"/>
+                  <Grid>
+                    <Grid.ColumnDefinitions>
+                      <ColumnDefinition/>
+                      <ColumnDefinition/>
+                      <ColumnDefinition/>
+                      <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Margin="3,0" Text="{Binding Index}">
+                      <TextBlock Text="."/>
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Grid.ColumnSpan="3" TextWrapping="Wrap" Margin="3,0"
+                               Text="{Binding Activity.Description}">
+                      <TextBlock Text=" [Optional]" FontStyle="Italic"
+                                 Visibility="{Binding Path=IsOptional, Converter={StaticResource valueToVisibilityConverter}, ConverterParameter=True}"/>
+                    </TextBlock>
+                  </Grid>
+                </StackPanel>
+              </ToggleButton>
+            </HeaderedContentControl.Header>
+            <ContentControl.Content>
+              <StackPanel HorizontalAlignment="Stretch" Margin="0,5">
+                <GroupBox Header="Prerequisites"
+                          Visibility="{Binding Path=Activity.Instructions.Prerequisites, Converter={StaticResource valueToVisibilityConverter}, ConverterParameter=True}">
+                  <TreeViewItem HeaderTemplate="{StaticResource flowDocumentContentTemplate}"
+                                Header="{Binding Path=Activity.Instructions.Prerequisites}"/>
+                </GroupBox>
+                <GroupBox Header="Steps">
+                  <ItemsControl ItemTemplate="{StaticResource stepItemTemplate}"
+                                ItemsSource="{Binding Path=Activity.Instructions.Steps}"/>
+                </GroupBox>
+              </StackPanel>
+            </ContentControl.Content>
+          </Expander>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ListBox>
+  </Grid>
+</UserControl>

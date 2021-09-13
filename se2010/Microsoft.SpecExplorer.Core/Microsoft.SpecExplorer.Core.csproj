@@ -1,0 +1,320 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Microsoft.SpecExplorer.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <ApplicationVersion>2.2.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Microsoft.SpecExplorer</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.ActionMachines, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ActionMachines.Cord, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.Cord.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.GraphTraversal">
+      <HintPath>lib\Microsoft.GraphTraversal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Msagl">
+      <HintPath>lib\Microsoft.Msagl.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Msagl.Drawing">
+      <HintPath>lib\Microsoft.Msagl.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Msagl.GraphViewerGdi">
+      <HintPath>lib\Microsoft.Msagl.GraphViewerGdi.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Runtime.VisualStudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SpecExplorer.VS.Common, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrt, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrt.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Z3, Version=2.0.31112.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
+      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.Z3.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Compiler, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\System.Compiler.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Compiler.Framework, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\System.Compiler.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Compiler.Runtime, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\SpexPackage.1.0.2\lib\System.Compiler.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="SeVersion.cs" />
+    <Compile Include="DefaultErrorReportProvider.cs" />
+    <Compile Include="IHost.cs" />
+    <Compile Include="MessageButton.cs" />
+    <Compile Include="MessageResult.cs" />
+    <Compile Include="ProtectedAction.cs" />
+    <Compile Include="VerbosityLevel.cs" />
+    <Compile Include="DiagnosisKind.cs" />
+    <Compile Include="TextLocation.cs" />
+    <Compile Include="ISession.cs" />
+    <Compile Include="Session.cs" />
+    <Compile Include="SpecExplorerApplicationBase.cs" />
+    <Compile Include="MemberInfo.cs" />
+    <Compile Include="MemberKind.cs" />
+    <Compile Include="MachineContainer.cs" />
+    <Compile Include="Machine.cs" />
+    <Compile Include="MachineEventArgs.cs" />
+    <Compile Include="ProgressMessageDisplayer.cs" />
+    <Compile Include="PostProcessorHelper.cs" />
+    <Compile Include="MarshalPostProcesser.cs" />
+    <Compile Include="ExplorationUtility.cs" />
+    <Compile Include="IExplorer.cs" />
+    <Compile Include="IExplorerUpdateUI.cs" />
+    <Compile Include="Explorer.cs" />
+    <Compile Include="IExploringOperator.cs" />
+    <Compile Include="OperatorBase.cs" />
+    <Compile Include="ExploringOperator.cs" />
+    <Compile Include="ExplorationCleanupAlgorithm.cs" />
+    <Compile Include="ExplorationState.cs" />
+    <Compile Include="ExplorationStateChangedEventArgs.cs" />
+    <Compile Include="ExplorationResultEventArgs.cs" />
+    <Compile Include="IRemoteExplorer.cs" />
+    <Compile Include="MachinePropertyDescriptor.cs" />
+    <Compile Include="MachinePropertyTypeDescriptor.cs" />
+    <Compile Include="RemoteExplorer.cs" />
+    <Compile Include="DelegateCommand.cs" />
+    <Compile Include="ReplayStepsBuilder.cs" />
+    <Compile Include="TestingOperator.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="ITestCodeGenerator.cs" />
+    <Compile Include="TestCodeGenerateBase.cs" />
+    <Compile Include="DynamicTraversalTestCodeGenerator.cs" />
+    <Compile Include="ITestAttributeProvider.cs" />
+    <Compile Include="LogProbesHelper.cs" />
+    <Compile Include="OptionSetManagerBuilder.cs" />
+    <Compile Include="Viewer\UserControl1.xaml.cs">
+      <DependentUpon>UserControl1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="VsTestAttributeProvider.cs" />
+    <Compile Include="PtfTestAttributeProvider.cs" />
+    <Compile Include="TestCaseHashBuilder.cs" />
+    <Compile Include="VariableRenamingVisitor.cs" />
+    <Compile Include="TestCodeGenerationException.cs" />
+    <Compile Include="TestCodeGeneratorExtensions.cs" />
+    <Compile Include="StaticTestCodeGenerator.cs" />
+    <Compile Include="TransitionSystemGraphBuilder.cs" />
+    <Compile Include="VariableResolver.cs" />
+    <Compile Include="TransitionSystemBuilder.cs" />
+    <Compile Include="StateFlagsHelper.cs" />
+    <Compile Include="ViewDefinitionManagerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EventAdapter.cs" />
+    <Compile Include="EventManager.cs" />
+    <Compile Include="EventObserver.cs" />
+    <Compile Include="SwitchStateEventObserver.cs" />
+    <Compile Include="UpdateExplorationResultEventObserver.cs" />
+    <Compile Include="ShowTestCaseFinishedProgressEventObserver.cs" />
+    <Compile Include="ShowStatisticsObserver.cs" />
+    <Compile Include="ProgressMessageEventObserver.cs" />
+    <Compile Include="LogEventObserver.cs" />
+    <Compile Include="DiagMessageEventObserver.cs" />
+    <Compile Include="RecoverFromFatalErrorEventObserver.cs" />
+    <Compile Include="ExplorerConfiguration.cs" />
+    <Compile Include="ExplorerEventType.cs" />
+    <Compile Include="ExplorerEvent.cs" />
+    <Compile Include="SwitchStateEvent.cs" />
+    <Compile Include="UpdateExplorationResultEvent.cs" />
+    <Compile Include="DiagMessageEvent.cs" />
+    <Compile Include="LogEvent.cs" />
+    <Compile Include="RecoverFromFatalErrorEvent.cs" />
+    <Compile Include="ProgressMessageEvent.cs" />
+    <Compile Include="ShowExplorationStatistics.cs" />
+    <Compile Include="ShowTestingStatistics.cs" />
+    <Compile Include="ShowTestCaseFinishedProgress.cs" />
+    <Compile Include="ExplorerMediator.cs" />
+    <Compile Include="RedirectedTextWriter.cs" />
+    <Compile Include="MachineConfigBuilder.cs" />
+    <Compile Include="VSService\IVSServiceProvider.cs" />
+    <Compile Include="VSService\VSServiceProvider.cs" />
+    <Compile Include="DiffAlgorithm\StringDiffAlgorithm.cs" />
+    <Compile Include="DiffAlgorithm\DiffType.cs" />
+    <Compile Include="DiffAlgorithm\DiffTokenPair.cs" />
+    <Compile Include="DiffAlgorithm\DiffBlockPair.cs" />
+    <Compile Include="DiffAlgorithm\RunPair.cs" />
+    <Compile Include="DiffAlgorithm\PairSequence.cs" />
+    <Compile Include="DiffAlgorithm\LongestCommonSubsequenceAlgorithm.cs" />
+    <Compile Include="Extensions\ExtensionLoader.cs" />
+    <Compile Include="Extensions\SpecExplorerExtensionAttribute.cs" />
+    <Compile Include="ModelingGuidance\GuidanceControlModel.cs" />
+    <Compile Include="ModelingGuidance\AssistedProcedureRequestEventArgs.cs" />
+    <Compile Include="ModelingGuidance\IGuidance.cs" />
+    <Compile Include="ModelingGuidance\IActivity.cs" />
+    <Compile Include="ModelingGuidance\IActivityReference.cs" />
+    <Compile Include="ModelingGuidance\IInstructions.cs" />
+    <Compile Include="ModelingGuidance\IInstructionStep.cs" />
+    <Compile Include="ModelingGuidance\ICodeBlock.cs" />
+    <Compile Include="ModelingGuidance\GuidanceImpl.cs" />
+    <Compile Include="ModelingGuidance\ActivityImpl.cs" />
+    <Compile Include="ModelingGuidance\InstructionsImpl.cs" />
+    <Compile Include="ModelingGuidance\InstructionStepImpl.cs" />
+    <Compile Include="ModelingGuidance\CodeBlockImpl.cs" />
+    <Compile Include="ModelingGuidance\ActivityReferenceImpl.cs" />
+    <Compile Include="ModelingGuidance\IGuidanceLoader.cs" />
+    <Compile Include="ModelingGuidance\GuidanceLoaderImpl.cs" />
+    <Compile Include="ModelingGuidance\GuidanceEqualityComparer.cs" />
+    <Compile Include="ModelingGuidance\GuidanceException.cs" />
+    <Compile Include="ModelingGuidance\GuidanceUsageInfo.cs" />
+    <Compile Include="ModelingGuidance\ItemWidthConverter.cs" />
+    <Compile Include="ModelingGuidance\ValueToVisibilityConverter.cs" />
+    <Compile Include="Viewer\AnnotationFormatter.cs" />
+    <Compile Include="Viewer\ExplorationStateView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewer\FindState.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewer\FindStateSettings.cs" />
+    <Compile Include="Viewer\StateFindScope.cs" />
+    <Compile Include="Viewer\GViewerControlBuilder.cs" />
+    <Compile Include="Viewer\DisplayGraph.cs" />
+    <Compile Include="Viewer\DisplayNode.cs" />
+    <Compile Include="Viewer\DisplayNodeKind.cs" />
+    <Compile Include="Viewer\DisplayEdge.cs" />
+    <Compile Include="Viewer\DisplayEdgeKind.cs" />
+    <Compile Include="Viewer\DisplayGraphBuilder.cs" />
+    <Compile Include="Viewer\StepBrowserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewer\IViewQuery.cs" />
+    <Compile Include="Viewer\ProbeQuery.cs" />
+    <Compile Include="Viewer\QueryType.cs" />
+    <Compile Include="Viewer\QueryFactory.cs" />
+    <Compile Include="Viewer\QueryException.cs" />
+    <Compile Include="Viewer\ViewDefinitionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewer\IViewDefinition.cs" />
+    <Compile Include="Viewer\ViewDefinition.cs" />
+    <Compile Include="Viewer\Query.cs" />
+    <Compile Include="Viewer\SelectQuery.cs" />
+    <Compile Include="Viewer\HideQuery.cs" />
+    <Compile Include="Viewer\Views.cs" />
+    <Compile Include="Viewer\IViewDefinitionManager.cs" />
+    <Compile Include="Viewer\ViewDefinitionManager.cs" />
+    <Compile Include="Viewer\ViewDefinitionUpdateEventArgs.cs" />
+    <Compile Include="Viewer\ViewDefinitionManagerException.cs" />
+    <Compile Include="Viewer\ViewDocumentControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Viewer\StatesBrowserEventArgs.cs" />
+    <Compile Include="Viewer\CompareStateEventArgs.cs" />
+    <Compile Include="Viewer\StepBrowserEventArgs.cs" />
+    <Compile Include="Viewer\BrowserEdge.cs" />
+    <Compile Include="Properties\Resources.cs" />
+    <Compile Include="Viewer\StateComparisonControl.cs">
+      <DependentUpon>StateComparisonControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ModelingGuidance\ModelingGuidanceUserControl.cs">
+      <DependentUpon>ModelingGuidanceUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ExplorationManagerControl.cs">
+      <DependentUpon>ExplorationManagerControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="resources\check.ico" />
+    <Resource Include="resources\clear.ico" />
+    <Resource Include="resources\downarrow.ico" />
+    <Resource Include="resources\error.ico" />
+    <Resource Include="resources\explore.ico" />
+    <Resource Include="resources\help.ico" />
+    <Resource Include="resources\info.ico" />
+    <Resource Include="resources\new.bmp" />
+    <Resource Include="resources\ontheflytest.bmp" />
+    <Resource Include="resources\play.bmp" />
+    <Resource Include="resources\playone.bmp" />
+    <Resource Include="resources\reexplore.ico" />
+    <Resource Include="resources\refresh.ico" />
+    <Resource Include="resources\snipimage.ico" />
+    <Resource Include="resources\stop.bmp" />
+    <Resource Include="resources\stop.ico" />
+    <Resource Include="resources\testgen.ico" />
+    <Resource Include="resources\view.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="ExplorationManagerControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ModelingGuidance\ModelingGuidanceUserControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Viewer\StateComparisonControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Viewer\UserControl1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
