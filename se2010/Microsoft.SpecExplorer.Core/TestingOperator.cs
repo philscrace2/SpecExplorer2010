@@ -78,9 +78,9 @@ namespace Microsoft.SpecExplorer
       this.testExplorer.StartTestCase += new EventHandler<TestCaseStartedEventArgs>(this.OnStartTestCase);
       this.testExplorer.FinishTestCase += new EventHandler<TestCaseFinishedEventArgs>(this.OnFinishTestCase);
       this.machineExplorer = (IActionMachineExplorer) this.testExplorer;
-      this.machineExplorer.OnSuspension += new EventHandler<SuspensionEventArgs>(((OperatorBase) this).OnSuspension);
-      this.machineExplorer.OnStep += new EventHandler<StepEventArgs>(((OperatorBase) this).OnStep);
-      this.machineExplorer.OnState += new EventHandler<StateEventArgs>(((OperatorBase) this).OnState);
+      this.machineExplorer.OnSuspension += new EventHandler<SuspensionEventArgs>(base.OnSuspension);
+      this.machineExplorer.OnStep += new EventHandler<StepEventArgs>(base.OnStep);
+      this.machineExplorer.OnState += new EventHandler<StateEventArgs>(base.OnState);
     }
 
     private void OnFinishTestCase(object sender, TestCaseFinishedEventArgs e)

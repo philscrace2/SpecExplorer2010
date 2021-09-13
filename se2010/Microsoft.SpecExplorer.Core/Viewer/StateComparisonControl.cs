@@ -302,5 +302,10 @@ namespace Microsoft.SpecExplorer.Viewer
                 }
             }
         }
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

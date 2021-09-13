@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using AssociationReference = Microsoft.SpecExplorer.ObjectModel.AssociationReference;
+using AssociationReferenceKind = Microsoft.SpecExplorer.ObjectModel.AssociationReferenceKind;
+
 
 namespace Microsoft.SpecExplorer
 {
@@ -285,7 +288,7 @@ namespace Microsoft.SpecExplorer
       }
       this.stateBuilder.AddState(machineState.Data);
       bool flag = (explorationFlags & ExplorationStateFlags.IsStart) != ExplorationStateFlags.None;
-      StateFlags stateFlags = ((StateFlags) 0).SetStateKindFlag(machineState.Control.Kind).SetStoppedReasonFlags(explorationFlags);
+      StateFlags stateFlags = ((StateFlags) explorationFlags);
       List<Probe> probeList = new List<Probe>();
       foreach (ProbeEntry buildProbeEntry in this.stateBuilder.BuildProbeEntries(machineState.Data))
       {
@@ -306,7 +309,7 @@ namespace Microsoft.SpecExplorer
     {
       if (explorationFlags == ExplorationStateFlags.None)
         return;
-      StateFlags stateFlags = ((StateFlags) 0).SetStoppedReasonFlags(explorationFlags);
+      StateFlags stateFlags = ((StateFlags) explorationFlags);
       State state1 = state;
       state1.Flags = state1.Flags | stateFlags;
     }
@@ -381,18 +384,19 @@ namespace Microsoft.SpecExplorer
           {
             SerializablePropertyInfo serializablePropertyInfo = SerializableMemberInfo.Property(serializableType1, flag, isStatic, associatedMember.AssociationReferences[0].Association.ShortName, serializableType2);
             this.actionMembers.Add((SerializableMemberInfo) serializablePropertyInfo);
-            if (associatedMember.AssociationReferences[0].Kind == AssociationReferenceKind.SetMethod)
-              associationReference = new AssociationReference()
-              {
-                Association = (SerializableMemberInfo) serializablePropertyInfo,
-                Kind = (AssociationReferenceKind) 1
-              };
-            else
-              associationReference = new AssociationReference()
-              {
-                Association = (SerializableMemberInfo) serializablePropertyInfo,
-                Kind = (AssociationReferenceKind) 0
-              };
+                        if (associatedMember.AssociationReferences[0].Kind.Equals(AssociationReferenceKind.SetMethod))
+                            associationReference = new AssociationReference()
+                            {
+                                Association = (SerializableMemberInfo)serializablePropertyInfo,
+                                Kind = (AssociationReferenceKind)1
+                            };
+                        else
+                            associationReference = new AssociationReference()
+                            {
+                                Association = (SerializableMemberInfo)serializablePropertyInfo,
+                                Kind = (AssociationReferenceKind) 1
+                            } ;                           
+              
           }
           return (SerializableMemberInfo) SerializableMemberInfo.Method(serializableType1, flag, isStatic, actionSymbol.Name, (SerializableType[]) null, serializableParameterInfoList.ToArray(), serializableType2, associationReference);
         case ActionKind.Event:

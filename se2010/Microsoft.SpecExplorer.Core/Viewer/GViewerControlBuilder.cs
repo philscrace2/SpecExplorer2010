@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NodeKind = Microsoft.GraphTraversal.NodeKind;
 
 namespace Microsoft.SpecExplorer.Viewer
 {
@@ -96,9 +97,9 @@ namespace Microsoft.SpecExplorer.Viewer
       this.displayNodeToDrawNodeDict[node] = node1;
       if (node.IsStart)
         node1.Attr.FillColor = Color.LightGray;
-      if ((node.StateFlags & 632) != null)
+      if ((node.StateFlags & ObjectModel.StateFlags.BoundStopped) != null)
         node1.Attr.FillColor = Color.Orange;
-      if ((node.StateFlags & 4) > 0)
+      if ((node.StateFlags & ObjectModel.StateFlags.Error) > 0)
         node1.Attr.FillColor = Color.Red;
       if (node.Kind == NodeKind.Accepting)
       {
@@ -114,7 +115,7 @@ namespace Microsoft.SpecExplorer.Viewer
       }
       if (this.displayGraph.ChoiceNodes.Contains<Microsoft.GraphTraversal.Node<State>>((Microsoft.GraphTraversal.Node<State>) node))
         node1.Attr.Shape = Shape.Diamond;
-      if ((node.StateFlags & 256) <= 0)
+      if ((node.StateFlags & ObjectModel.StateFlags.NonAcceptingEnd) <= 0)
         return;
       node1.Attr.Color = Color.Red;
       node1.Attr.LineWidth = 2;

@@ -18,12 +18,12 @@ namespace Microsoft.SpecExplorer
       switch (kind)
       {
         case ControlStateKind.Accepting:
-          flags = (StateFlags) (flags & -5);
-          flags = (StateFlags) (flags | 2);
+          //flags = (StateFlags) (flags & -5);
+          flags = StateFlags.Accepting;
           break;
         case ControlStateKind.Error:
-          flags = (StateFlags) (flags & -3);
-          flags = (StateFlags) (flags | 4);
+          //flags = (StateFlags) (flags & -3);
+          flags = StateFlags.Error;
           break;
       }
       return flags;
@@ -33,23 +33,24 @@ namespace Microsoft.SpecExplorer
       this StateFlags flags,
       ExplorationStateFlags explorationFlags)
     {
-      flags = (StateFlags) (flags & -1017);
+      //flags = (StateFlags) (flags & -1017);
       if ((explorationFlags & ExplorationStateFlags.IsStepBoundStopped) != ExplorationStateFlags.None)
-        flags = (StateFlags) (flags | 8);
+        flags = StateFlags.StepBoundStopped;
       if ((explorationFlags & ExplorationStateFlags.IsStateBoundStopped) != ExplorationStateFlags.None)
-        flags = (StateFlags) (flags | 16);
+        flags = StateFlags.StateBoundStopped;
       if ((explorationFlags & ExplorationStateFlags.IsPathDepthBoundStopped) != ExplorationStateFlags.None)
-        flags = (StateFlags) (flags | 32);
+         flags = StateFlags.PathDepthBoundStopped;
       if ((explorationFlags & ExplorationStateFlags.IsStepsPerStateBoundStopped) != ExplorationStateFlags.None)
-        flags = (StateFlags) (flags | 64);
+        flags = StateFlags.StepsPerStateBoundStopped;
       if ((explorationFlags & ExplorationStateFlags.IsExplorationErrorBoundStopped) != ExplorationStateFlags.None)
-        flags = (StateFlags) (flags | 512);
+        flags = StateFlags.ExplorationErrorBoundStopped;
       if ((explorationFlags & ExplorationStateFlags.IsUserStopped) != ExplorationStateFlags.None)
-        flags = (StateFlags) (flags | 128);
+        flags = StateFlags.UserStopped;
       if ((explorationFlags & ExplorationStateFlags.IsNonAcceptingEnd) != ExplorationStateFlags.None)
       {
-        flags = (StateFlags) (flags & -3);
-        flags = (StateFlags) (flags | 256);
+        //What is minus 3
+        //flags = (StateFlags) (flags & -3);
+        flags = StateFlags.NonAcceptingEnd;
       }
       return flags;
     }

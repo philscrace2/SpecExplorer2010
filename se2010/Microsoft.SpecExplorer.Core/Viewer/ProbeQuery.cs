@@ -9,6 +9,7 @@ using Microsoft.SpecExplorer.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using NodeKind = Microsoft.GraphTraversal.NodeKind;
 
 namespace Microsoft.SpecExplorer.Viewer
 {
@@ -42,7 +43,7 @@ namespace Microsoft.SpecExplorer.Viewer
       DisplayNode displayNode2 = new DisplayNode(DisplayNodeKind.Hyper, new State(), "<<Exception>>", false, (StateFlags) 0, NodeKind.Regular);
       foreach (DisplayNode node in (IEnumerable<DisplayNode>) nodes)
       {
-        if ((node.Label.Flags & 4) != null)
+        if ((node.Label.Flags & ObjectModel.StateFlags.Accepting) != null)
         {
           displayNode1.AddSubNode(node);
         }

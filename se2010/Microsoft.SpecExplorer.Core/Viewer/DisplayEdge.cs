@@ -152,7 +152,7 @@ namespace Microsoft.SpecExplorer.Viewer
 
     private string GetEdgeDisplayText(Transition trans)
     {
-      if (trans.Action.Symbol.Kind != 5)
+      if (trans.Action.Symbol.Kind != ActionSymbolKind.PreConstraintCheck)
         return trans.Action.Text;
       StringBuilder stringBuilder = new StringBuilder();
       stringBuilder.AppendLine("check:");

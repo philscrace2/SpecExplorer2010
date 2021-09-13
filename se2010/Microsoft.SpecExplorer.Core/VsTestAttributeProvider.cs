@@ -72,7 +72,7 @@ namespace Microsoft.SpecExplorer
     public virtual IEnumerable<CodeAttributeDeclaration> CreateTestClassInitializeAttributes() => Enumerable.Empty<CodeAttributeDeclaration>();
 
     public virtual IEnumerable<CodeAttributeDeclaration> CreateTestClassCleanupAttributes() => Enumerable.Empty<CodeAttributeDeclaration>();
-
+    
     public virtual IEnumerable<CodeAttributeDeclaration> CreateTestCaseAttributes(
       string testCaseID)
     {

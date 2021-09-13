@@ -45,8 +45,8 @@ namespace Microsoft.SpecExplorer
         Node<State> node = nodeArg.Node;
         if (this.graph.OutgoingCount(node) != 0)
           return;
-        sb.AppendLine(string.Format("Accepting: {0}", (object) ((node.Label.Flags & 2) != 0)));
-        sb.AppendLine(string.Format("Error: {0}", (object) ((node.Label.Flags & 4) != 0)));
+        sb.AppendLine(string.Format("Accepting: {0}", (object) ((node.Label.Flags) != 0)));
+        sb.AppendLine(string.Format("Error: {0}", (object) ((node.Label.Flags) != 0)));
       });
       firstSearchAlgorithm.VisitEdge += (EventHandler<EdgeEventArgs<State, Transition>>) ((sender, edgeArg) =>
       {

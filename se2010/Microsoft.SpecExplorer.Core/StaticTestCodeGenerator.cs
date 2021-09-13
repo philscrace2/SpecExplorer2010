@@ -158,7 +158,7 @@ namespace Microsoft.SpecExplorer
                     throw new TestCodeGenerationException(string.Format("Undetermined control not handled by test code generation method (occurred in state {0}). Did you forget to construct test cases in the machine you are trying to generate test code from?", (object) label1.Label));
                   statements1 = this.MakeControl(label2, edge.Target, out contNode);
                   continue;
-                case 1:
+                case ActionSymbolKind.Call:
                   expects1.Add(this.MakeExpect(edge.Label, out checkerMethod));
                   if (checkerMethod != null)
                   {
@@ -169,7 +169,7 @@ namespace Microsoft.SpecExplorer
                   this.AddState(statements2, edge.Target);
                   expectContinuations1.Add(statements2);
                   continue;
-                case 3:
+                case ActionSymbolKind.Throw:
                   expects2.Add(this.MakeExpect(edge.Label, out checkerMethod));
                   if (checkerMethod != null)
                   {
@@ -180,7 +180,7 @@ namespace Microsoft.SpecExplorer
                   this.AddState(statements3, edge.Target);
                   expectContinuations3.Add(statements3);
                   continue;
-                case 4:
+                case ActionSymbolKind.Event:
                   expects3.Add(this.MakeExpect(edge.Label, out checkerMethod));
                   if (checkerMethod != null)
                   {
@@ -241,24 +241,24 @@ label_38:
       State state,
       bool shallReportWarning)
     {
-      if ((state.Flags & 4) != null)
+      if ((state.Flags & StateFlags.Error) != null)
       {
         stms.Add((CodeStatement) new CodeExpressionStatement(TestCodeGenerateBase.MakeManagerInvoke("Assert", TestCodeGenerateBase.MakeValue((object) false), TestCodeGenerateBase.MakeValue((object) string.Format("reached error state '{0}'", (object) state.Label)))));
       }
       else
       {
-        if ((state.Flags & 2) != null)
+        if ((state.Flags & StateFlags.Accepting) != null)
           return;
-        if ((state.Flags & 632) != null)
+        if ((state.Flags & StateFlags.BoundStopped) != null)
         {
           string str1 = "";
           string str2 = "";
-          StateFlags stateFlags = (StateFlags) (state.Flags & 632);
-          if (stateFlags <= 16)
+          StateFlags stateFlags = (StateFlags) (state.Flags & StateFlags.BoundStopped);
+          if (stateFlags <= StateFlags.StateBoundStopped)
           {
-            if (stateFlags != 8)
+            if (stateFlags != StateFlags.StepBoundStopped)
             {
-              if (stateFlags == 16)
+              if (stateFlags == StateFlags.StateBoundStopped)
               {
                 str2 = nameof (state);
                 str1 = "StateBound";
@@ -270,11 +270,11 @@ label_38:
               str1 = "StepBound";
             }
           }
-          else if (stateFlags != 32)
+          else if (stateFlags != StateFlags.PathDepthBoundStopped)
           {
-            if (stateFlags != 64)
+            if (stateFlags != StateFlags.StepsPerStateBoundStopped)
             {
-              if (stateFlags == 512)
+              if (stateFlags == StateFlags.ExplorationErrorBoundStopped)
               {
                 str2 = "exploration error";
                 str1 = "ExplorationErrorBound";
@@ -295,7 +295,7 @@ label_38:
             this.Warning("[{0}]:Exploration of test code generation hit a {1} bound at state '{2}', this will result in a test failure if this path is ever executed.You might increase the value of {3} to solve this issue.", (object) this.MachineName, (object) str2, (object) state.Label, (object) str1);
           stms.Add((CodeStatement) new CodeExpressionStatement(TestCodeGenerateBase.MakeManagerInvoke("Assert", TestCodeGenerateBase.MakeValue((object) false), TestCodeGenerateBase.MakeValue((object) string.Format("exploration of test code generation hit a {0} bound at state '{1}'.", (object) str2, (object) state.Label)))));
         }
-        if (shallReportWarning && (state.Flags & 256) != null)
+        if (shallReportWarning && (state.Flags & ObjectModel.StateFlags.NonAcceptingEnd) != null)
           this.Warning("[{0}]:Exploration of test code generation ended in a non-accepting end state '{1}', this will result in test failure if this path is ever executed.", (object) this.MachineName, (object) state.Label);
         stms.Add((CodeStatement) new CodeExpressionStatement(TestCodeGenerateBase.MakeManagerInvoke("Assert", TestCodeGenerateBase.MakeValue((object) false), TestCodeGenerateBase.MakeValue((object) string.Format("reached non-accepting end state '{0}'.", (object) state.Label)))));
       }
@@ -320,7 +320,7 @@ label_38:
       List<Edge<State, Transition>> outEdges;
       if (!this.graph.TryGetOutGoingEdges(targetNode, out outEdges))
         outEdges = new List<Edge<State, Transition>>();
-      if (outEdges.Count == 1 && this.graph.IncomingCount(targetNode) == 1 && (outEdges[0].Label.Action.Symbol.Kind == 2 && outEdges[0].Label.Action.Symbol.Member == transition.Action.Symbol.Member))
+      if (outEdges.Count == 1 && this.graph.IncomingCount(targetNode) == 1 && (outEdges[0].Label.Action.Symbol.Kind == ActionSymbolKind.Return && outEdges[0].Label.Action.Symbol.Member == transition.Action.Symbol.Member))
       {
         this.AddComment(statements, string.Format("reaching state '{0}'", (object) targetNode.Label.Label));
         foreach (string commentsForLogProbe in this.logProbesHelper.GetCommentsForLogProbes(targetNode.Label, this.host))

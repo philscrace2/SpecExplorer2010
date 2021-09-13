@@ -40,7 +40,7 @@ namespace Microsoft.SpecExplorer
       }
       foreach (State state in this.transitionSystem.States)
       {
-        if (!string.IsNullOrEmpty(state.RepresentativeState) && state.RelationKind == 2)
+        if (!string.IsNullOrEmpty(state.RepresentativeState) && state.RelationKind == StateRelationKind.Equivalent)
           this.labelToNodeDict[state.Label] = this.labelToNodeDict[state.RepresentativeState];
       }
     }

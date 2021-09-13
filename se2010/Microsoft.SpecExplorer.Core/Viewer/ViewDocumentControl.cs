@@ -229,7 +229,7 @@ namespace Microsoft.SpecExplorer.Viewer
           List<string> stringList = new List<string>();
           stringList.AddRange((IEnumerable<string>) displayEdge.subEdges[0].Label.VariablesToUnbindKeys);
           stringList.AddRange((IEnumerable<string>) displayEdge.subEdges[1].Label.VariablesToUnbindKeys);
-          return new BrowserEdge(displayEdge.Text, displayEdge.ActionText, displayEdge.Source.Label, displayEdge.Target.Label, this.TranslateConstraints((IEnumerable<Constraint>) displayEdge.subEdges.Where<DisplayEdge>((Func<DisplayEdge, bool>) (edge => edge.Kind == 1)).FirstOrDefault<DisplayEdge>().Label.PreConstraints), this.TranslateConstraints((IEnumerable<Constraint>) displayEdge.subEdges.Where<DisplayEdge>((Func<DisplayEdge, bool>) (edge => edge.Kind == 2)).FirstOrDefault<DisplayEdge>().Label.PostConstraints), stringList.ToArray(), displayEdge.CapturedRequirements.ToArray<string>(), displayEdge.AssumeCapturedRequirements.ToArray<string>());
+          return new BrowserEdge(displayEdge.Text, displayEdge.ActionText, displayEdge.Source.Label, displayEdge.Target.Label, this.TranslateConstraints((IEnumerable<Constraint>) displayEdge.subEdges.Where<DisplayEdge>((Func<DisplayEdge, bool>) (edge => edge.Kind == ActionSymbolKind.Call)).FirstOrDefault<DisplayEdge>().Label.PreConstraints), this.TranslateConstraints((IEnumerable<Constraint>) displayEdge.subEdges.Where<DisplayEdge>((Func<DisplayEdge, bool>) (edge => edge.Kind == ActionSymbolKind.Call)).FirstOrDefault<DisplayEdge>().Label.PostConstraints), stringList.ToArray(), displayEdge.CapturedRequirements.ToArray<string>(), displayEdge.AssumeCapturedRequirements.ToArray<string>());
         default:
           throw new InvalidOperationException("Can not create a browser edge from a hyper edge.");
       }
@@ -627,21 +627,21 @@ namespace Microsoft.SpecExplorer.Viewer
       if (nodeById == null)
         return (string) null;
       StringBuilder stringBuilder = new StringBuilder();
-      if ((nodeById.StateFlags & 32) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.PathDepthBoundStopped) != null)
         stringBuilder.Append("[path depth bound hit]");
-      if ((nodeById.StateFlags & 16) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.StateBoundStopped) != null)
         stringBuilder.Append("[state bound hit]");
-      if ((nodeById.StateFlags & 8) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.StepBoundStopped) != null)
         stringBuilder.Append("[step bound hit]");
-      if ((nodeById.StateFlags & 512) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.ExplorationErrorBoundStopped) != null)
         stringBuilder.Append("[exploration error bound hit]");
-      if ((nodeById.StateFlags & 64) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.StepsPerStateBoundStopped) != null)
         stringBuilder.Append("[steps per state bound hit]");
-      if ((nodeById.StateFlags & 128) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.UserStopped) != null)
         stringBuilder.Append("[user stopped]");
-      if ((nodeById.StateFlags & 256) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.NonAcceptingEnd) != null)
         stringBuilder.Append("[non-accepting end]");
-      if ((nodeById.StateFlags & 4) != null)
+      if ((nodeById.StateFlags & ObjectModel.StateFlags.Accepting) != null)
       {
         switch (nodeById.DisplayNodeKind)
         {
@@ -696,9 +696,9 @@ namespace Microsoft.SpecExplorer.Viewer
       StateFlags stateFlags = (StateFlags) 0;
       foreach (DisplayNode node in this.currentDisplayGraph.Nodes)
       {
-        if ((node.StateFlags & 4) != null)
+        if ((node.StateFlags & ObjectModel.StateFlags.Accepting) != null)
           ++displayErrorCount;
-        if ((node.StateFlags & 632) != null)
+        if ((node.StateFlags & ObjectModel.StateFlags.BoundStopped) != null)
         {
           ++displayBoundCount;
           stateFlags = stateFlags | node.StateFlags;
@@ -708,15 +708,15 @@ namespace Microsoft.SpecExplorer.Viewer
         return;
       StringBuilder stringBuilder = new StringBuilder();
       stringBuilder.Append("[");
-      if ((stateFlags & 16) != null)
+      if ((stateFlags & ObjectModel.StateFlags.StateBoundStopped) != null)
         stringBuilder.Append("State, ");
-      if ((stateFlags & 8) != null)
+      if ((stateFlags & ObjectModel.StateFlags.StepBoundStopped) != null)
         stringBuilder.Append("Step, ");
-      if ((stateFlags & 32) != null)
+      if ((stateFlags & ObjectModel.StateFlags.PathDepthBoundStopped) != null)
         stringBuilder.Append("Path depth, ");
-      if ((stateFlags & 64) != null)
+      if ((stateFlags & ObjectModel.StateFlags.StepsPerStateBoundStopped) != null)
         stringBuilder.Append("Steps per state, ");
-      if ((stateFlags & 512) != null)
+      if ((stateFlags & ObjectModel.StateFlags.ExplorationErrorBoundStopped) != null)
         stringBuilder.Append("Exploration error, ");
       stringBuilder.Remove(stringBuilder.Length - 2, 2);
       stringBuilder.Append("]");
@@ -763,14 +763,14 @@ namespace Microsoft.SpecExplorer.Viewer
       boundHitStateCount = 0;
       foreach (State state in this.TransitionSystem.States)
       {
-        if (!state.IsVirtual && (state.RepresentativeState == null || state.RelationKind != 2))
+        if (!state.IsVirtual && (state.RepresentativeState == null || state.RelationKind != StateRelationKind.Equivalent))
         {
           ++stateCount;
-          if ((state.Flags & 4) != null)
+          if ((state.Flags & StateFlags.Error) != null)
             ++errorStateCount;
-          if ((state.Flags & 256) != null)
+          if ((state.Flags & StateFlags.NonAcceptingEnd) != null)
             ++nonAcceptingEndStateCount;
-          if ((state.Flags & 632) != null)
+          if ((state.Flags & StateFlags.BoundStopped) != null)
             ++boundHitStateCount;
         }
       }

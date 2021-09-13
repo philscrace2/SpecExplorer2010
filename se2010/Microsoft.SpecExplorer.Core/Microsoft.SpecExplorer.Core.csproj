@@ -51,9 +51,6 @@
     <Reference Include="Microsoft.Msagl.GraphViewerGdi">
       <HintPath>lib\Microsoft.Msagl.GraphViewerGdi.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Core.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
     </Reference>

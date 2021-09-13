@@ -107,13 +107,13 @@ namespace Microsoft.SpecExplorer.Viewer
       {
         if (!string.IsNullOrEmpty(state.RepresentativeState))
         {
-          if (state.RelationKind == 2)
+          if (state.RelationKind == StateRelationKind.Equivalent)
           {
             DisplayNode displayNode = this.labelToNodeDict[state.RepresentativeState];
             this.equivalentDict[state.Label] = displayNode;
             this.displayGraph.AddEquivalentState(displayNode, state);
           }
-          else if (state.RelationKind == 1)
+          else if (state.RelationKind == StateRelationKind.None)
             this.displayGraph.AddEdge(new DisplayEdge(this.labelToNodeDict[state.Label], this.labelToNodeDict[state.RepresentativeState], DisplayEdgeKind.Subsume));
         }
       }
@@ -130,7 +130,7 @@ namespace Microsoft.SpecExplorer.Viewer
           string label = this.descriptionQuery.GetLabel(node.Label);
           node.Text = label ?? "<<Exception>>";
         }
-        if (string.IsNullOrEmpty(state.RepresentativeState) || state.RelationKind != 2)
+        if (string.IsNullOrEmpty(state.RepresentativeState) || state.RelationKind != StateRelationKind.Equivalent)
         {
           this.displayGraph.AddNode(node, node.IsStart);
           this.topNodes.Add(node);
@@ -160,10 +160,10 @@ namespace Microsoft.SpecExplorer.Viewer
             switch (edge.Kind - 1)
             {
               case 0:
-              case 3:
+              case ActionSymbolKind.Throw:
                 edge.Text = edge.Text.Remove(edge.Text.IndexOf("("));
                 break;
-              case 1:
+              case ActionSymbolKind.Call:
                 if (edge.Text.Contains<char>('/'))
                 {
                   edge.Text = edge.Text.Remove(edge.Text.IndexOf("/"));
@@ -182,7 +182,7 @@ namespace Microsoft.SpecExplorer.Viewer
       HashSet<Node<State>> nodeSet = new HashSet<Node<State>>();
       foreach (DisplayNode node in this.displayGraph.Nodes)
       {
-        if ((node.StateFlags & 4) != null)
+        if ((node.StateFlags & ObjectModel.StateFlags.Error) != null)
           nodeSet.Add((Node<State>) node);
       }
       HashSet<Edge<State, Transition>> edgeSet = new HashSet<Edge<State, Transition>>();
@@ -220,7 +220,7 @@ namespace Microsoft.SpecExplorer.Viewer
       Dictionary<Node<State>, HashSet<Node<State>>> dictionary = new Dictionary<Node<State>, HashSet<Node<State>>>();
       foreach (DisplayNode displayNode in this.displayGraph.Nodes.ToArray<Node<State>>())
       {
-        if ((displayNode.StateFlags & 4) == null && string.Compare("true", this.hideQuery.GetLabel(displayNode.Label), true) == 0)
+        if ((displayNode.StateFlags & ObjectModel.StateFlags.Error) == null && string.Compare("true", this.hideQuery.GetLabel(displayNode.Label), true) == 0)
         {
           List<Edge<State, Transition>> edges;
           if (!this.displayGraph.TryGetInComingEdges((Node<State>) displayNode, out edges))
@@ -261,18 +261,18 @@ namespace Microsoft.SpecExplorer.Viewer
       foreach (Node<State> node in this.displayGraph.ChoiceNodes.ToArray<Node<State>>())
       {
         List<Edge<State, Transition>> outEdges;
-        if ((node.Label.Flags & 632) == null && this.displayGraph.TryGetOutGoingEdges(node, out outEdges) && outEdges.Count == 1)
+        if ((node.Label.Flags & StateFlags.BoundStopped) == null && this.displayGraph.TryGetOutGoingEdges(node, out outEdges) && outEdges.Count == 1)
         {
           DisplayEdge outEdge = outEdges[0] as DisplayEdge;
           List<Edge<State, Transition>> edges;
-          if (outEdge.Kind == 2 && outEdge.Source != outEdge.Target && this.displayGraph.TryGetInComingEdges(node, out edges))
+          if (outEdge.Kind == ActionSymbolKind.Return && outEdge.Source != outEdge.Target && this.displayGraph.TryGetInComingEdges(node, out edges))
           {
             bool flag = true;
             List<DisplayEdge> displayEdgeList = new List<DisplayEdge>();
             foreach (Edge<State, Transition> edge in edges)
             {
               DisplayEdge inEdge = edge as DisplayEdge;
-              if (inEdge.Kind != 1)
+              if (inEdge.Kind != ActionSymbolKind.Call)
               {
                 flag = false;
                 break;

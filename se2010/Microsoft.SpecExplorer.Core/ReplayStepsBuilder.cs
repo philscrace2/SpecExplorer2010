@@ -65,8 +65,8 @@ namespace Microsoft.SpecExplorer
           switch (edge.Label.Action.Symbol.Kind - 1)
           {
             case 0:
-            case 1:
-            case 3:
+            case ActionSymbolKind.Call:
+            case ActionSymbolKind.Return:
               if (string.Compare(edge.Label.Action.Symbol.Member.Name, "<error>", true) == 0)
               {
                 if (graph.OutgoingCount(node) > 0)
@@ -118,7 +118,7 @@ namespace Microsoft.SpecExplorer
           throw new ExplorationRuntimeException("Un-supported member type.");
       }
       IActionSymbol concreteActionSymbol;
-      if (action.Symbol.Kind != 4)
+      if (action.Symbol.Kind != ActionSymbolKind.Throw)
       {
         IMethod member2 = (IMethod) null;
         if (!type.TryGetMember<IMethod>(name, out member2))
@@ -146,7 +146,7 @@ namespace Microsoft.SpecExplorer
             }
             break;
           }
-        case 1:
+        case ActionSymbolKind.Call:
           using (IEnumerator<IActionSymbol> enumerator = concreteActionSymbol.BasicActionSymbols.GetEnumerator())
           {
             while (enumerator.MoveNext())
@@ -157,7 +157,7 @@ namespace Microsoft.SpecExplorer
             }
             break;
           }
-        case 3:
+        case ActionSymbolKind.Throw:
           symbol = concreteActionSymbol.BasicActionSymbols.First<IActionSymbol>();
           break;
         default:

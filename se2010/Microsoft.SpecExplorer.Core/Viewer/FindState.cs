@@ -206,15 +206,15 @@ namespace Microsoft.SpecExplorer.Viewer
       switch (findScope)
       {
         case StateFindScope.Error:
-          if ((node.Label.Flags & 4) == null)
+          if ((node.Label.Flags & ObjectModel.StateFlags.Error) == null)
             return false;
           break;
         case StateFindScope.NonAccepting:
-          if ((node.Label.Flags & 256) == null)
+          if ((node.Label.Flags & ObjectModel.StateFlags.NonAcceptingEnd) == null)
             return false;
           break;
         case StateFindScope.BoundHit:
-          if ((node.Label.Flags & 632) == null)
+          if ((node.Label.Flags & ObjectModel.StateFlags.BoundStopped) == null)
             return false;
           break;
       }

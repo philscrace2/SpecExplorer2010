@@ -22,6 +22,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using ExpressionType = Microsoft.SpecExplorer.ObjectModel.ExpressionType;
+using Microsoft.SpecExplorer.Extensions;
 
 namespace Microsoft.SpecExplorer
 {
@@ -236,8 +238,8 @@ namespace Microsoft.SpecExplorer
               continue;
             }
             continue;
-          case 2:
-          case 3:
+          case ActionSymbolKind.Return:
+          case ActionSymbolKind.Throw:
             if (((IEnumerable<SerializableMemberInfo>) this.transitionSystem.ActionMembers).Contains<SerializableMemberInfo>(member) && !this.delegateInstanceFieldMap.ContainsKey(member))
             {
               this.delegateInstanceFieldMap[member] = this.GenerateDelegateFieldInstance(member);
@@ -690,7 +692,7 @@ namespace Microsoft.SpecExplorer
       Dictionary<CodeParameterDeclarationExpression, SerializableExpression> dictionary = new Dictionary<CodeParameterDeclarationExpression, SerializableExpression>();
       int index1 = 0;
       int index2 = 0;
-      if (symbol.Kind != 4 && symbol.Kind != 2)
+      if (symbol.Kind != ActionSymbolKind.Event && symbol.Kind != ActionSymbolKind.Return)
         throw new TestCodeGenerationException(string.Format("unexpected action '{0}'", (object) ((object) transition.Action).ToString()));
       if (!method.IsStatic && !this.adapterTypes.Contains(method.DeclaringType))
       {
@@ -785,7 +787,7 @@ namespace Microsoft.SpecExplorer
     {
       if (expected is SerializableParameterExpression && this.transitionSystem.IsPlaceholder((SerializableParameterExpression) expected))
         return;
-      if (expected.NodeType == 24)
+      if (expected.NodeType == ExpressionType.MemberInit)
       {
         SerializableMemberInitExpression memberInitExpression = (SerializableMemberInitExpression) expected;
         this.AddAssertEquality(statements, actual, (IEnumerable<SerializableMemberBinding>) memberInitExpression.Bindings, context, selector);
@@ -801,7 +803,7 @@ namespace Microsoft.SpecExplorer
             break;
           case SerializableUnaryExpression _:
             SerializableUnaryExpression serializableUnaryExpression = expected as SerializableUnaryExpression;
-            if (((SerializableExpression) serializableUnaryExpression).NodeType == 10 && serializableUnaryExpression.Operand is SerializableParameterExpression)
+            if (((SerializableExpression) serializableUnaryExpression).NodeType == ExpressionType.Convert && serializableUnaryExpression.Operand is SerializableParameterExpression)
             {
               SerializableParameterExpression operand = (SerializableParameterExpression) serializableUnaryExpression.Operand;
               CodeSnippetExpression snippetExpression = new CodeSnippetExpression(string.Format("({0}){1}", (object) operand.ParameterType.FullName, (object) this.CodeExpressionToString(actual)));
@@ -852,7 +854,7 @@ namespace Microsoft.SpecExplorer
           statements.Add(this.MakeAssertNotNull(actual, TestCodeGenerateBase.MakeValue((object) TestCodeGenerateBase.MakeContextAndSelector(context, selector))));
         }
         CodeExpression codeExpression = this.MakeFieldSelection(actual, member);
-        if (memberAssignment.Expression.NodeType == 24)
+        if (memberAssignment.Expression.NodeType == ExpressionType.MemberInit)
         {
           string str = this.NewTemporary();
           statements.Add((CodeStatement) new CodeVariableDeclarationStatement(TestCodeGenerateBase.MakeTypeReference(member.Type), str, codeExpression));
@@ -869,7 +871,7 @@ namespace Microsoft.SpecExplorer
       SerializableBinaryExpression expected,
       string contextAndSelector)
     {
-      if (((SerializableExpression) expected).Type.IsBoolean() && ((SerializableExpression) expected).NodeType == 35)
+      if (((SerializableExpression) expected).Type.IsBoolean() && ((SerializableExpression) expected).NodeType == ExpressionType.NotEqual)
       {
         if (expected.Left is SerializableParameterExpression && expected.Right is SerializableConstantExpression && ((SerializableConstantExpression) expected.Right).Value == "0")
         {
@@ -1089,28 +1091,28 @@ namespace Microsoft.SpecExplorer
     {
       CodeExpression code = this.ExpressionToCode(u.Operand);
       ExpressionType nodeType = ((SerializableExpression) u).NodeType;
-      if (nodeType <= 30)
+      if ((int)nodeType <= 30)
       {
-        if (nodeType == 4)
+        if (nodeType == ExpressionType.ArrayLength)
           return TestCodeGenerateBase.CodeExpressionFromString(string.Format("({0}).Length", (object) this.CodeExpressionToString(code)));
         switch (nodeType - 10)
         {
           case 0:
-          case 1:
+          case ExpressionType.AddAssign:
             return (CodeExpression) new CodeCastExpression(TestCodeGenerateBase.MakeTypeReference(((SerializableExpression) u).Type), code);
           default:
             switch (nodeType - 28)
             {
               case 0:
-              case 2:
+              case ExpressionType.AddAssignChecked:
                 return (CodeExpression) new CodeBinaryOperatorExpression((CodeExpression) new CodeDefaultValueExpression(TestCodeGenerateBase.MakeTypeReference(((SerializableExpression) u).Type)), CodeBinaryOperatorType.Subtract, code);
             }
             break;
         }
       }
-      else if (nodeType != 34)
+      else if (nodeType != ExpressionType.Not)
       {
-        if (nodeType != 40 && nodeType == 44)
+        if (nodeType != ExpressionType.Quote && nodeType == ExpressionType.TypeAs)
           return (CodeExpression) new CodeCastExpression(TestCodeGenerateBase.MakeTypeReference(((SerializableExpression) u).Type), code);
       }
       else
@@ -1150,7 +1152,7 @@ namespace Microsoft.SpecExplorer
     {
       CodeExpression targetObject1 = c.Object != null ? this.ExpressionToCode(c.Object) : (CodeExpression) null;
       string fullMemberName = this.GetFullMemberName((SerializableMemberInfo) c.Method);
-      if (targetObject1 == null && fullMemberName == "Microsoft.Xrt.Runtime.RuntimeSupport.Create" && (c.Arguments != null && c.Arguments.Length == 2) && (c.Arguments[0].NodeType == 32 && c.Arguments[1].NodeType == 32))
+      if (targetObject1 == null && fullMemberName == "Microsoft.Xrt.Runtime.RuntimeSupport.Create" && (c.Arguments != null && c.Arguments.Length == 2) && (c.Arguments[0].NodeType == ExpressionType.NewArrayInit && c.Arguments[1].NodeType == ExpressionType.NewArrayInit))
       {
         CodeExpression targetObject2 = (CodeExpression) new CodeThisReferenceExpression();
         SerializableExpression[] expressions1 = ((SerializableNewArrayExpression) c.Arguments[0]).Expressions;
@@ -1167,7 +1169,7 @@ namespace Microsoft.SpecExplorer
 
     private SerializableExpression RemoveObjectCast(SerializableExpression e)
     {
-      if (e.NodeType == 10)
+      if (e.NodeType == ExpressionType.Convert)
       {
         SerializableUnaryExpression serializableUnaryExpression = (SerializableUnaryExpression) e;
         if (((SerializableExpression) serializableUnaryExpression).Type != null && ((SerializableExpression) serializableUnaryExpression).Type.FullName == "System.Object")
@@ -1180,7 +1182,7 @@ namespace Microsoft.SpecExplorer
 
     private CodeExpression ExpressionToCode(SerializableNewArrayExpression n)
     {
-      if (((SerializableExpression) n).NodeType != 33)
+      if (((SerializableExpression) n).NodeType != ExpressionType.NewArrayBounds)
         return (CodeExpression) new CodeArrayCreateExpression(TestCodeGenerateBase.MakeTypeReference(n.ArrayType), ((IEnumerable<SerializableExpression>) n.Expressions).Select<SerializableExpression, CodeExpression>((Func<SerializableExpression, CodeExpression>) (e => this.ExpressionToCode(e))).ToArray<CodeExpression>());
       if (n.Expressions.Length > 1 || n.Expressions.Length == 0)
         throw new TestCodeGenerationException(string.Format("{0}: {1}", (object) "Unsupported multi-dimensional array creation", (object) n));
@@ -1458,7 +1460,7 @@ namespace Microsoft.SpecExplorer
 
     private void AddAssumptions(CodeStatementCollection stms, Transition trans)
     {
-      if (trans.Action.Symbol.Kind != 4 && trans.Action.Symbol.Kind != 2 || trans.PostConstraints == null)
+      if (trans.Action.Symbol.Kind != ActionSymbolKind.Event && trans.Action.Symbol.Kind != ActionSymbolKind.Return || trans.PostConstraints == null)
         return;
       foreach (Constraint postConstraint in trans.PostConstraints)
         this.AddConstraintCheckOrBinding(stms, postConstraint, "Fail to check the assumption");
@@ -1469,7 +1471,7 @@ namespace Microsoft.SpecExplorer
       Constraint constraint,
       string failureContext)
     {
-      if (constraint.Expression.NodeType == 6)
+      if (constraint.Expression.NodeType == ExpressionType.Call)
       {
         SerializableMethodCallExpression expression1 = (SerializableMethodCallExpression) constraint.Expression;
         if (this.helperEqualityMethod == (MethodInfo) null)
@@ -1486,8 +1488,8 @@ namespace Microsoft.SpecExplorer
         {
           if (expression1.Arguments.Length != 2)
             this.host.FatalError("Equality call has to take two arguments");
-          SerializableExpression expression2 = expression1.Arguments[0].NodeType == 10 ? ((SerializableUnaryExpression) expression1.Arguments[0]).Operand : expression1.Arguments[0];
-          SerializableExpression expression3 = expression1.Arguments[1].NodeType == 10 ? ((SerializableUnaryExpression) expression1.Arguments[1]).Operand : expression1.Arguments[1];
+          SerializableExpression expression2 = expression1.Arguments[0].NodeType == ExpressionType.Convert ? ((SerializableUnaryExpression) expression1.Arguments[0]).Operand : expression1.Arguments[0];
+          SerializableExpression expression3 = expression1.Arguments[1].NodeType == ExpressionType.Convert ? ((SerializableUnaryExpression) expression1.Arguments[1]).Operand : expression1.Arguments[1];
           SerializableParameterExpression parameterExpression1 = expression2 as SerializableParameterExpression;
           SerializableParameterExpression parameterExpression2 = expression3 as SerializableParameterExpression;
           if (parameterExpression1 != null && parameterExpression2 != null)
@@ -1559,7 +1561,7 @@ namespace Microsoft.SpecExplorer
     {
       List<CodeExpression> codeExpressionList = new List<CodeExpression>();
       codeExpressionList.Add(timeout);
-      bool isAccepting = (state.Flags & 2) != 0;
+      bool isAccepting = (state.Flags & ObjectModel.StateFlags.Accepting) != 0;
       if (defaultContinuation != null || isAccepting)
         codeExpressionList.Add(TestCodeGenerateBase.MakeValue((object) false));
       else
@@ -1625,7 +1627,7 @@ namespace Microsoft.SpecExplorer
         {
           codeExpression1
         });
-      CodeTypeReference createType = action.Symbol.Kind != 4 ? new CodeTypeReference("ExpectedReturn") : new CodeTypeReference("ExpectedEvent");
+      CodeTypeReference createType = action.Symbol.Kind != ActionSymbolKind.Event ? new CodeTypeReference("ExpectedReturn") : new CodeTypeReference("ExpectedEvent");
       SerializableMemberInfo method = this.methodMap[action.Symbol.Member.Header];
       CodeExpression codeExpression2 = TestCodeGenerateBase.MakeValue((object) null);
       if (!method.IsStatic && !this.adapterTypes.Contains(method.DeclaringType))
@@ -1655,7 +1657,7 @@ namespace Microsoft.SpecExplorer
       return checkerMethod.Name;
     }
 
-    private static bool IsPreConstraintCheckAction(Transition trans) => trans.Action.Symbol.Kind == 5;
+    private static bool IsPreConstraintCheckAction(Transition trans) => trans.Action.Symbol.Kind.Equals(5);
 
     protected void GenerateCallActionStep(
       Transition transition,

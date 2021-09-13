@@ -49,7 +49,7 @@ namespace Microsoft.SpecExplorer
         this.eventAdapter.SwitchState(ExplorationState.Exploring);
         this.host.GetRequiredService<IStateProvider>().RandomSeed = this.machine.Configuration.OptionSet.GetOptions<ExplorationOptions>().RandomSeed;
         this.machineExplorer = (IActionMachineExplorer) this.host.GetRequiredService<IMachineExplorationExplorerProvider>().CreateExplorer(this.config);
-        this.machineExplorer.OnSuspension += new EventHandler<SuspensionEventArgs>(((OperatorBase) this).OnSuspension);
+        this.machineExplorer.OnSuspension += new EventHandler<SuspensionEventArgs>(base.OnSuspension);
         if (this.enableCleanup)
         {
           this.machineExplorer.OnStep += new EventHandler<StepEventArgs>(this.AddStepForCleanup);
@@ -57,8 +57,8 @@ namespace Microsoft.SpecExplorer
         }
         else
         {
-          this.machineExplorer.OnStep += new EventHandler<StepEventArgs>(((OperatorBase) this).OnStep);
-          this.machineExplorer.OnState += new EventHandler<StateEventArgs>(((OperatorBase) this).OnState);
+          this.machineExplorer.OnStep += new EventHandler<StepEventArgs>(base.OnStep);
+          this.machineExplorer.OnState += new EventHandler<StateEventArgs>(base.OnState);
         }
         this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job started.");
         this.lastStatisticsTime = DateTime.Now;
@@ -83,7 +83,7 @@ namespace Microsoft.SpecExplorer
       {
         if (this.ExplorationResult == null)
           return;
-        this.ExplorationResult.Extensions.IgnoreSignature = (__Null) 1;
+        this.ExplorationResult.Extensions.IgnoreSignature = true;
       }
       else
       {
@@ -141,7 +141,7 @@ namespace Microsoft.SpecExplorer
         firstSearchAlgorithm.Run();
       }
       ExplorationResult explorationResult = this.transitionSystemBuilder.BuildTransitionSystem();
-      explorationResult.Extensions.IgnoreSignature = (__Null) (this.machine.AlwaysReexplore ? 1 : 0);
+      explorationResult.Extensions.IgnoreSignature = this.machine.AlwaysReexplore ? true : false;
       this.ExplorationResult = explorationResult;
     }
 
