@@ -75,7 +75,7 @@ namespace Microsoft.SpecExplorer.VS
     internal void LoadWindowContent()
     {
       this.LoadGuidanceFiles();
-      this.guidanceViewerHost.Child = (UIElement) new GuidanceUserControl();
+      this.guidanceViewerHost.Child = (UIElement) new ModelingGuidanceUserControl();
       this.LoadGuidanceControl();
     }
 
@@ -192,11 +192,11 @@ namespace Microsoft.SpecExplorer.VS
       }
     }
 
-    private GuidanceUserControl UserControl
+    private ModelingGuidanceUserControl UserControl
     {
       get
       {
-        return this.guidanceViewerHost.Child as GuidanceUserControl;
+        return this.guidanceViewerHost.Child as ModelingGuidanceUserControl;
       }
     }
 

@@ -41,7 +41,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -70,9 +70,6 @@
     </Reference>
     <Reference Include="Microsoft.ActionMachines.Cord, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.Cord.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
@@ -400,7 +397,12 @@
     <EmbeddedResource Include="SpecExplorer.resx" />
     <EmbeddedResource Include="VSPackage.resx" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\Microsoft.SpecExplorer.Core\Microsoft.SpecExplorer.Core.csproj">
+      <Project>{af22fd38-5413-4c5f-b81f-dd7f5cfc156e}</Project>
+      <Name>Microsoft.SpecExplorer.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.targets" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.15.7.109\build\Microsoft.VSSDK.BuildTools.targets')" />

@@ -33,9 +33,15 @@ namespace Microsoft.SpecExplorer.ModelingGuidance
       };
     }
 
-    
-
-    private void FlowDocumentLoaded(object sender, RoutedEventArgs evtArgs)
+        public GuidanceControlModel ControlModel
+        {
+            get
+            {
+                return viewerModel;
+            }
+            set { }
+        }
+        private void FlowDocumentLoaded(object sender, RoutedEventArgs evtArgs)
     {
       FlowDocument flowDocument = sender as FlowDocument;
       if (flowDocument.Tag == null)
