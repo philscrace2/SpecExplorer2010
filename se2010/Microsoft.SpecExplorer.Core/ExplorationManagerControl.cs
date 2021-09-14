@@ -218,10 +218,7 @@ namespace Microsoft.SpecExplorer
 
     private bool SingleMachineSelected => this.machineListView != null && this.selectedMachines != null && this.selectedMachines.Count == 1;
 
-    public ExplorationManagerControl(
-      Func<ComponentBase> serviceProvider,
-      bool availableView,
-      IDictionary<string, string> postProcessorDisplayNameMap)
+    public ExplorationManagerControl(Func<ComponentBase> serviceProvider, bool availableView,IDictionary<string, string> postProcessorDisplayNameMap)
     {
       this.serviceProvider = serviceProvider != null ? serviceProvider : throw new ArgumentNullException(nameof (serviceProvider));
       this.Machines = new ObservableCollection<Machine>();
@@ -248,7 +245,39 @@ namespace Microsoft.SpecExplorer
       this.UpdateView(availableView);
     }
 
-    private void InitializeCustomizedProcessorsMenu(
+     public ExplorationManagerControl()
+     {        
+        this.Machines = new ObservableCollection<Machine>();
+        ObservableCollection<string> observableCollection = new ObservableCollection<string>();
+        observableCollection.Add("[All Columns]");
+        observableCollection.Add("Machine");
+        observableCollection.Add("Test Enabled");
+        observableCollection.Add(nameof(Description));
+        observableCollection.Add(nameof(Group));
+        observableCollection.Add("Project");
+        observableCollection.Add("Recommended Views");
+        this.FilterTexts = observableCollection;
+        this.InitializeComponent();
+        this.Loaded += (RoutedEventHandler)delegate
+        {
+            PresentationSource presentationSource = PresentationSource.FromVisual((Visual)this);
+            if (presentationSource == null || !(presentationSource.CompositionTarget is HwndTarget compositionTarget2))
+                return;
+            compositionTarget2.RenderMode = RenderMode.SoftwareOnly;
+        };
+        this.machineListView = this.Resources[(object)"enabledView"] as ListView;
+            this.unAvailableMessageLabel = this.Resources[(object)"disabledView"] as Label;
+
+     }
+
+        public void PostConstruction(Func<ComponentBase> serviceProvider, bool availableView, IDictionary<string, string> postProcessorDisplayNameMap)
+        {
+            this.serviceProvider = serviceProvider != null ? serviceProvider : throw new ArgumentNullException(nameof(serviceProvider));
+            this.InitializeCustomizedProcessorsMenu(postProcessorDisplayNameMap);
+            this.UpdateView(availableView);
+        }
+
+        private void InitializeCustomizedProcessorsMenu(
       IDictionary<string, string> postProcessorDisplayNameMap)
     {
       if (this.postProcessorMenuItems != null)
