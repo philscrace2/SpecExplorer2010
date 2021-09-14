@@ -49,6 +49,9 @@ namespace Microsoft.SpecExplorer.VS
       this.Caption = Microsoft.SpecExplorer.Resources.ExplorationManagerToolWindowTitle;      
       this.BitmapResourceID = 602;
       this.BitmapIndex = 0;
+
+      control = new ExplorationManagerControl();
+      Content = control;
     }
 
     protected override void Initialize()
@@ -62,8 +65,9 @@ namespace Microsoft.SpecExplorer.VS
       base.OnToolWindowCreated();
       this.package = this.Package as SpecExplorerPackage;
       this.InitializePostProcessors();
-      this.control = new ExplorationManagerControl((Func<ComponentBase>) (() => this.package.CoreServices), this.package.DTE.Solution.IsOpen, (IDictionary<string, string>) this.postProcessorDisplayNameMap);
-      this.elementHost.Child = (UIElement) this.control;
+      this.control.PostConstruction((Func<ComponentBase>) (() => this.package.CoreServices), this.package.DTE.Solution.IsOpen, (IDictionary<string, string>) this.postProcessorDisplayNameMap);
+      control.InitializeComponent();
+      //this.elementHost.Child = (UIElement) this.control;
       this.RegisterEventHandlers();
       this.InitializePropertyWindow();
       this.SetUserContext();
