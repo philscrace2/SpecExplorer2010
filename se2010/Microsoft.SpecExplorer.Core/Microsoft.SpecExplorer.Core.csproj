@@ -92,6 +92,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="SeVersion.cs" />
     <Compile Include="DefaultErrorReportProvider.cs" />
     <Compile Include="IHost.cs" />
@@ -269,27 +274,31 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\check.ico" />
-    <Resource Include="resources\clear.ico" />
-    <Resource Include="resources\downarrow.ico" />
-    <Resource Include="resources\error.ico" />
-    <Resource Include="resources\explore.ico" />
-    <Resource Include="resources\help.ico" />
-    <Resource Include="resources\info.ico" />
-    <Resource Include="resources\new.bmp" />
-    <Resource Include="resources\ontheflytest.bmp" />
-    <Resource Include="resources\play.bmp" />
-    <Resource Include="resources\playone.bmp" />
-    <Resource Include="resources\reexplore.ico" />
-    <Resource Include="resources\refresh.ico" />
-    <Resource Include="resources\snipimage.ico" />
-    <Resource Include="resources\stop.bmp" />
-    <Resource Include="resources\stop.ico" />
-    <Resource Include="resources\testgen.ico" />
-    <Resource Include="resources\view.bmp" />
+    <Resource Include="Resources\check.ico" />
+    <Resource Include="Resources\clear.ico" />
+    <Resource Include="Resources\downarrow.ico" />
+    <Resource Include="Resources\error.ico" />
+    <Resource Include="Resources\explore.ico" />
+    <Resource Include="Resources\help.ico" />
+    <Resource Include="Resources\info.ico" />
+    <Resource Include="Resources\new.bmp" />
+    <Resource Include="Resources\ontheflytest.bmp" />
+    <Resource Include="Resources\play.bmp" />
+    <Resource Include="Resources\playone.bmp" />
+    <Resource Include="Resources\reexplore.ico" />
+    <Resource Include="Resources\refresh.ico" />
+    <Resource Include="Resources\snipimage.ico" />
+    <Resource Include="Resources\stop.bmp" />
+    <Resource Include="Resources\stop.ico" />
+    <Resource Include="Resources\testgen.ico" />
+    <Resource Include="Resources\view.bmp" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx" />
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Page Include="ExplorationManagerControl.xaml">
@@ -312,6 +321,8 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\Image1.bmp" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

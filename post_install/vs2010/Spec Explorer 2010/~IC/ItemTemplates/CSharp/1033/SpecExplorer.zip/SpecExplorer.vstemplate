@@ -1,0 +1,15 @@
+<!--SpecExplorer Script Template-->
+<VSTemplate Version="2.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TemplateData>
+    <Name Package="{f9b9b97b-5213-4c39-b0df-9b44a2b97c58}" ID="504"/>
+    <Description Package="{f9b9b97b-5213-4c39-b0df-9b44a2b97c58}" ID="507"/>
+    <Icon Package="{f9b9b97b-5213-4c39-b0df-9b44a2b97c58}" ID="601" />
+    <ProjectType>CSharp</ProjectType>
+    <SortOrder>360</SortOrder>
+    <DefaultName>SpecExplorer.cord</DefaultName>
+    <AppendDefaultFileExtension>true</AppendDefaultFileExtension>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem>Template.cord</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

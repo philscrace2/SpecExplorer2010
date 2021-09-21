@@ -149,8 +149,8 @@ namespace Microsoft.SpecExplorer.VS
       try
       {
         ExplorationResultLoader explorationResultLoader = new ExplorationResultLoader(pszMkDocument);
-        TransitionSystem transitionSystem;
-        this.viewDocumentControl.TransitionSystem = explorationResultLoader.LoadTransitionSystem();
+        transitionSystem = explorationResultLoader.LoadTransitionSystem();
+        this.viewDocumentControl.TransitionSystem = transitionSystem;
         
         int num1;
         int num2;

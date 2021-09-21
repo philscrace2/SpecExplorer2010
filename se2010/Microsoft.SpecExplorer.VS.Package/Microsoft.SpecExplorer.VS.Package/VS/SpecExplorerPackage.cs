@@ -1407,7 +1407,8 @@ namespace Microsoft.SpecExplorer.VS
       {
         SolutionConfiguration2 activeConfiguration = this.DTE.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
         this.Assert(activeConfiguration != null);
-        this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
+                //this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
+        this.DTE.Solution.SolutionBuild.BuildProject("Debug" + "|" + "Any CPU", project.UniqueName, true);
       }
       catch (COMException ex)
       {
@@ -1440,11 +1441,15 @@ namespace Microsoft.SpecExplorer.VS
             else
             {
               this.ProgressMessage((VerbosityLevel) 2, string.Format("referencing {0}", (object) reference.Path));
-              stringList.Add(reference.Path);
+              if(!reference.Path.Contains("System__COMObject"))
+              {
+                 stringList.Add(reference.Path);
+              }
             }
           }
         }
       }
+      stringList.RemoveAt(0);
       return (ICollection<string>) stringList;
     }
 

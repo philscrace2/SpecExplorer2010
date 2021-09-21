@@ -1,0 +1,12 @@
+﻿// This is a Spec Explorer coordination script (Cord version 1.0).
+// Here you define configurations and machines describing the
+// exploration task you want to perform. 
+
+config Config 
+{
+}
+
+machine Machine() : Config 
+{
+	...
+}

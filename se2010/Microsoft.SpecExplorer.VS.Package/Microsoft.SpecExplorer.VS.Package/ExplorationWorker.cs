@@ -307,7 +307,7 @@ namespace Microsoft.SpecExplorer
         this.control.ProgressMessage(message1);
         this.package.ProgressMessage((VerbosityLevel) 0, message1);
         this.explorer.StartBuilding().WaitOne();
-        if (this.explorer.State.Equals(3))
+        if (this.explorer.State == ExplorationState.FinishedBuilding)
         {
           string message2 = string.Format(Resources.ValidationMachineSucceededFormat, (object) machine.Name);
           this.control.ProgressMessage(message2);
@@ -318,7 +318,7 @@ namespace Microsoft.SpecExplorer
           this.progressData = new ExplorationStatistics();
           this.needSaveExplorationResult = true;
           this.explorer.StartExploration().WaitOne();
-          if (this.explorer.State.Equals(6))
+          if (this.explorer.State == ExplorationState.FinishedExploring)
           {
             if (this.progressTimer != null)
             {
