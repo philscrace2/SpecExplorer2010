@@ -2,7 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecExplorer", "SpecExplorer.csproj", "{D67C2D2C-8680-41BD-B102-E2F248222EB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecExplorer", "SpecExplorer.csproj", "{6F08196E-FE48-4E65-9FEC-A3EB10D6ADA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.SpecExplorer.Core", "..\Microsoft.SpecExplorer.Core\Microsoft.SpecExplorer.Core.csproj", "{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,10 +12,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D67C2D2C-8680-41BD-B102-E2F248222EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D67C2D2C-8680-41BD-B102-E2F248222EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D67C2D2C-8680-41BD-B102-E2F248222EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D67C2D2C-8680-41BD-B102-E2F248222EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F08196E-FE48-4E65-9FEC-A3EB10D6ADA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F08196E-FE48-4E65-9FEC-A3EB10D6ADA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F08196E-FE48-4E65-9FEC-A3EB10D6ADA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F08196E-FE48-4E65-9FEC-A3EB10D6ADA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
