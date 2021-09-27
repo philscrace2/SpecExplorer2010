@@ -15,6 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using Environment = System.Environment;
+using Type = System.Type;
 
 namespace Microsoft.SpecExplorer.CommandLine
 {
@@ -47,6 +49,7 @@ namespace Microsoft.SpecExplorer.CommandLine
         throw new ArgumentNullException(nameof (consoleHost));
       this.parser = clParser;
       this.host = consoleHost;
+      
       this.globalSession = (ISession) new Session(this.host);
     }
 
@@ -86,59 +89,59 @@ namespace Microsoft.SpecExplorer.CommandLine
     {
       if (this.Task == TaskType.DoOnTheFlyTests)
       {
-        this.outputDirectory = !string.IsNullOrEmpty(this.parser.TestResultPath) ? this.parser.TestResultPath : Path.Combine(Environment.CurrentDirectory, "TestResults");
+        this.outputDirectory = !string.IsNullOrEmpty(this.parser.TestResultPath) ? this.parser.TestResultPath : Path.Combine(System.Environment.CurrentDirectory, "TestResults");
         this.outputDirectory = Path.Combine(this.outputDirectory, DateTime.Now.ToString("yyyy-MM-dd HH_mm_ss"));
       }
       else
-        this.outputDirectory = !string.IsNullOrEmpty(this.parser.ExplorationResultPath) ? this.parser.ExplorationResultPath : Path.Combine(Environment.CurrentDirectory, "ExplorationResults");
+        this.outputDirectory = !string.IsNullOrEmpty(this.parser.ExplorationResultPath) ? this.parser.ExplorationResultPath : Path.Combine(System.Environment.CurrentDirectory, "ExplorationResults");
       return this.CreateDirectory(this.outputDirectory);
     }
 
     private bool LoadAndValidateUserTasks()
     {
-      string str = Path.Combine(Path.GetDirectoryName(new Uri(typeof (ConsoleHostDriver).Assembly.CodeBase).LocalPath), "Extensions");
-      if (!Directory.Exists(str) || !PostProcessorHelper.LoadCustomizedPostProcessingTypes(str, this.host, out this.postProcessorTypeMap, out Dictionary<string, string> _))
-        return false;
-      if (this.postProcessorTypeMap.Count <= 0)
-      {
-        this.host.DiagMessage(DiagnosisKind.Error, string.Format("None of the user tasks were found. Please make sure to place the assemblies for your user tasks at {0}.", (object) str), (object) null);
-        return false;
-      }
-      if (this.parser.UserTasks.Count > 0)
-      {
-        using (IEnumerator<string> enumerator = this.parser.UserTasks.GetEnumerator())
+        string str = Path.Combine(Path.GetDirectoryName(new Uri(typeof(ConsoleHostDriver).Assembly.CodeBase).LocalPath), "Extensions");
+        if (!Directory.Exists(str) || !PostProcessorHelper.LoadCustomizedPostProcessingTypes(str, this.host, out this.postProcessorTypeMap, out Dictionary<string, string> _))
+            return false;
+        if (this.postProcessorTypeMap.Count <= 0)
         {
-          while (enumerator.MoveNext())
-          {
-            string taskName = enumerator.Current;
-            IEnumerable<Type> source = this.postProcessorTypeMap.Values.Where<Type>((Func<Type, bool>) (t => t.Name == taskName || t.FullName == taskName));
-            if (source != null && source.Count<Type>() > 0)
-            {
-              foreach (Type type in source)
-              {
-                if (!this.userTaskTypes.Contains(type))
-                {
-                  this.userTaskTypes.Add(type);
-                  if (this.parser.VerboseOn)
-                    this.host.DiagMessage(DiagnosisKind.Hint, string.Format("User task type \"{0}\" is found.", (object) type.FullName), (object) null);
-                }
-              }
-            }
-            else
-              this.host.DiagMessage(DiagnosisKind.Warning, string.Format("Skipping user task \"{0}\" specified in switch {1}, but not found. Please make sure to place the assemblies for your user tasks at {2}.They must contain a class implementing interface IPostProcessor whose class name exactly matches the ones specified in switch {3}.", (object) taskName, (object) "/UserTasks:".ToSwitchNameDescription(), (object) str, (object) "/UserTasks:".ToSwitchNameDescription()), (object) null);
-          }
+            this.host.DiagMessage(DiagnosisKind.Error, string.Format("None of the user tasks were found. Please make sure to place the assemblies for your user tasks at {0}.", (object)str), (object)null);
+            return false;
         }
-        if (this.userTaskTypes.Count == 0)
-        {
-          this.host.DiagMessage(DiagnosisKind.Error, string.Format("None of the user tasks specified in switch {0} were found. Please make sure to place the assemblies for your user tasks at {1}. They must contain a class implementing interface IPostProcessor whose class name exactly matches the ones specified in switch {2}.", (object) "/UserTasks:".ToSwitchNameDescription(), (object) str, (object) "/UserTasks:".ToSwitchNameDescription()), (object) null);
-          return false;
-        }
-      }
-      else
-        this.userTaskTypes.AddRange((IEnumerable<Type>) this.postProcessorTypeMap.Values);
-      return true;
-    }
 
+        if (this.parser.UserTasks.Count > 0)
+        {
+            foreach (var taskName in parser.UserTasks)
+            {
+                List<System.Type> source = this.postProcessorTypeMap.Values.Where<System.Type>((Func<System.Type, bool>)(t => t.Name == taskName || t.FullName == taskName)).ToList<System.Type>();
+                if (source != null && source.Count > 0)
+                {
+                    foreach (System.Type type in source)
+                    {
+                        if (!this.userTaskTypes.Contains(type))
+                        {
+                            this.userTaskTypes.Add(type);
+                            if (this.parser.VerboseOn)
+                                this.host.DiagMessage(DiagnosisKind.Hint, string.Format("User task type \"{0}\" is found.", (object)type.FullName), (object)null);
+                        }
+                    }
+                }
+                else
+                {
+                    this.host.DiagMessage(DiagnosisKind.Warning, string.Format("Skipping user task \"{0}\" specified in switch {1}, but not found. Please make sure to place the assemblies for your user tasks at {2}.They must contain a class implementing interface IPostProcessor whose class name exactly matches the ones specified in switch {3}.", (object)taskName, (object)"/UserTasks:".ToSwitchNameDescription(), (object)str, (object)"/UserTasks:".ToSwitchNameDescription()), (object)null);
+                }
+            }
+            if (this.userTaskTypes.Count == 0)
+            {
+                this.host.DiagMessage(DiagnosisKind.Error, string.Format("None of the user tasks specified in switch {0} were found. Please make sure to place the assemblies for your user tasks at {1}. They must contain a class implementing interface IPostProcessor whose class name exactly matches the ones specified in switch {2}.", (object)"/UserTasks:".ToSwitchNameDescription(), (object)str, (object)"/UserTasks:".ToSwitchNameDescription()), (object)null);
+                return false;
+            }
+        }
+        else
+        {
+            this.userTaskTypes.AddRange(this.postProcessorTypeMap.Values);
+        }
+        return true;        
+    }
     private bool ValidateMachineNames()
     {
       ICordDesignTimeManager designTimeManager = this.globalSession.Application.GetRequiredService<ICordDesignTimeScopeManager>().GetCordDesignTimeManager("global");
@@ -408,33 +411,28 @@ namespace Microsoft.SpecExplorer.CommandLine
 
     private bool RunPostProcessors(string explorationResultFullPath)
     {
-      bool flag = true;
-      using (PostProcessorHelper postProcessorHelper = new PostProcessorHelper((IDictionary<string, object>) new Dictionary<string, object>()
-      {
-        ["WorkingDirectory"] = (object) Environment.CurrentDirectory
-      }, (ProgressMessageDisplayer) (msg =>
-      {
-        if (!this.parser.VerboseOn)
-          return;
-        this.host.DiagMessage(DiagnosisKind.Hint, msg, (object) null);
-      })))
-      {
-        foreach (Type userTaskType in this.userTaskTypes)
+        bool flag = true;
+        using (PostProcessorHelper postProcessorHelper = new PostProcessorHelper(new Dictionary<string, object>(), (msg =>  {
+            if (!this.parser.VerboseOn)
+                return;
+            this.host.DiagMessage(DiagnosisKind.Hint, msg, (object)null);
+        })))
         {
-          if (postProcessorHelper.ExecutePostProcessing(explorationResultFullPath, userTaskType, this.host))
-          {
-            this.host.ProgressMessage(VerbosityLevel.Medium, string.Format("\nSuccessfully perform user task '{0}'.", (object) userTaskType.FullName));
-          }
-          else
-          {
-            this.host.ProgressMessage(VerbosityLevel.Medium, string.Format("\nFailed to perform user task '{0}'.", (object) userTaskType.FullName));
-            flag = false;
-          }
+            foreach (System.Type userTaskType in this.userTaskTypes)
+            {
+                if (postProcessorHelper.ExecutePostProcessing(explorationResultFullPath, userTaskType, this.host))
+                {
+                    this.host.ProgressMessage(VerbosityLevel.Medium, string.Format("\nSuccessfully perform user task '{0}'.", (object)userTaskType.FullName));
+                }
+                else
+                {
+                    this.host.ProgressMessage(VerbosityLevel.Medium, string.Format("\nFailed to perform user task '{0}'.", (object)userTaskType.FullName));
+                    flag = false;
+                }
+            }
         }
-      }
-      return flag;
+        return flag;
     }
-
     private bool PersistExplorationResult(
       string explorationResultFullPath,
       ExplorationResult explorationResult)
@@ -475,7 +473,8 @@ namespace Microsoft.SpecExplorer.CommandLine
         this.host.DiagMessage(DiagnosisKind.Error, string.Format("Unable to obtain directory \"{0}\".", (object) str), (object) null);
         return false;
       }
-      string fullPath = Path.GetFullPath(Path.Combine(Environment.CurrentDirectory, str.Replace("\\\\", "\\")));
+      string fullPath = Path.GetFullPath(Path.Combine(System.Environment.CurrentDirectory, str.Replace("\\\\", "\\")));
+
       if (!this.CreateDirectory(fullPath))
       {
         this.host.DiagMessage(DiagnosisKind.Error, string.Format("Unable to obtain directory \"{0}\".", (object) fullPath), (object) null);
@@ -664,12 +663,13 @@ namespace Microsoft.SpecExplorer.CommandLine
       Console.CancelKeyPress += new ConsoleCancelEventHandler(ConsoleHostDriver.OnConsoleCancelKeyPressed);
       IHost consoleHost = (IHost) new ConsoleHost();
       CommandLineParser clParser = new CommandLineParser(consoleHost);
+      int exitCode;
       if (!clParser.ParseCommand(args))
       {
         ConsoleHostDriver.PrintCommandUsage();
-        Environment.Exit(1);
+        exitCode = 1;
       }
-      int exitCode;
+      
       using (ConsoleHostDriver consoleHostDriver = new ConsoleHostDriver(consoleHost, clParser))
       {
         int successCounter;
@@ -707,7 +707,7 @@ namespace Microsoft.SpecExplorer.CommandLine
           }
         }
       }
-      Environment.Exit(exitCode);
+      System.Environment.Exit(exitCode);
     }
 
     private static string BuildTaskName(TaskType task, string replayExplorationResultPath) => task == TaskType.DoOnTheFlyTests && !string.IsNullOrEmpty(replayExplorationResultPath) ? string.Format("'{0}' with replay mode", (object) task) : string.Format("'{0}'", (object) task);
