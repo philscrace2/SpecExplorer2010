@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpecExplorer", "SpecExplore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.SpecExplorer.Core", "..\Microsoft.SpecExplorer.Core\Microsoft.SpecExplorer.Core.csproj", "{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.SpecExplorer.RequirementCoverageMachineExtension", "..\Microsoft.SpecExplorer.RequirementCoverageMachineExtension\Microsoft.SpecExplorer.RequirementCoverageMachineExtension.csproj", "{75919C57-58B2-41C4-885D-8AA1433AD56B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,6 +22,10 @@ Global
 		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75919C57-58B2-41C4-885D-8AA1433AD56B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75919C57-58B2-41C4-885D-8AA1433AD56B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75919C57-58B2-41C4-885D-8AA1433AD56B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75919C57-58B2-41C4-885D-8AA1433AD56B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
