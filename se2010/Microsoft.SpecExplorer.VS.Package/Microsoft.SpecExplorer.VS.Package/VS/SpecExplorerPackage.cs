@@ -649,91 +649,97 @@ namespace Microsoft.SpecExplorer.VS
 
     public bool TryFindLocation(MemberInfo member, out TextLocation location)
     {
-      try
-      {
-        location = new TextLocation();
-        Project containingProject = this.GetContainingProject(member);
-        if (containingProject == null)
-          return false;
-        CodeModel codeModel = containingProject.CodeModel;
-        if (codeModel == null)
-          return false;
-        CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName);
-        if (member.Kind == null)
-        {
-          if (codeType == null)
-            return false;
-          location = this.MakeLocation(codeType as CodeElement);
-          return true;
-        }
-        if (member.Kind.Equals(2))
-        {
-          foreach (CodeElement allMember in codeType.GetAllMembers())
-          {
-            if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member)
-            {
-              location = this.MakeLocation(allMember);
-              return true;
-            }
-          }
-          return false;
-        }
-        if (member.Kind.Equals(1))
-        {
-          string[] array = member.ParameterTypes.ToArray<string>();
-          foreach (CodeElement allMember in codeType.GetAllMembers())
-          {
-            if (allMember.Kind == vsCMElement.vsCMElementFunction)
-            {
-              CodeFunction codeFunction = allMember as CodeFunction;
-              if (allMember == member && codeFunction != null)
-              {
-                int length = array.Length;
-                int num = 0;
-                if (length == codeFunction.Parameters.Count)
-                {
-                  bool flag = false;
-                  foreach (CodeParameter parameter in codeFunction.Parameters)
-                  {
-                    string str = array[num++];
-                    if (parameter.Type.TypeKind != vsCMTypeRef.vsCMTypeRefArray && parameter.Type.AsFullName != str || parameter.Type.TypeKind == vsCMTypeRef.vsCMTypeRefArray && !str.Contains(parameter.Type.ElementType.AsFullName))
-                    {
-                      flag = true;
-                      break;
-                    }
-                  }
-                  if (!flag)
-                  {
-                    location = this.MakeLocation(allMember);
-                    return true;
-                  }
-                }
-              }
-            }
-          }
-          return false;
-        }
-        if (member.Kind.Equals(3))
-          return false;
-        foreach (CodeElement allMember in codeType.GetAllMembers())
-        {
-          if (allMember.Kind == vsCMElement.vsCMElementProperty && allMember == member)
-          {
-            location = this.MakeLocation(allMember);
-            return true;
-          }
-        }
-        return false;
-      }
-      catch (Exception ex)
-      {
-        this.DiagMessage((DiagnosisKind) 1, string.Format("A Spec Explorer/Visual Studio integration error occurred: \r\n{0}.\r\n Please report this error to support team.", (object) ex.ToString()), (object) null);
         location = new TextLocation();
         return false;
-      }
     }
 
-    public void NavigateTo(string fileName, int line, int column)
+        //public bool TryFindLocation(MemberInfo member, out TextLocation location)
+        //{
+        //  try
+        //  {
+        //    location = new TextLocation();
+        //    Project containingProject = this.GetContainingProject(member);
+        //    if (containingProject == null)
+        //      return false;
+        //    CodeModel codeModel = containingProject.CodeModel;
+        //    if (codeModel == null)
+        //      return false;
+        //    CodeType codeType = codeModel.CodeTypeFromFullName(member.TypeName);
+        //    if (member.Kind == null)
+        //    {
+        //      if (codeType == null)
+        //        return false;
+        //      location = this.MakeLocation(codeType as CodeElement);
+        //      return true;
+        //    }
+        //    if (member.Kind.Equals(2))
+        //    {
+        //      foreach (CodeElement allMember in codeType.GetAllMembers())
+        //      {
+        //        if (allMember.Kind == vsCMElement.vsCMElementVariable && allMember == member)
+        //        {
+        //          location = this.MakeLocation(allMember);
+        //          return true;
+        //        }
+        //      }
+        //      return false;
+        //    }
+        //    if (member.Kind.Equals(1))
+        //    {
+        //      string[] array = member.ParameterTypes.ToArray<string>();
+        //      foreach (CodeElement allMember in codeType.GetAllMembers())
+        //      {
+        //        if (allMember.Kind == vsCMElement.vsCMElementFunction)
+        //        {
+        //          CodeFunction codeFunction = allMember as CodeFunction;
+        //          if (allMember == member && codeFunction != null)
+        //          {
+        //            int length = array.Length;
+        //            int num = 0;
+        //            if (length == codeFunction.Parameters.Count)
+        //            {
+        //              bool flag = false;
+        //              foreach (CodeParameter parameter in codeFunction.Parameters)
+        //              {
+        //                string str = array[num++];
+        //                if (parameter.Type.TypeKind != vsCMTypeRef.vsCMTypeRefArray && parameter.Type.AsFullName != str || parameter.Type.TypeKind == vsCMTypeRef.vsCMTypeRefArray && !str.Contains(parameter.Type.ElementType.AsFullName))
+        //                {
+        //                  flag = true;
+        //                  break;
+        //                }
+        //              }
+        //              if (!flag)
+        //              {
+        //                location = this.MakeLocation(allMember);
+        //                return true;
+        //              }
+        //            }
+        //          }
+        //        }
+        //      }
+        //      return false;
+        //    }
+        //    if (member.Kind.Equals(3))
+        //      return false;
+        //    foreach (CodeElement allMember in codeType.GetAllMembers())
+        //    {
+        //      if (allMember.Kind == vsCMElement.vsCMElementProperty && allMember == member)
+        //      {
+        //        location = this.MakeLocation(allMember);
+        //        return true;
+        //      }
+        //    }
+        //    return false;
+        //  }
+        //  catch (Exception ex)
+        //  {
+        //    this.DiagMessage((DiagnosisKind) 1, string.Format("A Spec Explorer/Visual Studio integration error occurred: \r\n{0}.\r\n Please report this error to support team.", (object) ex.ToString()), (object) null);
+        //    location = new TextLocation();
+        //    return false;
+        //  }
+        //}
+
+        public void NavigateTo(string fileName, int line, int column)
     {
       if (string.IsNullOrEmpty(fileName))
         throw new ArgumentException("File name cannot be null or empty.", fileName);

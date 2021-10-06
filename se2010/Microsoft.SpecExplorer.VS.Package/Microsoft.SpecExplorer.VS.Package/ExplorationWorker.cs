@@ -833,58 +833,56 @@ namespace Microsoft.SpecExplorer
       }
     }
 
-    private void PrepareProjects()
-    {
-      this.package.ClearErrorList();
-      using (IEnumerator<Machine> enumerator = ((IEnumerable<Machine>) this.machines).GetEnumerator())
-      {
-        while (((IEnumerator) enumerator).MoveNext())
+        private void PrepareProjects()
         {
-          string uniqueName = enumerator.Current.Container.UniqueName;
-          if (!this.compiledProjects.ContainsKey(uniqueName))
-          {
-            Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>) (p => p.UniqueName == uniqueName));
-            if (project != null)
+            this.package.ClearErrorList();
+            foreach (Machine machine in (IEnumerable<Machine>)this.machines)
             {
-              string message1 = string.Format(Resources.BuildingProjectFormat, (object) project);
-              this.control.ProgressMessage(message1);
-              this.package.ProgressMessage((VerbosityLevel) 0, message1);
-              if (this.package.BuildProject(project))
-              {
-                ICollection<string> strings = this.package.CollectReferences(project);
-                List<string> scripts = new List<string>();
-                this.package.CollectScripts(scripts, project.ProjectItems);
-                ExplorationWorker.ProjectUnit projectUnit = new ExplorationWorker.ProjectUnit()
+                string uniqueName = machine.Container.UniqueName;
+                if (!this.compiledProjects.ContainsKey(uniqueName))
                 {
-                  Project = project,
-                  References = strings,
-                  Scripts = scripts,
-                  LatestStamp = ExplorationUtility.GetSourceFilesStamp(strings, (ICollection<string>) scripts),
-                  BuildFailed = false
-                };
-                this.compiledProjects.Add(uniqueName, projectUnit);
-                string message2 = string.Format(Resources.BuildProjectSucceededFormat, (object) project);
-                this.control.ProgressMessage(message2);
-                this.package.ProgressMessage((VerbosityLevel) 0, message2);
-              }
-              else
-              {
-                string message2 = string.Format(Resources.BuildProjectFailedFormat, (object) project);
-                this.control.ProgressMessage(message2);
-                this.package.ProgressMessage((VerbosityLevel) 0, message2);
-                this.compiledProjects.Add(uniqueName, new ExplorationWorker.ProjectUnit()
-                {
-                  Project = project,
-                  BuildFailed = true
-                });
-              }
+                    Project project = ProjectUtils.GetAllRealProjects(this.package.DTE).FirstOrDefault<Project>((Func<Project, bool>)(p => p.UniqueName == uniqueName));
+                    if (project != null)
+                    {
+                        string message1 = string.Format(Resources.BuildingProjectFormat, (object)project.Name);
+                        this.control.ProgressMessage(message1);
+                        this.package.ProgressMessage(VerbosityLevel.Minimal, message1);
+                        if (this.package.BuildProject(project))
+                        {
+                            //ICollection<string> assemblies = this.package.CollectReferences(project);
+                            ICollection<string> assemblies = new List<string>() { @"C:\Users\pls2\Documents\Spec Explorer 2010\Samples2\Account\Model\bin\Debug\AccountModel.dll", @"C:\Users\pls2\Documents\Spec Explorer 2010\Samples2\Account\Model\bin\Debug\AccountImpl.dll" };
+                            List<string> scripts = new List<string>();
+                            this.package.CollectScripts(scripts, project.ProjectItems);
+                            ExplorationWorker.ProjectUnit projectUnit = new ExplorationWorker.ProjectUnit()
+                            {
+                                Project = project,
+                                References = assemblies,
+                                Scripts = scripts,
+                                LatestStamp = ExplorationUtility.GetSourceFilesStamp(assemblies, (ICollection<string>)scripts),
+                                BuildFailed = false
+                            };
+                            this.compiledProjects.Add(uniqueName, projectUnit);
+                            string message2 = string.Format(Resources.BuildProjectSucceededFormat, (object)project.Name);
+                            this.control.ProgressMessage(message2);
+                            this.package.ProgressMessage(VerbosityLevel.Minimal, message2);
+                        }
+                        else
+                        {
+                            string message2 = string.Format(Resources.BuildProjectFailedFormat, (object)project.Name);
+                            this.control.ProgressMessage(message2);
+                            this.package.ProgressMessage(VerbosityLevel.Minimal, message2);
+                            this.compiledProjects.Add(uniqueName, new ExplorationWorker.ProjectUnit()
+                            {
+                                Project = project,
+                                BuildFailed = true
+                            });
+                        }
+                    }
+                }
             }
-          }
         }
-      }
-    }
 
-    private void HandleIgnoredMachine(MachineExecuteItem executeItem)
+        private void HandleIgnoredMachine(MachineExecuteItem executeItem)
     {
       this.ignoredExecutedMachines.Add(executeItem);
     }
