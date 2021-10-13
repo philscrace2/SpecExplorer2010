@@ -1,541 +1,641 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.TransitionSystemBuilder
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.ActionMachines;
-using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.Xrt;
-using Microsoft.Xrt.Persistence;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using AssociationReference = Microsoft.SpecExplorer.ObjectModel.AssociationReference;
-using AssociationReferenceKind = Microsoft.SpecExplorer.ObjectModel.AssociationReferenceKind;
-
+using Microsoft.ActionMachines;
+using Microsoft.SpecExplorer.ObjectModel;
+using Microsoft.Xrt;
+using Microsoft.Xrt.Persistence;
 
 namespace Microsoft.SpecExplorer
 {
-  internal class TransitionSystemBuilder
-  {
-    private string name;
-    private IConfiguration config;
-    private StateLabelBuilder labelBuilder;
-    private ComponentBase host;
-    private List<string> initialStates = new List<string>();
-    private List<State> allStates = new List<State>();
-    private Dictionary<MachineState, State> machineStates = new Dictionary<MachineState, State>();
-    private List<Transition> transitions = new List<Transition>();
-    private HashSet<SerializableMemberInfo> actionMembers = new HashSet<SerializableMemberInfo>();
-    private HashSet<SerializableType> adapterTypes = new HashSet<SerializableType>();
-    private List<ConfigSwitch> configSwitches = new List<ConfigSwitch>();
-    private Dictionary<string, State> statesMap = new Dictionary<string, State>();
-    private Dictionary<Term, ParameterExpression> variableMap = new Dictionary<Term, ParameterExpression>();
-    private Dictionary<Term, SerializableParameterExpression> variableSerializableMap = new Dictionary<Term, SerializableParameterExpression>();
-    private List<SerializableParameterExpression> variables = new List<SerializableParameterExpression>();
-    private HashSet<string> usedVariableNames = new HashSet<string>();
-    private Dictionary<TransitionSystemBuilder.ExpressionCacheKey, SerializableExpression> serializableExpressionCache = new Dictionary<TransitionSystemBuilder.ExpressionCacheKey, SerializableExpression>();
-    private HashSet<string> usedExpressionKeys = new HashSet<string>();
-    private IBackground bg;
-    private IProgram program;
-    private IStatePersistenceBuilder stateBuilder;
-    private ITermDescriptionContextFactory contextFactory;
-    private EventAdapter eventAdapter;
-    private IActionSymbol preConstraintActionSymbol;
+	internal class TransitionSystemBuilder
+	{
+		private struct ExpressionCacheKey
+		{
+			internal Term term;
 
-    internal TransitionSystemBuilder(
-      string name,
-      IConfiguration config,
-      ComponentBase host,
-      EventAdapter eventAdapter)
-    {
-      if (name == null)
-        throw new ArgumentNullException(nameof (name));
-      if (config == null)
-        throw new ArgumentNullException(nameof (config));
-      if (host == null)
-        throw new ArgumentNullException(nameof (host));
-      if (eventAdapter == null)
-        throw new ArgumentNullException(nameof (eventAdapter));
-      this.host = host;
-      this.name = name;
-      this.config = config;
-      this.eventAdapter = eventAdapter;
-      IOptionSetManager requiredService = host.GetRequiredService<IOptionSetManager>();
-      IOptionSet optionSet = this.config.OptionSet;
-      foreach (PropertyDescriptor property in requiredService.GetProperties(Visibility.Public))
-      {
-        string switchValue = TransitionSystemBuilder.GetSwitchValue(optionSet, property);
-        this.configSwitches.Add(TransitionSystem.ConfigSwitch(property.Name, switchValue));
-      }
-      this.bg = host.GetRequiredService<IBackground>();
-      this.contextFactory = host.GetRequiredService<ITermDescriptionContextFactory>();
-      this.program = host.GetRequiredService<IProgram>();
-      this.stateBuilder = host.GetRequiredService<IStatePersistenceBuilderProvider>().CreateStatePersistencyBuilder();
-      this.labelBuilder = new StateLabelBuilder();
-      this.preConstraintActionSymbol = host.GetRequiredService<IConfigurationProvider>().PreConstraintActionSymbol;
-    }
+			internal IType type;
+		}
 
-    private static string GetSwitchValue(IOptionSet optionSet, PropertyDescriptor p)
-    {
-      string str;
-      if (p.Converter != null)
-      {
-        try
-        {
-          str = p.Converter.ConvertToString(optionSet.GetValue(p));
-        }
-        catch (Exception ex)
-        {
-          str = optionSet.GetValue(p).ToString();
-        }
-      }
-      else
-        str = optionSet.GetValue(p).ToString();
-      return str;
-    }
+		private string name;
 
-    internal ExplorationResult BuildTransitionSystem(bool withStateContent = true)
-    {
-      foreach (IActionSymbol action in (IEnumerable<IActionSymbol>) this.config.Actions)
-        this.actionMembers.Add(this.BuildMethod(action));
-      TransitionSystem transitionSystem = TransitionSystem.Create(this.name, (IEnumerable<ConfigSwitch>) ((IEnumerable<ConfigSwitch>) this.configSwitches).OrderBy<ConfigSwitch, string>((Func<ConfigSwitch, string>) (sw => sw.Name)), (IEnumerable<SerializableMemberInfo>) ((IEnumerable<SerializableMemberInfo>) this.actionMembers).OrderBy<SerializableMemberInfo, string>((Func<SerializableMemberInfo, string>) (m => m.Header)), (IEnumerable<SerializableType>) ((IEnumerable<SerializableType>) this.adapterTypes).OrderBy<SerializableType, string>((Func<SerializableType, string>) (t => ((SerializableMemberInfo) t).Header)), (IEnumerable<SerializableParameterExpression>) ((IEnumerable<SerializableParameterExpression>) this.variables).OrderBy<SerializableParameterExpression, string>((Func<SerializableParameterExpression, string>) (v => v.Name)), (IEnumerable<string>) this.initialStates.OrderBy<string, string>((Func<string, string>) (s => s)), (IEnumerable<State>) ((IEnumerable<State>) this.allStates).OrderBy<State, string>((Func<State, string>) (s => s.Label)), (IEnumerable<Transition>) ((IEnumerable<Transition>) this.transitions).OrderBy<Transition, string>((Func<Transition, string>) (t => t.Source)).ThenBy<Transition, string>((Func<Transition, string>) (t => t.Action.Symbol.Member.Header)).ThenBy<Transition, string>((Func<Transition, string>) (t => t.Target)));
-      if (!withStateContent)
-        return new ExplorationResult(transitionSystem, new SharedEntitySet(), Enumerable.Empty<StateEntity>(), new ExplorationResultExtensions());
-      this.stateBuilder.BuildStateObjectModel();
-      List<StateEntity> stateEntityList = new List<StateEntity>();
-      foreach (KeyValuePair<MachineState, State> machineState in this.machineStates)
-      {
-        StateEntity stateEntity = new StateEntity(machineState.Value.Label, machineState.Value.Flags, machineState.Value.Description, this.stateBuilder.GetStateContent(machineState.Key.Data));
-        stateEntityList.Add(stateEntity);
-      }
-      SharedEntitySet sharedEntitySet = this.stateBuilder.SharedEntitySet;
-      return new ExplorationResult(transitionSystem, sharedEntitySet, (IEnumerable<StateEntity>) stateEntityList, new ExplorationResultExtensions());
-    }
+		private IConfiguration config;
 
-    internal void AddStep(
-      ExplorationStep step,
-      MachineState? subsumptionRelatedState,
-      SubsumptionResult relatedStateRelationKind)
-    {
-      State state1 = this.AddState(step.SourceState, step.SourceFlags);
-      State state2 = this.AddState(step.TargetState, step.TargetFlags);
-      if (subsumptionRelatedState.HasValue)
-      {
-        State state3 = state2;
-        State state4 = this.AddState(subsumptionRelatedState.Value, step.TargetFlags);
-        if (relatedStateRelationKind == SubsumptionResult.ThisSubsumesOther)
-        {
-          State state5 = state3;
-          state3 = state4;
-          state4 = state5;
-        }
-        state3.RepresentativeState = state4.Label;
-        state3.RelationKind = (StateRelationKind) 1;
-      }
-      ITermDescriptionContext context = this.contextFactory.CreateContext(TermDescriptionFlags.DefaultUserDescription | TermDescriptionFlags.ReEscapingInString, step.IntermediateTargetState.Data);
-      ActionInvocation actionInvocation = this.BuildAction(step.Action, context, step.TargetState.Data);
-      string[] strArray1;
-      string[] strArray2;
-      if (step.Requirements == null)
-      {
-        strArray1 = new string[0];
-        strArray2 = new string[0];
-      }
-      else
-      {
-        strArray1 = step.Requirements.CapturedRequirements.ToArray<string>();
-        strArray2 = step.Requirements.AssumeCapturedRequirements.ToArray<string>();
-      }
-      IOrderedEnumerable<Constraint> orderedEnumerable1 = this.FilterAndConvertConstraints((IEnumerable<Term>) this.CalculatePostConstraints(step)).Select<Term, Constraint>((Func<Term, Constraint>) (t => TransitionSystem.Constraint(this.BuildData(t, this.program.SystemTypes.Boolean, step.TargetState.Data), context.ToString(this.program.SystemTypes.Boolean, t)))).OrderBy<Constraint, string>((Func<Constraint, string>) (c => c.Text));
-      IOrderedEnumerable<Constraint> orderedEnumerable2 = this.FilterAndConvertConstraints((IEnumerable<Term>) step.PreConstraints).Select<Term, Constraint>((Func<Term, Constraint>) (t => TransitionSystem.Constraint(this.BuildData(t, this.program.SystemTypes.Boolean, step.TargetState.Data), context.ToString(this.program.SystemTypes.Boolean, t)))).OrderBy<Constraint, string>((Func<Constraint, string>) (c => c.Text));
-      TermSetBuilder source = new TermSetBuilder(step.FreedVariables);
-      source.IntersectWith((IEnumerable<Term>) this.variableMap.Keys);
-      IOrderedEnumerable<SerializableParameterExpression> orderedEnumerable3 = source.Select<Term, SerializableParameterExpression>((Func<Term, SerializableParameterExpression>) (v => this.variableSerializableMap[v])).OrderBy<SerializableParameterExpression, string>((Func<SerializableParameterExpression, string>) (v => v.Name));
-      this.transitions.Add(TransitionSystem.Transition(state1.Label, actionInvocation, state2.Label, (IEnumerable<Constraint>) orderedEnumerable2, (IEnumerable<Constraint>) orderedEnumerable1, (IEnumerable<SerializableParameterExpression>) orderedEnumerable3, (IEnumerable<string>) strArray1, (IEnumerable<string>) strArray2));
-    }
+		private StateLabelBuilder labelBuilder;
 
-    private TermSetBuilder CalculatePostConstraints(ExplorationStep step)
-    {
-      TermSet context1 = step.SourceState.Data.Context;
-      TermSet context2 = step.IntermediateTargetState.Data.Context;
-      TermSetBuilder constraints = this.bg.MakeTermSetBuilder();
-      if (step.Action.Symbol.Kind == ActionKind.Return || step.Action.Symbol.Kind == ActionKind.Event && step.Action.Symbol != this.preConstraintActionSymbol)
-      {
-        constraints.UnionWith((IEnumerable<Term>) context2);
-        constraints.ExceptWith((IEnumerable<Term>) context1);
-        ICompressedState csource = step.SourceState.Data;
-        ICompressedState ctarget = step.IntermediateTargetState.Data;
-        IActiveState asource = csource.Uncompress();
-        IActiveState atarget = ctarget.Uncompress();
-        foreach (Term term in context1)
-        {
-          if (this.bg.FindInTerms((Predicate<Term>) (t => this.bg.IsVariable(t) && !csource.IsExistential(t) && (!asource.IsVariableBound(t) && !ctarget.IsExistential(t)) && atarget.IsVariableBound(t)), term))
-            constraints.Add(term);
-        }
-        if (constraints.Count > 0)
-          this.NarrowReachableConstraints(step.Action, constraints, new Predicate<Term>(atarget.IsVariableBound));
-      }
-      return constraints;
-    }
+		private ComponentBase host;
 
-    private List<Term> FilterAndConvertConstraints(IEnumerable<Term> constraints)
-    {
-      List<Term> termList = new List<Term>();
-      foreach (Term constraint in constraints)
-      {
-        if (this.bg.IsDomainPredicate(constraint))
-        {
-          Term explicitConstraint = this.bg.ConvertDomainPredicateToExplicitConstraint(constraint);
-          if (explicitConstraint != this.bg.True)
-            termList.Add(explicitConstraint);
-        }
-        else if (!this.bg.IsFunctionApplication(constraint))
-          termList.Add(constraint);
-      }
-      return termList;
-    }
+		private List<string> initialStates = new List<string>();
 
-    private bool HasCycle(State thisState, State otherState)
-    {
-      State state = otherState;
-      while (state.RepresentativeState != null && this.statesMap.TryGetValue(state.RepresentativeState, out state))
-      {
-        if (state.Label == thisState.Label)
-          return true;
-      }
-      return false;
-    }
+		private List<State> allStates = new List<State>();
 
-    private void NarrowReachableConstraints(
-      Microsoft.ActionMachines.Action action,
-      TermSetBuilder constraints,
-      Predicate<Term> validConstraintVariableChecker)
-    {
-      TermSetBuilder tsb1 = this.bg.MakeTermSetBuilder();
-      if (action.Arguments != null)
-      {
-        int index = 0;
-        foreach (Term term in action.Arguments)
-        {
-          if (action.Symbol.Parameters[index].Kind != ParameterKind.Receiver)
-            this.CollectVariablesAndTranslations(tsb1, term);
-          ++index;
-        }
-      }
-      HashSet<Term> source = new HashSet<Term>((IEnumerable<Term>) constraints);
-      constraints.Clear();
-      Dictionary<Term, TermSetBuilder> dictionary = new Dictionary<Term, TermSetBuilder>();
-      bool flag1 = true;
-      while (flag1)
-      {
-        flag1 = false;
-        foreach (Term term1 in source.ToList<Term>())
-        {
-          TermSetBuilder tsb2;
-          if (!dictionary.TryGetValue(term1, out tsb2))
-          {
-            tsb2 = this.bg.MakeTermSetBuilder();
-            this.CollectVariablesAndTranslations(tsb2, term1);
-            if (tsb2.Count == 0)
-            {
-              source.Remove(term1);
-              continue;
-            }
-            dictionary[term1] = tsb2;
-          }
-          bool flag2 = false;
-          foreach (Term term2 in (HashSet<Term>) tsb2)
-          {
-            if (tsb1.Contains(term2) || this.bg.IsVariable(term2) && validConstraintVariableChecker(term2))
-            {
-              flag2 = true;
-              break;
-            }
-          }
-          if (flag2)
-          {
-            constraints.Add(term1);
-            tsb1.UnionWith((IEnumerable<Term>) tsb2);
-            source.Remove(term1);
-            flag1 = true;
-          }
-        }
-      }
-    }
+		private Dictionary<MachineState, State> machineStates = new Dictionary<MachineState, State>();
 
-    private void CollectVariablesAndTranslations(TermSetBuilder tsb, Term term)
-    {
-      IType type;
-      if (this.bg.TryGetVariable(term, out type, out uint _, out string _, out string _))
-        tsb.Add(term);
-      else if (this.bg.TryGetTranslation(term, out type, out Term _))
-        tsb.Add(term);
-      else
-        this.bg.DoOnAllDirectSubTerms(term, (System.Action<Term>) (t => this.CollectVariablesAndTranslations(tsb, t)));
-    }
+		private List<Transition> transitions = new List<Transition>();
 
-    internal State AddState(MachineState machineState, ExplorationStateFlags explorationFlags)
-    {
-      State state1;
-      if (this.machineStates.TryGetValue(machineState, out state1))
-      {
-        this.UpdateStoppedReasonFlags(state1, explorationFlags);
-        return state1;
-      }
-      this.stateBuilder.AddState(machineState.Data);
-      bool flag = (explorationFlags & ExplorationStateFlags.IsStart) != ExplorationStateFlags.None;
-      StateFlags stateFlags = ((StateFlags) explorationFlags);
-      List<Probe> probeList = new List<Probe>();
-      foreach (ProbeEntry buildProbeEntry in this.stateBuilder.BuildProbeEntries(machineState.Data))
-      {
-        ProbeValueKind probeValueKind = buildProbeEntry.IsException ? (ProbeValueKind) 1 : (ProbeValueKind) 0;
-        SerializableType serializable = ObjectModelHelpers.ToSerializable(buildProbeEntry.Type.RuntimeType);
-        probeList.Add(TransitionSystem.Probe(buildProbeEntry.Name, buildProbeEntry.Value, serializable, probeValueKind));
-      }
-      State state2 = TransitionSystem.State(this.labelBuilder.AddState(machineState), false, machineState.Description, stateFlags, (IEnumerable<Probe>) probeList);
-      if (flag)
-        this.initialStates.Add(state2.Label);
-      this.allStates.Add(state2);
-      this.machineStates[machineState] = state2;
-      this.statesMap[state2.Label] = state2;
-      return state2;
-    }
+		private HashSet<SerializableMemberInfo> actionMembers = new HashSet<SerializableMemberInfo>();
 
-    private void UpdateStoppedReasonFlags(State state, ExplorationStateFlags explorationFlags)
-    {
-      if (explorationFlags == ExplorationStateFlags.None)
-        return;
-      StateFlags stateFlags = ((StateFlags) explorationFlags);
-      State state1 = state;
-      state1.Flags = state1.Flags | stateFlags;
-    }
+		private HashSet<SerializableType> adapterTypes = new HashSet<SerializableType>();
 
-    private ActionInvocation BuildAction(
-      Microsoft.ActionMachines.Action action,
-      ITermDescriptionContext context,
-      ICompressedState compressedState)
-    {
-      ActionSymbolKind actionSymbolKind = action.Symbol.Kind != ActionKind.Call ? (action.Symbol.Kind != ActionKind.Return ? (action.Symbol.Kind != ActionKind.Throw ? (action.Symbol.Kind != ActionKind.Event || action.Symbol != this.preConstraintActionSymbol ? (action.Symbol.Kind != ActionKind.Event ? (ActionSymbolKind) 0 : (ActionSymbolKind) 4) : (ActionSymbolKind) 5) : (ActionSymbolKind) 3) : (ActionSymbolKind) 2) : (ActionSymbolKind) 1;
-      SerializableMemberInfo serializableMemberInfo = this.BuildMetadata(action);
-      this.actionMembers.Add(serializableMemberInfo);
-      ActionSymbol actionSymbol = TransitionSystem.ActionSymbol(actionSymbolKind, serializableMemberInfo);
-      List<SerializableExpression> serializableExpressionList = new List<SerializableExpression>();
-      if (action.Arguments != null)
-      {
-        for (int index = 0; index < action.Arguments.Length; ++index)
-        {
-          Term term = action.Arguments[index];
-          IType type = action.Symbol.Parameters[index].Type;
-          serializableExpressionList.Add(this.BuildData(term, type, compressedState));
-        }
-      }
-      return TransitionSystem.ActionInvocation(actionSymbol, (IEnumerable<SerializableExpression>) serializableExpressionList, action.ToString(context));
-    }
+		private List<ConfigSwitch> configSwitches = new List<ConfigSwitch>();
 
-    private SerializableMemberInfo BuildMetadata(Microsoft.ActionMachines.Action action)
-    {
-      if ((action.Symbol.Kind & ActionKind.Call) == (ActionKind) 0 || (action.Symbol.Kind & ActionKind.AllObserved) == (ActionKind) 0)
-        return this.BuildMethod(action.Symbol);
-      this.eventAdapter.ProgressMessage(VerbosityLevel.Medium, string.Format("Action {0} is not a method invocation or an event.", (object) action.Symbol.ToString()));
-      return (SerializableMemberInfo) null;
-    }
+		private Dictionary<string, State> statesMap = new Dictionary<string, State>();
 
-    private SerializableMemberInfo BuildMethod(IActionSymbol actionSymbol)
-    {
-      if (actionSymbol.CompoundActionSymbol != null)
-        actionSymbol = actionSymbol.CompoundActionSymbol;
-      bool flag = actionSymbol.AssociatedMember == null || actionSymbol.AssociatedMember.IsPublic;
-      System.Type typeOfDeclaringType = this.GetBaseTypeOfDeclaringType(actionSymbol);
-      SerializableType serializableType1 = SerializableMemberInfo.Type(actionSymbol.ContainerName, flag, TypeCode.Object, typeOfDeclaringType == (System.Type) null ? (SerializableType) null : ObjectModelHelpers.ToSerializable(typeOfDeclaringType));
-      if (this.IsAdapter(actionSymbol))
-        this.adapterTypes.Add(serializableType1);
-      bool isStatic = actionSymbol.IsStatic;
-      SerializableType serializableType2 = (SerializableType) null;
-      List<SerializableParameterInfo> serializableParameterInfoList = new List<SerializableParameterInfo>();
-      foreach (ActionParameter parameter in actionSymbol.Parameters)
-      {
-        switch (parameter.Kind)
-        {
-          case ParameterKind.In:
-            serializableParameterInfoList.Add(SerializableMemberInfo.Parameter(ObjectModelHelpers.ToSerializable(parameter.Type.RuntimeType), parameter.Name, false));
-            break;
-          case ParameterKind.Out:
-          case ParameterKind.Ref:
-            serializableParameterInfoList.Add(SerializableMemberInfo.Parameter(ObjectModelHelpers.ToSerializable(parameter.Type.RuntimeType.MakeByRefType()), parameter.Name, parameter.Kind != ParameterKind.Ref));
-            break;
-          case ParameterKind.Return:
-            serializableType2 = ObjectModelHelpers.ToSerializable(parameter.Type.RuntimeType);
-            break;
-        }
-      }
-      switch (actionSymbol.Kind)
-      {
-        case ActionKind.Call:
-        case ActionKind.MethodCompound:
-          if (actionSymbol.IsConstructor)
-            return (SerializableMemberInfo) SerializableMemberInfo.Constructor(serializableType1, flag, isStatic, serializableParameterInfoList.ToArray());
-          AssociationReference associationReference = (AssociationReference) null;
-          IMethod associatedMember = (IMethod) actionSymbol.AssociatedMember;
-          if (associatedMember != null && associatedMember.AssociationReferences != null && associatedMember.AssociationReferences.Length > 0)
-          {
-            SerializablePropertyInfo serializablePropertyInfo = SerializableMemberInfo.Property(serializableType1, flag, isStatic, associatedMember.AssociationReferences[0].Association.ShortName, serializableType2);
-            this.actionMembers.Add((SerializableMemberInfo) serializablePropertyInfo);
-                        if (associatedMember.AssociationReferences[0].Kind.Equals(AssociationReferenceKind.SetMethod))
-                            associationReference = new AssociationReference()
-                            {
-                                Association = (SerializableMemberInfo)serializablePropertyInfo,
-                                Kind = (AssociationReferenceKind)1
-                            };
-                        else
-                            associationReference = new AssociationReference()
-                            {
-                                Association = (SerializableMemberInfo)serializablePropertyInfo,
-                                Kind = (AssociationReferenceKind) 1
-                            } ;                           
-              
-          }
-          return (SerializableMemberInfo) SerializableMemberInfo.Method(serializableType1, flag, isStatic, actionSymbol.Name, (SerializableType[]) null, serializableParameterInfoList.ToArray(), serializableType2, associationReference);
-        case ActionKind.Event:
-          return (SerializableMemberInfo) SerializableMemberInfo.Event(serializableType1, flag, isStatic, actionSymbol.Name, serializableParameterInfoList.ToArray(), serializableType2, actionSymbol == this.preConstraintActionSymbol);
-        default:
-          throw this.host.FatalError("Unexpected action symbol");
-      }
-    }
+		private Dictionary<Term, ParameterExpression> variableMap = new Dictionary<Term, ParameterExpression>();
 
-    private bool IsAdapter(IActionSymbol symbol)
-    {
-      IMember associatedMember = symbol.AssociatedMember;
-      if (associatedMember == null)
-        return false;
-      return associatedMember is IMethod ? ((IMethod) associatedMember).DeclaringType.IsAdapter : (associatedMember as IAssociation).FireMethod.DeclaringType.IsAdapter;
-    }
+		private Dictionary<Term, SerializableParameterExpression> variableSerializableMap = new Dictionary<Term, SerializableParameterExpression>();
 
-    private System.Type GetBaseTypeOfDeclaringType(IActionSymbol symbol)
-    {
-      IMember associatedMember = symbol.AssociatedMember;
-      if (associatedMember == null)
-        return (System.Type) null;
-      if (associatedMember is IMethod)
-      {
-        IMethod method = (IMethod) associatedMember;
-        return method.DeclaringType.BaseType != null ? method.DeclaringType.BaseType.RuntimeType : (System.Type) null;
-      }
-      IAssociation association = associatedMember as IAssociation;
-      return association.FireMethod.DeclaringType.BaseType != null ? association.FireMethod.DeclaringType.BaseType.RuntimeType : (System.Type) null;
-    }
+		private List<SerializableParameterExpression> variables = new List<SerializableParameterExpression>();
 
-    private SerializableExpression BuildData(
-      Term term,
-      IType contextType,
-      ICompressedState compressedState)
-    {
-      if (term == Term.Undef)
-        return (SerializableExpression) this.BuildPlaceholder(contextType);
-      TransitionSystemBuilder.ExpressionCacheKey expressionCacheKey = new TransitionSystemBuilder.ExpressionCacheKey()
-      {
-        term = term,
-        type = contextType
-      };
-      SerializableExpression serializableExpression;
-      if (term != Term.Undef && this.serializableExpressionCache.TryGetValue(expressionCacheKey, out serializableExpression))
-        return serializableExpression;
-      this.CollectVariables(term);
-      ParameterExpression parameterExpression;
-      System.Linq.Expressions.Expression expression = this.bg.ToExpression((Func<Term, System.Linq.Expressions.Expression>) (t => this.variableMap.TryGetValue(t, out parameterExpression) ? (System.Linq.Expressions.Expression) parameterExpression : (System.Linq.Expressions.Expression) null), contextType, term, compressedState);
-      if (!this.serializableExpressionCache.TryGetValue(expressionCacheKey, out serializableExpression))
-        serializableExpression = this.AddToplevelExpression(expressionCacheKey, expression);
-      return serializableExpression;
-    }
+		private HashSet<string> usedVariableNames = new HashSet<string>();
 
-    private void CollectVariables(Term term)
-    {
-      if (this.variableMap.ContainsKey(term))
-        return;
-      IType type;
-      uint index;
-      string description;
-      if (this.bg.TryGetVariable(term, out type, out index, out description, out string _))
-        this.BuildVariable(term, type, description);
-      else if (this.bg.TryGetObjectReference(term, out type, out index))
-      {
-        if (this.bg.GetType(term).IsBoxType)
-          return;
-        this.BuildVariable(term, type, "o" + index.ToString());
-      }
-      else if (this.bg.TryGetTranslation(term, out type, out Term _))
-      {
-        this.BuildVariable(term, this.bg.GetType(term), "o");
-      }
-      else
-      {
-        foreach (Term directSubTerm in this.bg.GetDirectSubTerms(term))
-          this.CollectVariables(directSubTerm);
-      }
-    }
+		private Dictionary<ExpressionCacheKey, SerializableExpression> serializableExpressionCache = new Dictionary<ExpressionCacheKey, SerializableExpression>();
 
-    private void BuildVariable(Term term, IType type, string description)
-    {
-      string name = this.MakeUniqueVarName(description);
-      ParameterExpression parameterExpression1 = System.Linq.Expressions.Expression.Parameter(type.RepresentationType.RuntimeType, name);
-      SerializableParameterExpression parameterExpression2 = (SerializableParameterExpression) this.AddToplevelExpression(new TransitionSystemBuilder.ExpressionCacheKey()
-      {
-        term = term,
-        type = type.RepresentationType
-      }, (System.Linq.Expressions.Expression) parameterExpression1);
-      this.variables.Add(parameterExpression2);
-      this.variableMap[term] = parameterExpression1;
-      this.variableSerializableMap[term] = parameterExpression2;
-    }
+		private HashSet<string> usedExpressionKeys = new HashSet<string>();
 
-    private SerializableParameterExpression BuildPlaceholder(
-      IType type)
-    {
-      string name = this.MakeUniqueVarName("_");
-      SerializableParameterExpression parameterExpression = (SerializableParameterExpression) this.AddToplevelExpression(new TransitionSystemBuilder.ExpressionCacheKey()
-      {
-        term = Term.Undef,
-        type = type
-      }, (System.Linq.Expressions.Expression) System.Linq.Expressions.Expression.Parameter(type.RuntimeType, name));
-      this.variables.Add(parameterExpression);
-      return parameterExpression;
-    }
+		private IBackground bg;
 
-    private string MakeUniqueVarName(string prefix)
-    {
-      string str = prefix;
-      int num = 1;
-      while (this.usedVariableNames.Contains(str))
-      {
-        str = prefix + (object) num;
-        ++num;
-      }
-      this.usedVariableNames.Add(str);
-      return str;
-    }
+		private IProgram program;
 
-    private SerializableExpression AddToplevelExpression(
-      TransitionSystemBuilder.ExpressionCacheKey ckey,
-      System.Linq.Expressions.Expression expression)
-    {
-      SerializableExpression serializable = ObjectModelHelpers.ToSerializable(expression);
-      string str = ((object) serializable).ToString();
-      if (this.usedExpressionKeys.Contains(str))
-        str = string.Format("{1}(#{0})", (object) this.serializableExpressionCache.Count, (object) str);
-      this.usedExpressionKeys.Add(str);
-      serializable.Key = str;
-      if (ckey.term != Term.Undef)
-        this.serializableExpressionCache[ckey] = serializable;
-      return serializable;
-    }
+		private IStatePersistenceBuilder stateBuilder;
 
-    private struct ExpressionCacheKey
-    {
-      internal Term term;
-      internal IType type;
-    }
-  }
+		private ITermDescriptionContextFactory contextFactory;
+
+		private EventAdapter eventAdapter;
+
+		private IActionSymbol preConstraintActionSymbol;
+
+		internal TransitionSystemBuilder(string name, IConfiguration config, ComponentBase host, EventAdapter eventAdapter)
+		{
+			if (name == null)
+			{
+				throw new ArgumentNullException("name");
+			}
+			if (config == null)
+			{
+				throw new ArgumentNullException("config");
+			}
+			if (host == null)
+			{
+				throw new ArgumentNullException("host");
+			}
+			if (eventAdapter == null)
+			{
+				throw new ArgumentNullException("eventAdapter");
+			}
+			this.host = host;
+			this.name = name;
+			this.config = config;
+			this.eventAdapter = eventAdapter;
+			IOptionSetManager requiredService = host.GetRequiredService<IOptionSetManager>();
+			IOptionSet optionSet = this.config.OptionSet;
+			foreach (PropertyDescriptor property in requiredService.GetProperties(Visibility.Public))
+			{
+				string switchValue = GetSwitchValue(optionSet, property);
+				configSwitches.Add(TransitionSystem.ConfigSwitch(property.Name, switchValue));
+			}
+			bg = host.GetRequiredService<IBackground>();
+			contextFactory = host.GetRequiredService<ITermDescriptionContextFactory>();
+			program = host.GetRequiredService<IProgram>();
+			stateBuilder = host.GetRequiredService<IStatePersistenceBuilderProvider>().CreateStatePersistencyBuilder();
+			labelBuilder = new StateLabelBuilder();
+			preConstraintActionSymbol = host.GetRequiredService<IConfigurationProvider>().PreConstraintActionSymbol;
+		}
+
+		private static string GetSwitchValue(IOptionSet optionSet, PropertyDescriptor p)
+		{
+			if (p.Converter != null)
+			{
+				try
+				{
+					return p.Converter.ConvertToString(optionSet.GetValue(p));
+				}
+				catch (Exception)
+				{
+					return optionSet.GetValue(p).ToString();
+				}
+			}
+			return optionSet.GetValue(p).ToString();
+		}
+
+		internal ExplorationResult BuildTransitionSystem(bool withStateContent = true)
+		{
+			foreach (IActionSymbol action in config.Actions)
+			{
+				actionMembers.Add(BuildMethod(action));
+			}
+			TransitionSystem system = TransitionSystem.Create(name, configSwitches.OrderBy((ConfigSwitch sw) => sw.Name), actionMembers.OrderBy((SerializableMemberInfo m) => m.Header), adapterTypes.OrderBy((SerializableType t) => t.Header), variables.OrderBy((SerializableParameterExpression v) => v.Name), initialStates.OrderBy((string s) => s), allStates.OrderBy((State s) => s.Label), from t in transitions
+				orderby t.Source, t.Action.Symbol.Member.Header, t.Target
+				select t);
+			if (withStateContent)
+			{
+				stateBuilder.BuildStateObjectModel();
+				List<StateEntity> list = new List<StateEntity>();
+				foreach (KeyValuePair<MachineState, State> machineState in machineStates)
+				{
+					StateEntity item = new StateEntity(machineState.Value.Label, machineState.Value.Flags, machineState.Value.Description, stateBuilder.GetStateContent(machineState.Key.Data));
+					list.Add(item);
+				}
+				SharedEntitySet sharedEntitySet = stateBuilder.SharedEntitySet;
+				return new ExplorationResult(system, sharedEntitySet, list, new ExplorationResultExtensions());
+			}
+			return new ExplorationResult(system, new SharedEntitySet(), Enumerable.Empty<StateEntity>(), new ExplorationResultExtensions());
+		}
+
+		internal void AddStep(ExplorationStep step, MachineState? subsumptionRelatedState, SubsumptionResult relatedStateRelationKind)
+		{
+			State state = AddState(step.SourceState, step.SourceFlags);
+			State state2 = AddState(step.TargetState, step.TargetFlags);
+			if (subsumptionRelatedState.HasValue)
+			{
+				State state3 = state2;
+				State state4 = AddState(subsumptionRelatedState.Value, step.TargetFlags);
+				if (relatedStateRelationKind == SubsumptionResult.ThisSubsumesOther)
+				{
+					State state5 = state3;
+					state3 = state4;
+					state4 = state5;
+				}
+				state3.RepresentativeState = state4.Label;
+				state3.RelationKind = StateRelationKind.Subsumed;
+			}
+			ITermDescriptionContext context = contextFactory.CreateContext(TermDescriptionFlags.DefaultUserDescription | TermDescriptionFlags.ReEscapingInString, step.IntermediateTargetState.Data);
+			ActionInvocation action = BuildAction(step.Action, context, step.TargetState.Data);
+			string[] array = null;
+			string[] array2 = null;
+			if (step.Requirements == null)
+			{
+				array = new string[0];
+				array2 = new string[0];
+			}
+			else
+			{
+				array = step.Requirements.CapturedRequirements.ToArray();
+				array2 = step.Requirements.AssumeCapturedRequirements.ToArray();
+			}
+			TermSetBuilder constraints = CalculatePostConstraints(step);
+			IOrderedEnumerable<Constraint> postConstraints = from t in FilterAndConvertConstraints(constraints)
+				select TransitionSystem.Constraint(BuildData(t, program.SystemTypes.Boolean, step.TargetState.Data), context.ToString(program.SystemTypes.Boolean, t)) into c
+				orderby c.Text
+				select c;
+			IOrderedEnumerable<Constraint> preConstraints = from t in FilterAndConvertConstraints(step.PreConstraints)
+				select TransitionSystem.Constraint(BuildData(t, program.SystemTypes.Boolean, step.TargetState.Data), context.ToString(program.SystemTypes.Boolean, t)) into c
+				orderby c.Text
+				select c;
+			TermSetBuilder termSetBuilder = new TermSetBuilder(step.FreedVariables);
+			termSetBuilder.IntersectWith(variableMap.Keys);
+			IOrderedEnumerable<SerializableParameterExpression> variablesToUnbind = from v in termSetBuilder
+				select variableSerializableMap[v] into v
+				orderby v.Name
+				select v;
+			Transition item = TransitionSystem.Transition(state.Label, action, state2.Label, preConstraints, postConstraints, variablesToUnbind, array, array2);
+			transitions.Add(item);
+		}
+
+		private TermSetBuilder CalculatePostConstraints(ExplorationStep step)
+		{
+			TermSet context = step.SourceState.Data.Context;
+			TermSet context2 = step.IntermediateTargetState.Data.Context;
+			TermSetBuilder termSetBuilder = bg.MakeTermSetBuilder();
+			if (step.Action.Symbol.Kind == ActionKind.Return || (step.Action.Symbol.Kind == ActionKind.Event && step.Action.Symbol != preConstraintActionSymbol))
+			{
+				termSetBuilder.UnionWith(context2);
+				termSetBuilder.ExceptWith(context);
+				ICompressedState csource = step.SourceState.Data;
+				ICompressedState ctarget = step.IntermediateTargetState.Data;
+				IActiveState asource = csource.Uncompress();
+				IActiveState atarget = ctarget.Uncompress();
+				foreach (Term item in context)
+				{
+					if (bg.FindInTerms((Term t) => bg.IsVariable(t) && !csource.IsExistential(t) && !asource.IsVariableBound(t) && !ctarget.IsExistential(t) && atarget.IsVariableBound(t), item))
+					{
+						termSetBuilder.Add(item);
+					}
+				}
+				if (termSetBuilder.Count > 0)
+				{
+					NarrowReachableConstraints(step.Action, termSetBuilder, atarget.IsVariableBound);
+				}
+			}
+			return termSetBuilder;
+		}
+
+		private List<Term> FilterAndConvertConstraints(IEnumerable<Term> constraints)
+		{
+			List<Term> list = new List<Term>();
+			foreach (Term constraint in constraints)
+			{
+				if (bg.IsDomainPredicate(constraint))
+				{
+					Term term = bg.ConvertDomainPredicateToExplicitConstraint(constraint);
+					if (term != bg.True)
+					{
+						list.Add(term);
+					}
+				}
+				else if (!bg.IsFunctionApplication(constraint))
+				{
+					list.Add(constraint);
+				}
+			}
+			return list;
+		}
+
+		private bool HasCycle(State thisState, State otherState)
+		{
+			State value = otherState;
+			while (value.RepresentativeState != null && statesMap.TryGetValue(value.RepresentativeState, out value))
+			{
+				if (value.Label == thisState.Label)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private void NarrowReachableConstraints(Microsoft.ActionMachines.Action action, TermSetBuilder constraints, Predicate<Term> validConstraintVariableChecker)
+		{
+			TermSetBuilder termSetBuilder = bg.MakeTermSetBuilder();
+			if (action.Arguments != null)
+			{
+				int num = 0;
+				Term[] arguments = action.Arguments;
+				foreach (Term term in arguments)
+				{
+					if (action.Symbol.Parameters[num].Kind != ParameterKind.Receiver)
+					{
+						CollectVariablesAndTranslations(termSetBuilder, term);
+					}
+					num++;
+				}
+			}
+			HashSet<Term> hashSet = new HashSet<Term>(constraints);
+			constraints.Clear();
+			Dictionary<Term, TermSetBuilder> dictionary = new Dictionary<Term, TermSetBuilder>();
+			bool flag = true;
+			while (flag)
+			{
+				flag = false;
+				foreach (Term item in hashSet.ToList())
+				{
+					TermSetBuilder value;
+					if (!dictionary.TryGetValue(item, out value))
+					{
+						value = bg.MakeTermSetBuilder();
+						CollectVariablesAndTranslations(value, item);
+						if (value.Count == 0)
+						{
+							hashSet.Remove(item);
+							continue;
+						}
+						dictionary[item] = value;
+					}
+					bool flag2 = false;
+					foreach (Term item2 in value)
+					{
+						if (termSetBuilder.Contains(item2) || (bg.IsVariable(item2) && validConstraintVariableChecker(item2)))
+						{
+							flag2 = true;
+							break;
+						}
+					}
+					if (flag2)
+					{
+						constraints.Add(item);
+						termSetBuilder.UnionWith(value);
+						hashSet.Remove(item);
+						flag = true;
+					}
+				}
+			}
+		}
+
+		private void CollectVariablesAndTranslations(TermSetBuilder tsb, Term term)
+		{
+			IType baseType;
+			uint index;
+			string description;
+			string baseName;
+			if (bg.TryGetVariable(term, out baseType, out index, out description, out baseName))
+			{
+				tsb.Add(term);
+				return;
+			}
+			Term value;
+			if (bg.TryGetTranslation(term, out baseType, out value))
+			{
+				tsb.Add(term);
+				return;
+			}
+			bg.DoOnAllDirectSubTerms(term, delegate(Term t)
+			{
+				CollectVariablesAndTranslations(tsb, t);
+			});
+		}
+
+		internal State AddState(MachineState machineState, ExplorationStateFlags explorationFlags)
+		{
+			State value;
+			if (machineStates.TryGetValue(machineState, out value))
+			{
+				UpdateStoppedReasonFlags(value, explorationFlags);
+				return value;
+			}
+			stateBuilder.AddState(machineState.Data);
+			bool flag = (explorationFlags & ExplorationStateFlags.IsStart) != 0;
+			StateFlags flags = StateFlags.None;
+			flags = flags.SetStateKindFlag(machineState.Control.Kind);
+			flags = flags.SetStoppedReasonFlags(explorationFlags);
+			List<Probe> list = new List<Probe>();
+			foreach (ProbeEntry item in stateBuilder.BuildProbeEntries(machineState.Data))
+			{
+				ProbeValueKind kind = (item.IsException ? ProbeValueKind.Exception : ProbeValueKind.Normal);
+				SerializableType type = item.Type.RuntimeType.ToSerializable();
+				list.Add(TransitionSystem.Probe(item.Name, item.Value, type, kind));
+			}
+			string label = labelBuilder.AddState(machineState);
+			value = TransitionSystem.State(label, false, machineState.Description, flags, list);
+			if (flag)
+			{
+				initialStates.Add(value.Label);
+			}
+			allStates.Add(value);
+			machineStates[machineState] = value;
+			statesMap[value.Label] = value;
+			return value;
+		}
+
+		private void UpdateStoppedReasonFlags(State state, ExplorationStateFlags explorationFlags)
+		{
+			if (explorationFlags != 0)
+			{
+				StateFlags flags = StateFlags.None;
+				flags = flags.SetStoppedReasonFlags(explorationFlags);
+				state.Flags |= flags;
+			}
+		}
+
+		private ActionInvocation BuildAction(Microsoft.ActionMachines.Action action, ITermDescriptionContext context, ICompressedState compressedState)
+		{
+			ActionSymbolKind kind = ((action.Symbol.Kind == ActionKind.Call) ? ActionSymbolKind.Call : ((action.Symbol.Kind == ActionKind.Return) ? ActionSymbolKind.Return : ((action.Symbol.Kind == ActionKind.Throw) ? ActionSymbolKind.Throw : ((action.Symbol.Kind == ActionKind.Event && action.Symbol == preConstraintActionSymbol) ? ActionSymbolKind.PreConstraintCheck : ((action.Symbol.Kind == ActionKind.Event) ? ActionSymbolKind.Event : ActionSymbolKind.Invocation)))));
+			SerializableMemberInfo serializableMemberInfo = BuildMetadata(action);
+			actionMembers.Add(serializableMemberInfo);
+			ActionSymbol symbol = TransitionSystem.ActionSymbol(kind, serializableMemberInfo);
+			List<SerializableExpression> list = new List<SerializableExpression>();
+			if (action.Arguments != null)
+			{
+				for (int i = 0; i < action.Arguments.Length; i++)
+				{
+					Term term = action.Arguments[i];
+					IType type = action.Symbol.Parameters[i].Type;
+					list.Add(BuildData(term, type, compressedState));
+				}
+			}
+			return TransitionSystem.ActionInvocation(symbol, list, action.ToString(context));
+		}
+
+		private SerializableMemberInfo BuildMetadata(Microsoft.ActionMachines.Action action)
+		{
+			if ((action.Symbol.Kind & ActionKind.Call) != 0 && (action.Symbol.Kind & ActionKind.AllObserved) != 0)
+			{
+				eventAdapter.ProgressMessage(VerbosityLevel.Medium, string.Format("Action {0} is not a method invocation or an event.", action.Symbol.ToString()));
+				return null;
+			}
+			return BuildMethod(action.Symbol);
+		}
+
+		private SerializableMemberInfo BuildMethod(IActionSymbol actionSymbol)
+		{
+			if (actionSymbol.CompoundActionSymbol != null)
+			{
+				actionSymbol = actionSymbol.CompoundActionSymbol;
+			}
+			bool isPublic = actionSymbol.AssociatedMember == null || actionSymbol.AssociatedMember.IsPublic;
+			Type baseTypeOfDeclaringType = GetBaseTypeOfDeclaringType(actionSymbol);
+			SerializableType serializableType = SerializableMemberInfo.Type(actionSymbol.ContainerName, isPublic, TypeCode.Object, (baseTypeOfDeclaringType == null) ? null : baseTypeOfDeclaringType.ToSerializable());
+			if (IsAdapter(actionSymbol))
+			{
+				adapterTypes.Add(serializableType);
+			}
+			bool isStatic = actionSymbol.IsStatic;
+			SerializableType serializableType2 = null;
+			List<SerializableParameterInfo> list = new List<SerializableParameterInfo>();
+			ActionParameter[] parameters = actionSymbol.Parameters;
+			for (int i = 0; i < parameters.Length; i++)
+			{
+				ActionParameter actionParameter = parameters[i];
+				switch (actionParameter.Kind)
+				{
+				case ParameterKind.In:
+					list.Add(SerializableMemberInfo.Parameter(actionParameter.Type.RuntimeType.ToSerializable(), actionParameter.Name, false));
+					break;
+				case ParameterKind.Out:
+				case ParameterKind.Ref:
+					list.Add(SerializableMemberInfo.Parameter(actionParameter.Type.RuntimeType.MakeByRefType().ToSerializable(), actionParameter.Name, actionParameter.Kind != ParameterKind.Ref));
+					break;
+				case ParameterKind.Return:
+					serializableType2 = actionParameter.Type.RuntimeType.ToSerializable();
+					break;
+				}
+			}
+			switch (actionSymbol.Kind)
+			{
+			case ActionKind.Call:
+			case ActionKind.MethodCompound:
+			{
+				if (actionSymbol.IsConstructor)
+				{
+					return SerializableMemberInfo.Constructor(serializableType, isPublic, isStatic, list.ToArray());
+				}
+				Microsoft.SpecExplorer.ObjectModel.AssociationReference associationReference = null;
+				IMethod method = (IMethod)actionSymbol.AssociatedMember;
+				if (method != null && method.AssociationReferences != null && method.AssociationReferences.Length > 0)
+				{
+					SerializablePropertyInfo serializablePropertyInfo = SerializableMemberInfo.Property(serializableType, isPublic, isStatic, method.AssociationReferences[0].Association.ShortName, serializableType2);
+					actionMembers.Add(serializablePropertyInfo);
+					if (method.AssociationReferences[0].Kind == Microsoft.Xrt.AssociationReferenceKind.SetMethod)
+					{
+						Microsoft.SpecExplorer.ObjectModel.AssociationReference associationReference2 = new Microsoft.SpecExplorer.ObjectModel.AssociationReference();
+						associationReference2.Association = serializablePropertyInfo;
+						associationReference2.Kind = Microsoft.SpecExplorer.ObjectModel.AssociationReferenceKind.SetMethod;
+						associationReference = associationReference2;
+					}
+					else
+					{
+						Microsoft.SpecExplorer.ObjectModel.AssociationReference associationReference3 = new Microsoft.SpecExplorer.ObjectModel.AssociationReference();
+						associationReference3.Association = serializablePropertyInfo;
+						associationReference3.Kind = Microsoft.SpecExplorer.ObjectModel.AssociationReferenceKind.GetMethod;
+						associationReference = associationReference3;
+					}
+				}
+				return SerializableMemberInfo.Method(serializableType, isPublic, isStatic, actionSymbol.Name, null, list.ToArray(), serializableType2, associationReference);
+			}
+			case ActionKind.Event:
+				return SerializableMemberInfo.Event(serializableType, isPublic, isStatic, actionSymbol.Name, list.ToArray(), serializableType2, (actionSymbol == preConstraintActionSymbol) ? true : false);
+			default:
+				throw host.FatalError("Unexpected action symbol");
+			}
+		}
+
+		private bool IsAdapter(IActionSymbol symbol)
+		{
+			IMember associatedMember = symbol.AssociatedMember;
+			if (associatedMember == null)
+			{
+				return false;
+			}
+			if (associatedMember is IMethod)
+			{
+				IMethod method = (IMethod)associatedMember;
+				return method.DeclaringType.IsAdapter;
+			}
+			IAssociation association = associatedMember as IAssociation;
+			return association.FireMethod.DeclaringType.IsAdapter;
+		}
+
+		private Type GetBaseTypeOfDeclaringType(IActionSymbol symbol)
+		{
+			IMember associatedMember = symbol.AssociatedMember;
+			if (associatedMember == null)
+			{
+				return null;
+			}
+			if (associatedMember is IMethod)
+			{
+				IMethod method = (IMethod)associatedMember;
+				if (method.DeclaringType.BaseType != null)
+				{
+					return method.DeclaringType.BaseType.RuntimeType;
+				}
+				return null;
+			}
+			IAssociation association = associatedMember as IAssociation;
+			if (association.FireMethod.DeclaringType.BaseType != null)
+			{
+				return association.FireMethod.DeclaringType.BaseType.RuntimeType;
+			}
+			return null;
+		}
+
+		private SerializableExpression BuildData(Term term, IType contextType, ICompressedState compressedState)
+		{
+			if (term == Term.Undef)
+			{
+				return BuildPlaceholder(contextType);
+			}
+			ExpressionCacheKey expressionCacheKey = default(ExpressionCacheKey);
+			expressionCacheKey.term = term;
+			expressionCacheKey.type = contextType;
+			ExpressionCacheKey expressionCacheKey2 = expressionCacheKey;
+			SerializableExpression value;
+			if (term != Term.Undef && serializableExpressionCache.TryGetValue(expressionCacheKey2, out value))
+			{
+				return value;
+			}
+			CollectVariables(term);
+			ParameterExpression value2;
+			Expression expression = bg.ToExpression((Term t) => variableMap.TryGetValue(t, out value2) ? value2 : null, contextType, term, compressedState);
+			if (!serializableExpressionCache.TryGetValue(expressionCacheKey2, out value))
+			{
+				return AddToplevelExpression(expressionCacheKey2, expression);
+			}
+			return value;
+		}
+
+		private void CollectVariables(Term term)
+		{
+			if (variableMap.ContainsKey(term))
+			{
+				return;
+			}
+			IType baseType;
+			uint index;
+			string description;
+			string baseName;
+			if (bg.TryGetVariable(term, out baseType, out index, out description, out baseName))
+			{
+				BuildVariable(term, baseType, description);
+				return;
+			}
+			if (bg.TryGetObjectReference(term, out baseType, out index))
+			{
+				if (!bg.GetType(term).IsBoxType)
+				{
+					BuildVariable(term, baseType, "o" + index);
+				}
+				return;
+			}
+			Term value;
+			if (bg.TryGetTranslation(term, out baseType, out value))
+			{
+				BuildVariable(term, bg.GetType(term), "o");
+				return;
+			}
+			Term[] directSubTerms = bg.GetDirectSubTerms(term);
+			foreach (Term term2 in directSubTerms)
+			{
+				CollectVariables(term2);
+			}
+		}
+
+		private void BuildVariable(Term term, IType type, string description)
+		{
+			string text = MakeUniqueVarName(description);
+			ParameterExpression parameterExpression = Expression.Parameter(type.RepresentationType.RuntimeType, text);
+			SerializableParameterExpression serializableParameterExpression = (SerializableParameterExpression)AddToplevelExpression(new ExpressionCacheKey
+			{
+				term = term,
+				type = type.RepresentationType
+			}, parameterExpression);
+			variables.Add(serializableParameterExpression);
+			variableMap[term] = parameterExpression;
+			variableSerializableMap[term] = serializableParameterExpression;
+		}
+
+		private SerializableParameterExpression BuildPlaceholder(IType type)
+		{
+			string text = MakeUniqueVarName("_");
+			ParameterExpression expression = Expression.Parameter(type.RuntimeType, text);
+			SerializableParameterExpression serializableParameterExpression = (SerializableParameterExpression)AddToplevelExpression(new ExpressionCacheKey
+			{
+				term = Term.Undef,
+				type = type
+			}, expression);
+			variables.Add(serializableParameterExpression);
+			return serializableParameterExpression;
+		}
+
+		private string MakeUniqueVarName(string prefix)
+		{
+			string text = prefix;
+			int num = 1;
+			while (usedVariableNames.Contains(text))
+			{
+				text = prefix + num;
+				num++;
+			}
+			usedVariableNames.Add(text);
+			return text;
+		}
+
+		private SerializableExpression AddToplevelExpression(ExpressionCacheKey ckey, Expression expression)
+		{
+			SerializableExpression serializableExpression = expression.ToSerializable();
+			string text = serializableExpression.ToString();
+			if (usedExpressionKeys.Contains(text))
+			{
+				text = string.Format("{1}(#{0})", serializableExpressionCache.Count, text);
+			}
+			usedExpressionKeys.Add(text);
+			serializableExpression.Key = text;
+			if (ckey.term != Term.Undef)
+			{
+				serializableExpressionCache[ckey] = serializableExpression;
+			}
+			return serializableExpression;
+		}
+	}
 }
