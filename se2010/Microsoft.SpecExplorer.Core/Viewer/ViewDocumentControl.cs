@@ -696,9 +696,9 @@ namespace Microsoft.SpecExplorer.Viewer
       StateFlags stateFlags = (StateFlags) 0;
       foreach (DisplayNode node in this.currentDisplayGraph.Nodes)
       {
-        if ((node.StateFlags & ObjectModel.StateFlags.Accepting) != null)
+        if (node.StateFlags == ObjectModel.StateFlags.Accepting)
           ++displayErrorCount;
-        if ((node.StateFlags & ObjectModel.StateFlags.BoundStopped) != null)
+        if (node.StateFlags == ObjectModel.StateFlags.BoundStopped)
         {
           ++displayBoundCount;
           stateFlags = stateFlags | node.StateFlags;
@@ -708,17 +708,17 @@ namespace Microsoft.SpecExplorer.Viewer
         return;
       StringBuilder stringBuilder = new StringBuilder();
       stringBuilder.Append("[");
-      if ((stateFlags & ObjectModel.StateFlags.StateBoundStopped) != null)
+      if (stateFlags == ObjectModel.StateFlags.StateBoundStopped)
         stringBuilder.Append("State, ");
-      if ((stateFlags & ObjectModel.StateFlags.StepBoundStopped) != null)
+      if (stateFlags == ObjectModel.StateFlags.StepBoundStopped)
         stringBuilder.Append("Step, ");
-      if ((stateFlags & ObjectModel.StateFlags.PathDepthBoundStopped) != null)
+      if (stateFlags == ObjectModel.StateFlags.PathDepthBoundStopped)
         stringBuilder.Append("Path depth, ");
-      if ((stateFlags & ObjectModel.StateFlags.StepsPerStateBoundStopped) != null)
+      if (stateFlags == ObjectModel.StateFlags.StepsPerStateBoundStopped)
         stringBuilder.Append("Steps per state, ");
-      if ((stateFlags & ObjectModel.StateFlags.ExplorationErrorBoundStopped) != null)
+      if (stateFlags == ObjectModel.StateFlags.ExplorationErrorBoundStopped)
         stringBuilder.Append("Exploration error, ");
-      stringBuilder.Remove(stringBuilder.Length - 2, 2);
+      //stringBuilder.Remove(stringBuilder.Length - 2, 2);
       stringBuilder.Append("]");
       boundKind = stringBuilder.ToString();
     }

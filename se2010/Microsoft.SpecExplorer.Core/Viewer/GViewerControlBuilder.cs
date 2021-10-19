@@ -97,9 +97,9 @@ namespace Microsoft.SpecExplorer.Viewer
       this.displayNodeToDrawNodeDict[node] = node1;
       if (node.IsStart)
         node1.Attr.FillColor = Color.LightGray;
-      if ((node.StateFlags & ObjectModel.StateFlags.BoundStopped) != null)
+      if (node.StateFlags == ObjectModel.StateFlags.BoundStopped)
         node1.Attr.FillColor = Color.Orange;
-      if ((node.StateFlags & ObjectModel.StateFlags.Error) > 0)
+      if (node.StateFlags == ObjectModel.StateFlags.Error)
         node1.Attr.FillColor = Color.Red;
       if (node.Kind == NodeKind.Accepting)
       {

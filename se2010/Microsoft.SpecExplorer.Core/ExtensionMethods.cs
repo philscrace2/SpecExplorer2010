@@ -68,14 +68,20 @@ namespace Microsoft.SpecExplorer
       return startNode != null;
     }
 
-    public static NodeKind ToNodeKind(this StateFlags stateFlag)
+    public static Microsoft.GraphTraversal.NodeKind ToNodeKind(this StateFlags stateFlag)
     {
-      if ((stateFlag) != null)
-        return NodeKind.Accepting;
-      return (stateFlag) != null ? NodeKind.Error : NodeKind.Regular;
+        if (StateFlags.Accepting == stateFlag)
+        {
+            return Microsoft.GraphTraversal.NodeKind.Accepting;
+        }
+        if (StateFlags.Error == stateFlag)
+        {
+            return Microsoft.GraphTraversal.NodeKind.Error;
+        }
+        return Microsoft.GraphTraversal.NodeKind.Regular;
     }
 
-    public static bool IsObservable(this ActionInvocation action) => action != null && action.Symbol != null && action.Symbol.Kind.Equals(1);
+        public static bool IsObservable(this ActionInvocation action) => action != null && action.Symbol != null && action.Symbol.Kind.Equals(1);
 
     public static bool ShouldSaveTestResult(
       this TestResult result,
