@@ -1,11 +1,3 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.Viewer.ViewDefinitionManager
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.SpecExplorer.Properties;
-using Microsoft.Xrt;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,202 +5,250 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Microsoft.SpecExplorer.Properties;
+using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer.Viewer
 {
-  public class ViewDefinitionManager : ComponentBase, IViewDefinitionManager
-  {
-    private Dictionary<string, IViewDefinition> viewDefinitionDict;
-    private ViewDefinition defaultView;
-    private IHost host;
-    private Func<Stream> deferredLoadingStreamProvider;
+	public class ViewDefinitionManager : ComponentBase, IViewDefinitionManager
+	{
+		private Dictionary<string, IViewDefinition> viewDefinitionDict;
 
-    public event EventHandler<ViewDefinitionUpdateEventArgs> ViewDefinitionUpdate;
+		private ViewDefinition defaultView;
 
-    public ViewDefinitionManager(IHost host)
-    {
-      this.defaultView = new ViewDefinition();
-      this.defaultView.Name = "Default";
-      this.defaultView.IsDefault = true;
-      this.defaultView.ViewCollapseSteps = true;
-      this.host = host;
-      this.viewDefinitionDict = new Dictionary<string, IViewDefinition>();
-      this.Add((IViewDefinition) this.defaultView);
-      this.CurrentView = (IViewDefinition) this.defaultView;
-    }
+		private IHost host;
 
-    public IEnumerable<IViewDefinition> Views
-    {
-      get
-      {
-        if (this.deferredLoadingStreamProvider != null)
-          this.DoDeferredLoading();
-        return (IEnumerable<IViewDefinition>) this.viewDefinitionDict.Values;
-      }
-      set
-      {
-        this.viewDefinitionDict.Clear();
-        this.Add(value);
-      }
-    }
+		private Func<Stream> deferredLoadingStreamProvider;
 
-    public IViewDefinition CurrentView { get; set; }
+		public IEnumerable<IViewDefinition> Views
+		{
+			get
+			{
+				if (deferredLoadingStreamProvider != null)
+				{
+					DoDeferredLoading();
+				}
+				return viewDefinitionDict.Values;
+			}
+			set
+			{
+				viewDefinitionDict.Clear();
+				Add(value);
+			}
+		}
 
-    public IEnumerable<IViewDefinition> CustomizedViews
-    {
-      get
-      {
-        if (this.deferredLoadingStreamProvider != null)
-          this.DoDeferredLoading();
-        List<IViewDefinition> viewDefinitionList = new List<IViewDefinition>();
-        foreach (IViewDefinition viewDefinition in this.viewDefinitionDict.Values)
-        {
-          if (!viewDefinition.IsDefault)
-            viewDefinitionList.Add(viewDefinition);
-        }
-        return (IEnumerable<IViewDefinition>) viewDefinitionList;
-      }
-    }
+		public IViewDefinition CurrentView { get; set; }
 
-    public IEnumerable<IViewDefinition> DefaultViews
-    {
-      get
-      {
-        if (this.deferredLoadingStreamProvider != null)
-          this.DoDeferredLoading();
-        List<IViewDefinition> viewDefinitionList = new List<IViewDefinition>();
-        foreach (IViewDefinition viewDefinition in this.viewDefinitionDict.Values)
-        {
-          if (viewDefinition.IsDefault)
-            viewDefinitionList.Add(viewDefinition);
-        }
-        return (IEnumerable<IViewDefinition>) viewDefinitionList;
-      }
-    }
+		public IEnumerable<IViewDefinition> CustomizedViews
+		{
+			get
+			{
+				if (deferredLoadingStreamProvider != null)
+				{
+					DoDeferredLoading();
+				}
+				List<IViewDefinition> list = new List<IViewDefinition>();
+				foreach (IViewDefinition value in viewDefinitionDict.Values)
+				{
+					if (!value.IsDefault)
+					{
+						list.Add(value);
+					}
+				}
+				return list;
+			}
+		}
 
-    public void Add(IViewDefinition viewDefinition)
-    {
-      if (this.viewDefinitionDict.TryGetValue(viewDefinition.Name, out IViewDefinition _))
-        throw new InvalidOperationException("view definition already in view definition manager.");
-      this.viewDefinitionDict.Add(viewDefinition.Name, viewDefinition);
-    }
+		public IEnumerable<IViewDefinition> DefaultViews
+		{
+			get
+			{
+				if (deferredLoadingStreamProvider != null)
+				{
+					DoDeferredLoading();
+				}
+				List<IViewDefinition> list = new List<IViewDefinition>();
+				foreach (IViewDefinition value in viewDefinitionDict.Values)
+				{
+					if (value.IsDefault)
+					{
+						list.Add(value);
+					}
+				}
+				return list;
+			}
+		}
 
-    public void Add(IEnumerable<IViewDefinition> viewDefinitions)
-    {
-      foreach (IViewDefinition viewDefinition in viewDefinitions)
-        this.Add(viewDefinition);
-    }
+		public event EventHandler<ViewDefinitionUpdateEventArgs> ViewDefinitionUpdate;
 
-    public void Remove(IViewDefinition viewDefinition) => this.viewDefinitionDict.Remove(viewDefinition.Name);
+		public ViewDefinitionManager(IHost host)
+		{
+			defaultView = new ViewDefinition();
+			defaultView.Name = "Default";
+			defaultView.IsDefault = true;
+			defaultView.ViewCollapseSteps = true;
+			this.host = host;
+			viewDefinitionDict = new Dictionary<string, IViewDefinition>();
+			Add(defaultView);
+			CurrentView = defaultView;
+		}
 
-    public void Reset()
-    {
-      this.viewDefinitionDict.Clear();
-      this.Add((IViewDefinition) this.defaultView);
-    }
+		public void Add(IViewDefinition viewDefinition)
+		{
+			IViewDefinition value;
+			if (viewDefinitionDict.TryGetValue(viewDefinition.Name, out value))
+			{
+				throw new InvalidOperationException("view definition already in view definition manager.");
+			}
+			viewDefinitionDict.Add(viewDefinition.Name, viewDefinition);
+		}
 
-    public bool TryGetViewDefinition(string name, out IViewDefinition viewDefinition) => this.viewDefinitionDict.TryGetValue(name, out viewDefinition);
+		public void Add(IEnumerable<IViewDefinition> viewDefinitions)
+		{
+			foreach (IViewDefinition viewDefinition in viewDefinitions)
+			{
+				Add(viewDefinition);
+			}
+		}
 
-    public void SetDeferredLoading(Func<Stream> streamProvider) => this.deferredLoadingStreamProvider = streamProvider;
+		public void Remove(IViewDefinition viewDefinition)
+		{
+			viewDefinitionDict.Remove(viewDefinition.Name);
+		}
 
-    private void DoDeferredLoading()
-    {
-      try
-      {
-        Stream s = this.deferredLoadingStreamProvider();
-        if (s == null)
-          return;
-        using (s)
-          this.host.RunProtected((ProtectedAction) (() => this.Load(s)));
-      }
-      finally
-      {
-        this.deferredLoadingStreamProvider = (Func<Stream>) null;
-      }
-    }
+		public void Reset()
+		{
+			viewDefinitionDict.Clear();
+			Add(defaultView);
+		}
 
-    public void UpdateEventRaise(
-      IEnumerable<IViewDefinition> updatedViewDefinitions)
-    {
-      if (this.ViewDefinitionUpdate == null)
-        return;
-      this.ViewDefinitionUpdate((object) this, new ViewDefinitionUpdateEventArgs(updatedViewDefinitions));
-    }
+		public bool TryGetViewDefinition(string name, out IViewDefinition viewDefinition)
+		{
+			return viewDefinitionDict.TryGetValue(name, out viewDefinition);
+		}
 
-    public void Store(Stream outputStream) => this.Store((IEnumerable<IViewDefinition>) this.viewDefinitionDict.Values, outputStream);
+		public void SetDeferredLoading(Func<Stream> streamProvider)
+		{
+			deferredLoadingStreamProvider = streamProvider;
+		}
 
-    public void Store(IEnumerable<IViewDefinition> viewDefinitions, Stream outputStream)
-    {
-      Microsoft.SpecExplorer.Viewer.Views views = new Microsoft.SpecExplorer.Viewer.Views();
-      HashSet<string> stringSet = new HashSet<string>();
-      List<ViewDefinition> viewDefinitionList = new List<ViewDefinition>();
-      foreach (ViewDefinition viewDefinition in viewDefinitions)
-      {
-        if (!stringSet.Add(viewDefinition.Name))
-        {
-          this.host.NotificationDialog(Resources.SpecExplorer, string.Format("Duplicate view name: {0}.", (object) viewDefinition.Name));
-          return;
-        }
-        if (!viewDefinition.IsDefault)
-          viewDefinitionList.Add(viewDefinition);
-      }
-      views.ViewList = viewDefinitionList.ToArray();
-      XmlSerializer xmlSerializer = new XmlSerializer(typeof (Microsoft.SpecExplorer.Viewer.Views));
-      try
-      {
-        using (XmlTextWriter xmlTextWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
-        {
-          xmlTextWriter.Formatting = Formatting.Indented;
-          xmlSerializer.Serialize((XmlWriter) xmlTextWriter, (object) views);
-          xmlTextWriter.Flush();
-          xmlTextWriter.Close();
-        }
-      }
-      catch (InvalidOperationException ex)
-      {
-        throw new ViewDefinitionManagerException(ex.Message, (Exception) ex);
-      }
-    }
+		private void DoDeferredLoading()
+		{
+			try
+			{
+				Stream s = deferredLoadingStreamProvider();
+				if (s == null)
+				{
+					return;
+				}
+				using (s)
+				{
+					host.RunProtected(delegate
+					{
+						Load(s);
+					});
+				}
+			}
+			finally
+			{
+				deferredLoadingStreamProvider = null;
+			}
+		}
 
-    public void Load(Stream inputStream)
-    {
-      List<IViewDefinition> viewDefinitionList = new List<IViewDefinition>();
-      viewDefinitionList.Add((IViewDefinition) this.defaultView);
-      XmlReader xmlReader = (XmlReader) null;
-      XmlReader schemaDocument = (XmlReader) null;
-      try
-      {
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof (Microsoft.SpecExplorer.Viewer.Views));
-        XmlReaderSettings settings = new XmlReaderSettings();
-        schemaDocument = XmlReader.Create((TextReader) new StringReader(Resources.ViewDefinitionSchema));
-        settings.Schemas.Add((string) null, schemaDocument);
-        settings.ValidationType = ValidationType.Schema;
-        settings.ValidationEventHandler += new ValidationEventHandler(this.ViewDefinitionValidationEventHandler);
-        settings.ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings;
-        if (inputStream.Length > 0L)
-        {
-          xmlReader = XmlReader.Create(inputStream, settings);
-          Microsoft.SpecExplorer.Viewer.Views views = (Microsoft.SpecExplorer.Viewer.Views) xmlSerializer.Deserialize(xmlReader);
-          viewDefinitionList.AddRange((IEnumerable<IViewDefinition>) views.ViewList);
-        }
-      }
-      catch (InvalidOperationException ex)
-      {
-        throw new ViewDefinitionManagerException(ex.Message);
-      }
-      finally
-      {
-        xmlReader?.Close();
-        schemaDocument?.Close();
-      }
-      this.viewDefinitionDict.Clear();
-      this.Add((IEnumerable<IViewDefinition>) viewDefinitionList);
-    }
+		public void UpdateEventRaise(IEnumerable<IViewDefinition> updatedViewDefinitions)
+		{
+			if (this.ViewDefinitionUpdate != null)
+			{
+				this.ViewDefinitionUpdate(this, new ViewDefinitionUpdateEventArgs(updatedViewDefinitions));
+			}
+		}
 
-    private void ViewDefinitionValidationEventHandler(object sender, ValidationEventArgs e)
-    {
-      this.host.DiagMessage(DiagnosisKind.Warning, string.Format("Schema Validation Failed: {0} at line {1} column {2}.", (object) e.Message, (object) e.Exception.LineNumber, (object) e.Exception.LinePosition), (object) null);
-      throw new InvalidOperationException(e.Message);
-    }
-  }
+		public void Store(Stream outputStream)
+		{
+			Store(viewDefinitionDict.Values, outputStream);
+		}
+
+		public void Store(IEnumerable<IViewDefinition> viewDefinitions, Stream outputStream)
+		{
+			Views views = new Views();
+			HashSet<string> hashSet = new HashSet<string>();
+			List<ViewDefinition> list = new List<ViewDefinition>();
+			foreach (ViewDefinition viewDefinition in viewDefinitions)
+			{
+				if (!hashSet.Add(viewDefinition.Name))
+				{
+					host.NotificationDialog(Resources.SpecExplorer, string.Format("Duplicate view name: {0}.", viewDefinition.Name));
+					return;
+				}
+				if (!viewDefinition.IsDefault)
+				{
+					list.Add(viewDefinition);
+				}
+			}
+			views.ViewList = list.ToArray();
+			XmlSerializer xmlSerializer = new XmlSerializer(typeof(Views));
+			try
+			{
+				using (XmlTextWriter xmlTextWriter = new XmlTextWriter(outputStream, Encoding.UTF8))
+				{
+					xmlTextWriter.Formatting = Formatting.Indented;
+					xmlSerializer.Serialize(xmlTextWriter, views);
+					xmlTextWriter.Flush();
+					xmlTextWriter.Close();
+				}
+			}
+			catch (InvalidOperationException ex)
+			{
+				throw new ViewDefinitionManagerException(ex.Message, ex);
+			}
+		}
+
+		public void Load(Stream inputStream)
+		{
+			List<IViewDefinition> list = new List<IViewDefinition>();
+			list.Add(defaultView);
+			XmlReader xmlReader = null;
+			XmlReader xmlReader2 = null;
+			try
+			{
+				XmlSerializer xmlSerializer = new XmlSerializer(typeof(Views));
+				XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
+				xmlReader2 = XmlReader.Create(new StringReader(Resources.ViewDefinitionSchema));
+				xmlReaderSettings.Schemas.Add(null, xmlReader2);
+				xmlReaderSettings.ValidationType = ValidationType.Schema;
+				xmlReaderSettings.ValidationEventHandler += ViewDefinitionValidationEventHandler;
+				xmlReaderSettings.ValidationFlags = XmlSchemaValidationFlags.ReportValidationWarnings;
+				if (inputStream.Length > 0)
+				{
+					xmlReader = XmlReader.Create(inputStream, xmlReaderSettings);
+					Views views = (Views)xmlSerializer.Deserialize(xmlReader);
+					list.AddRange(views.ViewList);
+				}
+			}
+			catch (InvalidOperationException ex)
+			{
+				throw new ViewDefinitionManagerException(ex.Message);
+			}
+			finally
+			{
+				if (xmlReader != null)
+				{
+					xmlReader.Close();
+				}
+				if (xmlReader2 != null)
+				{
+					xmlReader2.Close();
+				}
+			}
+			viewDefinitionDict.Clear();
+			Add(list);
+		}
+
+		private void ViewDefinitionValidationEventHandler(object sender, ValidationEventArgs e)
+		{
+			string message = string.Format("Schema Validation Failed: {0} at line {1} column {2}.", e.Message, e.Exception.LineNumber, e.Exception.LinePosition);
+			host.DiagMessage(DiagnosisKind.Warning, message, null);
+			throw new InvalidOperationException(e.Message);
+		}
+	}
 }

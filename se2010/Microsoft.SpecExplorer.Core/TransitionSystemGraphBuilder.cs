@@ -1,61 +1,71 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.TransitionSystemGraphBuilder
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.GraphTraversal;
-using Microsoft.SpecExplorer.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.GraphTraversal;
+using Microsoft.SpecExplorer.ObjectModel;
 
 namespace Microsoft.SpecExplorer
 {
-  public class TransitionSystemGraphBuilder
-  {
-    private Dictionary<string, Node<State>> labelToNodeDict = new Dictionary<string, Node<State>>();
-    private ReferGraph<State, Transition> graph;
-    private TransitionSystem transitionSystem;
+	public class TransitionSystemGraphBuilder
+	{
+		private Dictionary<string, Node<State>> labelToNodeDict = new Dictionary<string, Node<State>>();
 
-    public TransitionSystemGraphBuilder(TransitionSystem transitionSystem) => this.transitionSystem = transitionSystem != null ? transitionSystem : throw new ArgumentNullException(nameof (transitionSystem));
+		private ReferGraph<State, Transition> graph;
 
-    public ReferGraph<State, Transition> BuildGraph()
-    {
-      if (this.graph != null)
-        return this.graph;
-      this.graph = new ReferGraph<State, Transition>();
-      this.AddNode();
-      this.AddEdge();
-      return this.graph;
-    }
+		private TransitionSystem transitionSystem;
 
-    private void AddNode()
-    {
-      foreach (State state in this.transitionSystem.States)
-      {
-        Node<State> node = new Node<State>(state, state.Flags.ToNodeKind());
-        this.graph.AddNode(node, ((IEnumerable<string>) this.transitionSystem.InitialStates).Contains<string>(state.Label));
-        this.labelToNodeDict[state.Label] = node;
-      }
-      foreach (State state in this.transitionSystem.States)
-      {
-        if (!string.IsNullOrEmpty(state.RepresentativeState) && state.RelationKind == StateRelationKind.Equivalent)
-          this.labelToNodeDict[state.Label] = this.labelToNodeDict[state.RepresentativeState];
-      }
-    }
+		public TransitionSystemGraphBuilder(TransitionSystem transitionSystem)
+		{
+			if (transitionSystem == null)
+			{
+				throw new ArgumentNullException("transitionSystem");
+			}
+			this.transitionSystem = transitionSystem;
+		}
 
-    private void AddEdge()
-    {
-      foreach (Transition transition in this.transitionSystem.Transitions)
-      {
-        Node<State> source = this.labelToNodeDict[transition.Source];
-        Node<State> target = this.labelToNodeDict[transition.Target];
-        List<string> stringList = new List<string>();
-        stringList.AddRange((IEnumerable<string>) transition.CapturedRequirements);
-        stringList.AddRange((IEnumerable<string>) transition.AssumeCapturedRequirements);
-        this.graph.AddEdge(new Edge<State, Transition>(source, target, transition, transition.Action.IsObservable(), (IEnumerable<string>) stringList));
-      }
-    }
-  }
+		public ReferGraph<State, Transition> BuildGraph()
+		{
+			if (graph != null)
+			{
+				return graph;
+			}
+			graph = new ReferGraph<State, Transition>();
+			AddNode();
+			AddEdge();
+			return graph;
+		}
+
+		private void AddNode()
+		{
+			State[] states = transitionSystem.States;
+			foreach (State state in states)
+			{
+				Node<State> node = new Node<State>(state, state.Flags.ToNodeKind());
+				graph.AddNode(node, transitionSystem.InitialStates.Contains(state.Label));
+				labelToNodeDict[state.Label] = node;
+			}
+			State[] states2 = transitionSystem.States;
+			foreach (State state2 in states2)
+			{
+				if (!string.IsNullOrEmpty(state2.RepresentativeState) && state2.RelationKind == StateRelationKind.Equivalent)
+				{
+					labelToNodeDict[state2.Label] = labelToNodeDict[state2.RepresentativeState];
+				}
+			}
+		}
+
+		private void AddEdge()
+		{
+			Transition[] transitions = transitionSystem.Transitions;
+			foreach (Transition transition in transitions)
+			{
+				Node<State> source = labelToNodeDict[transition.Source];
+				Node<State> target = labelToNodeDict[transition.Target];
+				List<string> list = new List<string>();
+				list.AddRange(transition.CapturedRequirements);
+				list.AddRange(transition.AssumeCapturedRequirements);
+				graph.AddEdge(new Edge<State, Transition>(source, target, transition, transition.Action.IsObservable(), list));
+			}
+		}
+	}
 }

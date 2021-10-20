@@ -1,290 +1,337 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.Explorer
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.ActionMachines;
-using Microsoft.SpecExplorer.ObjectModel;
 using System;
 using System.IO;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading;
+using Microsoft.ActionMachines;
+using Microsoft.SpecExplorer.ObjectModel;
 
 namespace Microsoft.SpecExplorer
 {
-  internal class Explorer : IExplorer, IDisposable, IExplorerUpdateUI
-  {
-    private Microsoft.SpecExplorer.Session session;
-    private ExplorerConfiguration explorerConfig;
-    private bool oneAppDomain;
-    private AppDomain remoteExplorerAppDomain;
-    internal IRemoteExplorer remoteExplorer;
-    private bool remoteAppDomainTearingDown;
-    private ExplorationState state;
-    private EventWaitHandle buildWaitHandle;
-    private Timer timer;
-    private EventWaitHandle exploreWaitHandle;
-    private ExplorationResult explorationResult;
-    private bool disposed;
+	internal class Explorer : IExplorer, IDisposable, IExplorerUpdateUI
+	{
+		private Session session;
 
-    public event EventHandler<ExplorationStatisticsEventArgs> ExplorationStatisticsProgress;
+		private ExplorerConfiguration explorerConfig;
 
-    public event EventHandler<TestingStatisticsEventArgs> TestingStatisticsProgress;
+		private bool oneAppDomain;
 
-    public event EventHandler<TestCaseFinishedEventArgs> TestCaseFinishedProgress;
+		private AppDomain remoteExplorerAppDomain;
 
-    public event EventHandler<ExplorationStateChangedEventArgs> ExplorationStateChanged;
+		internal IRemoteExplorer remoteExplorer;
 
-    internal Explorer(Microsoft.SpecExplorer.Session session, ExplorerConfiguration explorerConfig)
-    {
-      this.session = session;
-      this.explorerConfig = explorerConfig;
-      this.state = ExplorationState.Created;
-      this.buildWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
-      this.exploreWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
-    }
+		private bool remoteAppDomainTearingDown;
 
-    public ISession Session => (ISession) this.session;
+		private ExplorationState state;
 
-    public bool Sandboxed
-    {
-      get => !this.oneAppDomain;
-      set => this.oneAppDomain = !value;
-    }
+		private EventWaitHandle buildWaitHandle;
 
-    public ExplorationState State => this.state;
+		private Timer timer;
 
-    public WaitHandle StartBuilding()
-    {
-      if (this.remoteExplorer == null)
-        this.CreateRemoteExplorer();
-      this.remoteExplorer.StartBuild();
-      return (WaitHandle) this.buildWaitHandle;
-    }
+		private EventWaitHandle exploreWaitHandle;
 
-    public WaitHandle StartExploration()
-    {
-      string s;
-      int result;
-      if (this.explorerConfig.MachineSwitches.TryGetValue("explorationtimeout", out s) && int.TryParse(s, out result))
-        this.timer = new Timer((TimerCallback) (obj => this.Abort()), (object) null, result, result);
-      if (this.remoteExplorer == null)
-        this.CreateRemoteExplorer();
-      this.remoteExplorer.StartExploration();
-      return (WaitHandle) this.exploreWaitHandle;
-    }
+		private ExplorationResult explorationResult;
 
-    public ExplorationResult ExplorationResult
-    {
-      get
-      {
-        if (this.explorationResult == null)
-        {
-          lock (this)
-          {
-            if (this.remoteExplorer != null)
-              this.explorationResult = this.remoteExplorer.ExplorationResult;
-          }
-        }
-        return this.explorationResult;
-      }
-    }
+		private bool disposed;
 
-    public void Abort()
-    {
-      this.SwitchState(ExplorationState.Aborted);
-      this.Dispose();
-    }
+		public ISession Session
+		{
+			get
+			{
+				return session;
+			}
+		}
 
-    public virtual void Dispose()
-    {
-      this.Dispose(true);
-      GC.SuppressFinalize((object) this);
-    }
+		public bool Sandboxed
+		{
+			get
+			{
+				return !oneAppDomain;
+			}
+			set
+			{
+				oneAppDomain = !value;
+			}
+		}
 
-    private void Dispose(bool disposing)
-    {
-      lock (this)
-      {
-        if (!this.disposed && disposing)
-        {
-          if (this.timer != null)
-          {
-            this.timer.Dispose();
-            this.timer = (Timer) null;
-          }
-          if (this.exploreWaitHandle != null)
-          {
-            this.exploreWaitHandle.Close();
-            this.exploreWaitHandle = (EventWaitHandle) null;
-          }
-          if (this.buildWaitHandle != null)
-          {
-            this.buildWaitHandle.Close();
-            this.buildWaitHandle = (EventWaitHandle) null;
-          }
-          this.TearDownRemoteExplorer();
-        }
-        this.disposed = true;
-      }
-    }
+		public ExplorationState State
+		{
+			get
+			{
+				return state;
+			}
+		}
 
-    ~Explorer() => this.Dispose(false);
+		public ExplorationResult ExplorationResult
+		{
+			get
+			{
+				if (explorationResult == null)
+				{
+					lock (this)
+					{
+						if (remoteExplorer != null)
+						{
+							explorationResult = remoteExplorer.ExplorationResult;
+						}
+					}
+				}
+				return explorationResult;
+			}
+		}
 
-    private void CreateRemoteExplorer()
-    {
-      if (!this.oneAppDomain)
-      {
-        AppDomainSetup info = new AppDomainSetup();
-        info.LoaderOptimization = LoaderOptimization.MultiDomain;
-        string localPath = new Uri(typeof (RemoteExplorer).Assembly.CodeBase).LocalPath;
-        info.ApplicationBase = Path.GetDirectoryName(localPath);
-        this.remoteExplorerAppDomain = AppDomain.CreateDomain(string.Format("SE explorer for '{0}'", (object) this.explorerConfig.Machine), (Evidence) null, info);
-        this.remoteExplorer = this.remoteExplorerAppDomain.CreateInstanceAndUnwrap(typeof (RemoteExplorer).Assembly.FullName, typeof (RemoteExplorer).FullName) as IRemoteExplorer;
-      }
-      else
-      {
-        this.remoteExplorerAppDomain = (AppDomain) null;
-        this.remoteExplorer = (IRemoteExplorer) new RemoteExplorer();
-      }
-      if (this.remoteExplorer == null)
-        this.session.Host.FatalError("unable to bind correct type of remote explorer");
-      this.remoteExplorer.Configure(this.explorerConfig, this.CreateEventManagerForRemote(), new ExplorerMediator(this.session), !this.oneAppDomain);
-    }
+		public event EventHandler<ExplorationStatisticsEventArgs> ExplorationStatisticsProgress;
 
-    private EventManager CreateEventManagerForRemote()
-    {
-      EventManager eventManager = new EventManager();
-      eventManager.RegisterEventObserver((EventObserver) new SwitchStateEventObserver((IExplorerUpdateUI) this));
-      eventManager.RegisterEventObserver((EventObserver) new ShowStatisticsObserver((IExplorerUpdateUI) this));
-      eventManager.RegisterEventObserver((EventObserver) new ShowTestCaseFinishedProgressEventObserver((IExplorerUpdateUI) this));
-      eventManager.RegisterEventObserver((EventObserver) new UpdateExplorationResultEventObserver((IExplorerUpdateUI) this));
-      eventManager.RegisterEventObserver((EventObserver) new ProgressMessageEventObserver(this.session.Host));
-      eventManager.RegisterEventObserver((EventObserver) new LogEventObserver(this.session.Host));
-      eventManager.RegisterEventObserver((EventObserver) new DiagMessageEventObserver(this.session.Host));
-      eventManager.RegisterEventObserver((EventObserver) new RecoverFromFatalErrorEventObserver(this.session.Host));
-      return eventManager;
-    }
+		public event EventHandler<TestingStatisticsEventArgs> TestingStatisticsProgress;
 
-    private void TearDownRemoteExplorer()
-    {
-      lock (this)
-      {
-        if (this.remoteAppDomainTearingDown)
-          return;
-        this.remoteAppDomainTearingDown = true;
-        try
-        {
-          string[] strArray = (string[]) null;
-          if (this.remoteExplorer != null)
-          {
-            this.remoteExplorer.Abort();
-            strArray = this.remoteExplorer.TempAssemblyFiles.ToArray<string>();
-            this.explorationResult = this.remoteExplorer.ExplorationResult;
-            this.remoteExplorer.Dispose();
-            this.remoteExplorer = (IRemoteExplorer) null;
-          }
-          if (this.remoteExplorerAppDomain != null)
-          {
-            try
-            {
-              AppDomain.Unload(this.remoteExplorerAppDomain);
-            }
-            catch (CannotUnloadAppDomainException ex)
-            {
-              this.session.Host.RecoverFromFatalError((Exception) ex);
-            }
-            finally
-            {
-              this.remoteExplorerAppDomain = (AppDomain) null;
-              if (strArray != null)
-              {
-                foreach (string path in strArray)
-                {
-                  try
-                  {
-                    File.Delete(path);
-                  }
-                  catch
-                  {
-                  }
-                }
-              }
-            }
-          }
-        }
-        finally
-        {
-          this.remoteAppDomainTearingDown = false;
-        }
-      }
-      GC.Collect();
-    }
+		public event EventHandler<TestCaseFinishedEventArgs> TestCaseFinishedProgress;
 
-    public void SwitchState(ExplorationState state)
-    {
-      lock (this)
-      {
-        if (this.disposed)
-          return;
-        ExplorationState state1 = this.state;
-        this.state = state;
-        switch (state)
-        {
-          case ExplorationState.FailedBuilding:
-            this.buildWaitHandle.Set();
-            break;
-          case ExplorationState.FinishedBuilding:
-            this.buildWaitHandle.Set();
-            break;
-          case ExplorationState.FinishedExploring:
-            this.exploreWaitHandle.Set();
-            break;
-          case ExplorationState.Aborted:
-            this.buildWaitHandle.Set();
-            this.exploreWaitHandle.Set();
-            break;
-        }
-        if (state1 == state || this.ExplorationStateChanged == null)
-          return;
-        this.ExplorationStateChanged((object) this, new ExplorationStateChangedEventArgs(state1, state));
-      }
-    }
+		public event EventHandler<ExplorationStateChangedEventArgs> ExplorationStateChanged;
 
-    public void ShowStatistics(ExplorationStatistics statistics)
-    {
-      EventHandler<ExplorationStatisticsEventArgs> statisticsProgress = this.ExplorationStatisticsProgress;
-      if (statisticsProgress == null)
-        return;
-      statisticsProgress((object) this, new ExplorationStatisticsEventArgs(statistics));
-    }
+		public event EventHandler<ExplorationResultEventArgs> ExplorationResultUpdated;
 
-    public void ShowStatistics(TestingStatistics statistics)
-    {
-      EventHandler<TestingStatisticsEventArgs> statisticsProgress = this.TestingStatisticsProgress;
-      if (statisticsProgress == null)
-        return;
-      statisticsProgress((object) this, new TestingStatisticsEventArgs(statistics));
-    }
+		internal Explorer(Session session, ExplorerConfiguration explorerConfig)
+		{
+			this.session = session;
+			this.explorerConfig = explorerConfig;
+			state = ExplorationState.Created;
+			buildWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+			exploreWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+		}
 
-    public void ShowTestCaseFinishedProgress(TestCaseFinishedEventArgs args)
-    {
-      EventHandler<TestCaseFinishedEventArgs> finishedProgress = this.TestCaseFinishedProgress;
-      if (finishedProgress == null)
-        return;
-      finishedProgress((object) this, args);
-    }
+		public WaitHandle StartBuilding()
+		{
+			if (remoteExplorer == null)
+			{
+				CreateRemoteExplorer();
+			}
+			remoteExplorer.StartBuild();
+			return buildWaitHandle;
+		}
 
-    public event EventHandler<ExplorationResultEventArgs> ExplorationResultUpdated;
+		public WaitHandle StartExploration()
+		{
+			string value;
+			int result;
+			if (explorerConfig.MachineSwitches.TryGetValue("explorationtimeout", out value) && int.TryParse(value, out result))
+			{
+				timer = new Timer(delegate
+				{
+					Abort();
+				}, null, result, result);
+			}
+			if (remoteExplorer == null)
+			{
+				CreateRemoteExplorer();
+			}
+			remoteExplorer.StartExploration();
+			return exploreWaitHandle;
+		}
 
-    public void UpdateExplorationResult(ExplorationResult explorationResult)
-    {
-      EventHandler<ExplorationResultEventArgs> explorationResultUpdated = this.ExplorationResultUpdated;
-      if (explorationResultUpdated == null)
-        return;
-      explorationResultUpdated((object) this, new ExplorationResultEventArgs(explorationResult));
-    }
-  }
+		public void Abort()
+		{
+			SwitchState(ExplorationState.Aborted);
+			Dispose();
+		}
+
+		public virtual void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			lock (this)
+			{
+				if (!disposed && disposing)
+				{
+					if (timer != null)
+					{
+						timer.Dispose();
+						timer = null;
+					}
+					if (exploreWaitHandle != null)
+					{
+						exploreWaitHandle.Close();
+						exploreWaitHandle = null;
+					}
+					if (buildWaitHandle != null)
+					{
+						buildWaitHandle.Close();
+						buildWaitHandle = null;
+					}
+					TearDownRemoteExplorer();
+				}
+				disposed = true;
+			}
+		}
+
+		~Explorer()
+		{
+			Dispose(false);
+		}
+
+		private void CreateRemoteExplorer()
+		{
+			if (!oneAppDomain)
+			{
+				AppDomainSetup appDomainSetup = new AppDomainSetup();
+				appDomainSetup.LoaderOptimization = LoaderOptimization.MultiDomain;
+				string localPath = new Uri(typeof(RemoteExplorer).Assembly.CodeBase).LocalPath;
+				appDomainSetup.ApplicationBase = Path.GetDirectoryName(localPath);
+				remoteExplorerAppDomain = AppDomain.CreateDomain(string.Format("SE explorer for '{0}'", explorerConfig.Machine), null, appDomainSetup);
+				remoteExplorer = remoteExplorerAppDomain.CreateInstanceAndUnwrap(typeof(RemoteExplorer).Assembly.FullName, typeof(RemoteExplorer).FullName) as IRemoteExplorer;
+			}
+			else
+			{
+				remoteExplorerAppDomain = null;
+				remoteExplorer = new RemoteExplorer();
+			}
+			if (remoteExplorer == null)
+			{
+				session.Host.FatalError("unable to bind correct type of remote explorer");
+			}
+			remoteExplorer.Configure(explorerConfig, CreateEventManagerForRemote(), new ExplorerMediator(session), !oneAppDomain);
+		}
+
+		private EventManager CreateEventManagerForRemote()
+		{
+			EventManager eventManager = new EventManager();
+			eventManager.RegisterEventObserver(new SwitchStateEventObserver(this));
+			eventManager.RegisterEventObserver(new ShowStatisticsObserver(this));
+			eventManager.RegisterEventObserver(new ShowTestCaseFinishedProgressEventObserver(this));
+			eventManager.RegisterEventObserver(new UpdateExplorationResultEventObserver(this));
+			eventManager.RegisterEventObserver(new ProgressMessageEventObserver(session.Host));
+			eventManager.RegisterEventObserver(new LogEventObserver(session.Host));
+			eventManager.RegisterEventObserver(new DiagMessageEventObserver(session.Host));
+			eventManager.RegisterEventObserver(new RecoverFromFatalErrorEventObserver(session.Host));
+			return eventManager;
+		}
+
+		private void TearDownRemoteExplorer()
+		{
+			lock (this)
+			{
+				if (remoteAppDomainTearingDown)
+				{
+					return;
+				}
+				remoteAppDomainTearingDown = true;
+				try
+				{
+					string[] array = null;
+					if (remoteExplorer != null)
+					{
+						remoteExplorer.Abort();
+						array = remoteExplorer.TempAssemblyFiles.ToArray();
+						explorationResult = remoteExplorer.ExplorationResult;
+						remoteExplorer.Dispose();
+						remoteExplorer = null;
+					}
+					if (remoteExplorerAppDomain != null)
+					{
+						try
+						{
+							AppDomain.Unload(remoteExplorerAppDomain);
+						}
+						catch (CannotUnloadAppDomainException exception)
+						{
+							session.Host.RecoverFromFatalError(exception);
+						}
+						finally
+						{
+							remoteExplorerAppDomain = null;
+							if (array != null)
+							{
+								string[] array2 = array;
+								foreach (string path in array2)
+								{
+									try
+									{
+										File.Delete(path);
+									}
+									catch
+									{
+									}
+								}
+							}
+						}
+					}
+				}
+				finally
+				{
+					remoteAppDomainTearingDown = false;
+				}
+			}
+			GC.Collect();
+		}
+
+		public void SwitchState(ExplorationState state)
+		{
+			lock (this)
+			{
+				if (!disposed)
+				{
+					ExplorationState explorationState = this.state;
+					this.state = state;
+					switch (state)
+					{
+					case ExplorationState.FailedBuilding:
+						buildWaitHandle.Set();
+						break;
+					case ExplorationState.FinishedBuilding:
+						buildWaitHandle.Set();
+						break;
+					case ExplorationState.FinishedExploring:
+						exploreWaitHandle.Set();
+						break;
+					case ExplorationState.Aborted:
+						buildWaitHandle.Set();
+						exploreWaitHandle.Set();
+						break;
+					}
+					if (explorationState != state && this.ExplorationStateChanged != null)
+					{
+						this.ExplorationStateChanged(this, new ExplorationStateChangedEventArgs(explorationState, state));
+					}
+				}
+			}
+		}
+
+		public void ShowStatistics(ExplorationStatistics statistics)
+		{
+			EventHandler<ExplorationStatisticsEventArgs> explorationStatisticsProgress = this.ExplorationStatisticsProgress;
+			if (explorationStatisticsProgress != null)
+			{
+				explorationStatisticsProgress(this, new ExplorationStatisticsEventArgs(statistics));
+			}
+		}
+
+		public void ShowStatistics(TestingStatistics statistics)
+		{
+			EventHandler<TestingStatisticsEventArgs> testingStatisticsProgress = this.TestingStatisticsProgress;
+			if (testingStatisticsProgress != null)
+			{
+				testingStatisticsProgress(this, new TestingStatisticsEventArgs(statistics));
+			}
+		}
+
+		public void ShowTestCaseFinishedProgress(TestCaseFinishedEventArgs args)
+		{
+			EventHandler<TestCaseFinishedEventArgs> testCaseFinishedProgress = this.TestCaseFinishedProgress;
+			if (testCaseFinishedProgress != null)
+			{
+				testCaseFinishedProgress(this, args);
+			}
+		}
+
+		public void UpdateExplorationResult(ExplorationResult explorationResult)
+		{
+			EventHandler<ExplorationResultEventArgs> explorationResultUpdated = this.ExplorationResultUpdated;
+			if (explorationResultUpdated != null)
+			{
+				explorationResultUpdated(this, new ExplorationResultEventArgs(explorationResult));
+			}
+		}
+	}
 }

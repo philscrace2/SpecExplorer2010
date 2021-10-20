@@ -1,25 +1,37 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.ExplorerMediator
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
 using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer
 {
-  public class ExplorerMediator : DisposableMarshalByRefObject
-  {
-    public Session session;
+	public class ExplorerMediator : DisposableMarshalByRefObject
+	{
+		public Session session;
 
-    internal ExplorerMediator(Session session) => this.session = session;
+		public string InstallDir
+		{
+			get
+			{
+				return session.ConfigurationDir;
+			}
+		}
 
-    public bool TryFindLocation(MemberInfo member, out TextLocation location) => this.session.Host.TryFindLocation(member, out location);
+		internal ExplorerMediator(Session session)
+		{
+			this.session = session;
+		}
 
-    public bool TryGetExtensionData(string key, object inputValue, out object outputValue) => this.session.Host.TryGetExtensionData(key, inputValue, out outputValue);
+		public bool TryFindLocation(MemberInfo member, out TextLocation location)
+		{
+			return session.Host.TryFindLocation(member, out location);
+		}
 
-    public void DiagMessage(DiagnosisKind kind, string message, object location) => this.session.Host.DiagMessage(kind, message, location);
+		public bool TryGetExtensionData(string key, object inputValue, out object outputValue)
+		{
+			return session.Host.TryGetExtensionData(key, inputValue, out outputValue);
+		}
 
-    public string InstallDir => this.session.ConfigurationDir;
-  }
+		public void DiagMessage(DiagnosisKind kind, string message, object location)
+		{
+			session.Host.DiagMessage(kind, message, location);
+		}
+	}
 }

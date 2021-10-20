@@ -1,25 +1,19 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.ProgressMessageEvent
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
 using System;
 
 namespace Microsoft.SpecExplorer
 {
-  [Serializable]
-  internal class ProgressMessageEvent : ExplorerEvent
-  {
-    public ProgressMessageEvent(VerbosityLevel verbosity, string message)
-      : base(ExplorerEventType.ProgressMessage)
-    {
-      this.Verbosity = verbosity;
-      this.Message = message;
-    }
+	[Serializable]
+	internal class ProgressMessageEvent : ExplorerEvent
+	{
+		public VerbosityLevel Verbosity { get; private set; }
 
-    public VerbosityLevel Verbosity { get; private set; }
+		public string Message { get; private set; }
 
-    public string Message { get; private set; }
-  }
+		public ProgressMessageEvent(VerbosityLevel verbosity, string message)
+			: base(ExplorerEventType.ProgressMessage)
+		{
+			Verbosity = verbosity;
+			Message = message;
+		}
+	}
 }

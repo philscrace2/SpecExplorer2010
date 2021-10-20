@@ -1,62 +1,64 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.ModelingGuidance.ActivityReferenceImpl
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
 using System;
 using System.ComponentModel;
 using System.Xml.Serialization;
 
 namespace Microsoft.SpecExplorer.ModelingGuidance
 {
-  [Serializable]
-  public class ActivityReferenceImpl : IActivityReference, INotifyPropertyChanged
-  {
-    private bool isSelected;
-    private bool isCompleted;
+	[Serializable]
+	public class ActivityReferenceImpl : IActivityReference, INotifyPropertyChanged
+	{
+		private bool isSelected;
 
-    [XmlAttribute("Ref")]
-    public string RefId { get; set; }
+		private bool isCompleted;
 
-    [XmlIgnore]
-    public IActivity Activity { get; set; }
+		[XmlAttribute("Ref")]
+		public string RefId { get; set; }
 
-    [XmlIgnore]
-    public bool IsCompleted
-    {
-      get => this.isCompleted;
-      set
-      {
-        this.isCompleted = value;
-        this.SendNotification(nameof (IsCompleted));
-      }
-    }
+		[XmlIgnore]
+		public IActivity Activity { get; set; }
 
-    [XmlIgnore]
-    public bool IsSelected
-    {
-      get => this.isSelected;
-      set
-      {
-        this.isSelected = value;
-        this.SendNotification(nameof (IsSelected));
-      }
-    }
+		[XmlIgnore]
+		public bool IsCompleted
+		{
+			get
+			{
+				return isCompleted;
+			}
+			set
+			{
+				isCompleted = value;
+				SendNotification("IsCompleted");
+			}
+		}
 
-    [XmlIgnore]
-    public int Index { get; set; }
+		[XmlIgnore]
+		public bool IsSelected
+		{
+			get
+			{
+				return isSelected;
+			}
+			set
+			{
+				isSelected = value;
+				SendNotification("IsSelected");
+			}
+		}
 
-    [XmlAttribute("Optional")]
-    public bool IsOptional { get; set; }
+		[XmlIgnore]
+		public int Index { get; set; }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+		[XmlAttribute("Optional")]
+		public bool IsOptional { get; set; }
 
-    private void SendNotification(string propertyName)
-    {
-      if (this.PropertyChanged == null)
-        return;
-      this.PropertyChanged((object) this, new PropertyChangedEventArgs(propertyName));
-    }
-  }
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		private void SendNotification(string propertyName)
+		{
+			if (this.PropertyChanged != null)
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+	}
 }

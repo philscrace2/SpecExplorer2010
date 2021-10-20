@@ -1,255 +1,320 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.DiffAlgorithm.StringDiffAlgorithm
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Microsoft.SpecExplorer.DiffAlgorithm
 {
-  internal sealed class StringDiffAlgorithm
-  {
-    private const int PartialMatchLimit = 1000;
-    private const double PartialSameLimit = 0.9;
-    private const double RawLinesGroupSimilarityLimit = 0.6;
-    private const double HalfRawLinesGroupSimilarityLimit = 0.3;
-    private string[] leftLines;
-    private string[] rightLines;
-    private bool intraLines;
+	internal sealed class StringDiffAlgorithm
+	{
+		private const int PartialMatchLimit = 1000;
 
-    internal StringDiffAlgorithm(string left, string right, bool calcIntraLines)
-    {
-      if (left == null)
-        throw new ArgumentNullException(nameof (left));
-      if (right == null)
-        throw new ArgumentNullException(nameof (right));
-      this.intraLines = calcIntraLines;
-      this.leftLines = Array.ConvertAll<string, string>(left.Split('\n'), (Converter<string, string>) (text => text.Trim('\r')));
-      this.rightLines = Array.ConvertAll<string, string>(right.Split('\n'), (Converter<string, string>) (text => text.Trim('\r')));
-    }
+		private const double PartialSameLimit = 0.9;
 
-    public IEnumerable<DiffBlockPair> Execute()
-    {
-      bool partialCompare = this.intraLines && this.leftLines.Length + this.rightLines.Length < 1000;
-      IEnumerable<RunPair> runPairs = !partialCompare ? LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence<string>((IEnumerable<string>) this.leftLines, (IEnumerable<string>) this.rightLines).RunPairs : LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence<string>((IEnumerable<string>) this.leftLines, (IEnumerable<string>) this.rightLines, new Func<string, string, bool>(StringDiffAlgorithm.StringRawSimilarity)).RunPairs;
-      foreach (RunPair runPair in runPairs)
-      {
-        if (runPair.IsIdentical)
-        {
-          int i = runPair.LeftBegin;
-          int j = runPair.RightBegin;
-          while (i < runPair.LeftEnd)
-          {
-            if (!partialCompare || this.leftLines[i] == this.rightLines[j])
-            {
-              yield return new DiffBlockPair(this.leftLines[i], this.rightLines[j], DiffType.Identical);
-            }
-            else
-            {
-              foreach (DiffBlockPair matchIntraLine in StringDiffAlgorithm.MatchIntraLines(this.leftLines[i], this.rightLines[j]))
-                yield return matchIntraLine;
-            }
-            ++i;
-            ++j;
-          }
-        }
-        else if (runPair.LeftBegin == runPair.LeftEnd)
-        {
-          for (int i = runPair.RightBegin; i < runPair.RightEnd; ++i)
-            yield return new DiffBlockPair(string.Empty, this.rightLines[i], DiffType.Inserted);
-        }
-        else if (runPair.RightBegin == runPair.RightEnd)
-        {
-          for (int i = runPair.LeftBegin; i < runPair.LeftEnd; ++i)
-            yield return new DiffBlockPair(this.leftLines[i], string.Empty, DiffType.Deleted);
-        }
-        else if (this.intraLines)
-        {
-          foreach (DiffBlockPair diffBlockPair in this.LinesCompare(runPair.LeftBegin, runPair.LeftEnd, runPair.RightBegin, runPair.RightEnd))
-            yield return diffBlockPair;
-        }
-        else
-        {
-          for (int i = runPair.LeftBegin; i < runPair.LeftEnd; ++i)
-            yield return new DiffBlockPair(this.leftLines[i], string.Empty, DiffType.Deleted);
-          for (int i = runPair.RightBegin; i < runPair.RightEnd; ++i)
-            yield return new DiffBlockPair(string.Empty, this.rightLines[i], DiffType.Inserted);
-        }
-      }
-    }
+		private const double RawLinesGroupSimilarityLimit = 0.6;
 
-    private static IEnumerable<string> Tokenize(string text)
-    {
-      if (!string.IsNullOrEmpty(text))
-      {
-        bool lastCharIsAlphaNum = false;
-        bool beginningOfWord = true;
-        StringBuilder tokenConnector = new StringBuilder();
-        foreach (char c in text)
-        {
-          if (c != '\r')
-          {
-            if (!beginningOfWord && (!char.IsLetterOrDigit(c) || !lastCharIsAlphaNum))
-            {
-              yield return tokenConnector.ToString();
-              beginningOfWord = true;
-              tokenConnector.Length = 0;
-            }
-            beginningOfWord = false;
-            lastCharIsAlphaNum = char.IsLetterOrDigit(c);
-            tokenConnector.Append(c);
-          }
-        }
-        yield return tokenConnector.ToString();
-      }
-    }
+		private const double HalfRawLinesGroupSimilarityLimit = 0.3;
 
-    private static string Combine(List<string> list, int from, int to)
-    {
-      StringBuilder stringBuilder = new StringBuilder();
-      for (int index = from; index < to; ++index)
-        stringBuilder.Append(list[index]);
-      return stringBuilder.ToString();
-    }
+		private string[] leftLines;
 
-    private static DiffBlockPair ConvertTokensToBlock(List<DiffTokenPair> Elements)
-    {
-      StringBuilder stringBuilder1 = new StringBuilder();
-      StringBuilder stringBuilder2 = new StringBuilder();
-      DiffType type = Elements[0].Type;
-      foreach (DiffTokenPair element in Elements)
-      {
-        stringBuilder1.Append(element.Left);
-        stringBuilder2.Append(element.Right);
-        if (type != element.Type)
-          type = DiffType.Changed;
-      }
-      return new DiffBlockPair(stringBuilder1.ToString(), stringBuilder2.ToString(), type, (IEnumerable<DiffTokenPair>) Elements);
-    }
+		private string[] rightLines;
 
-    private static IEnumerable<DiffBlockPair> MatchIntraLines(
-      string leftLine,
-      string rightLine)
-    {
-      if (leftLine == null)
-        throw new ArgumentNullException(nameof (leftLine));
-      if (rightLine == null)
-        throw new ArgumentNullException(nameof (rightLine));
-      List<string> left = new List<string>(StringDiffAlgorithm.Tokenize(leftLine));
-      List<string> right = new List<string>(StringDiffAlgorithm.Tokenize(rightLine));
-      IEnumerable<RunPair> ilist = LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence<string>((IEnumerable<string>) left, (IEnumerable<string>) right).RunPairs;
-      List<DiffTokenPair> subTokens = new List<DiffTokenPair>();
-      foreach (RunPair runPair in ilist)
-      {
-        if (runPair.IsIdentical)
-        {
-          int i = runPair.LeftBegin;
-          int j = runPair.RightBegin;
-          while (i < runPair.LeftEnd)
-          {
-            if (left[i] == "\n")
-            {
-              if (subTokens.Count > 0)
-              {
-                yield return StringDiffAlgorithm.ConvertTokensToBlock(subTokens);
-                subTokens = new List<DiffTokenPair>();
-              }
-            }
-            else
-              subTokens.Add(new DiffTokenPair(left[i], right[j], DiffType.Identical));
-            ++i;
-            ++j;
-          }
-        }
-        else if (runPair.LeftBegin == runPair.LeftEnd)
-        {
-          for (int i = runPair.RightBegin; i < runPair.RightEnd; ++i)
-          {
-            if (right[i] == "\n")
-            {
-              if (subTokens.Count > 0)
-              {
-                yield return StringDiffAlgorithm.ConvertTokensToBlock(subTokens);
-                subTokens = new List<DiffTokenPair>();
-              }
-            }
-            else
-              subTokens.Add(new DiffTokenPair("", right[i], DiffType.Inserted));
-          }
-        }
-        else if (runPair.RightBegin == runPair.RightEnd)
-        {
-          for (int i = runPair.LeftBegin; i < runPair.LeftEnd; ++i)
-          {
-            if (left[i] == "\n")
-            {
-              if (subTokens.Count > 0)
-              {
-                yield return StringDiffAlgorithm.ConvertTokensToBlock(subTokens);
-                subTokens = new List<DiffTokenPair>();
-              }
-            }
-            else
-              subTokens.Add(new DiffTokenPair(left[i], "", DiffType.Deleted));
-          }
-        }
-        else
-          subTokens.Add(new DiffTokenPair(StringDiffAlgorithm.Combine(left, runPair.LeftBegin, runPair.LeftEnd), StringDiffAlgorithm.Combine(right, runPair.RightBegin, runPair.RightEnd), DiffType.Changed));
-      }
-      if (subTokens.Count > 0)
-        yield return StringDiffAlgorithm.ConvertTokensToBlock(subTokens);
-    }
+		private bool intraLines;
 
-    private IEnumerable<DiffBlockPair> LinesCompare(
-      int leftStart,
-      int leftStop,
-      int rightStart,
-      int rightStop)
-    {
-      StringBuilder leftStringBuilder = new StringBuilder();
-      StringBuilder rightStringBuilder = new StringBuilder();
-      for (int index = leftStart; index < leftStop; ++index)
-      {
-        leftStringBuilder.Append(this.leftLines[index]);
-        leftStringBuilder.Append("\n");
-      }
-      for (int index = rightStart; index < rightStop; ++index)
-      {
-        rightStringBuilder.Append(this.rightLines[index]);
-        rightStringBuilder.Append("\n");
-      }
-      foreach (DiffBlockPair matchIntraLine in StringDiffAlgorithm.MatchIntraLines(leftStringBuilder.ToString(), rightStringBuilder.ToString()))
-      {
-        if (matchIntraLine.Type == DiffType.Changed)
-        {
-          int max = LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence<char>((IEnumerable<char>) matchIntraLine.Left, (IEnumerable<char>) matchIntraLine.Right).Count;
-          if ((double) max <= 0.3 * (double) (matchIntraLine.Left.Length + matchIntraLine.Right.Length))
-          {
-            string left1 = matchIntraLine.Left;
-            char[] chArray1 = new char[1]{ '\n' };
-            foreach (string left2 in left1.Split(chArray1))
-              yield return new DiffBlockPair(left2, "", DiffType.Deleted);
-            string right1 = matchIntraLine.Right;
-            char[] chArray2 = new char[1]{ '\n' };
-            foreach (string right2 in right1.Split(chArray2))
-              yield return new DiffBlockPair("", right2, DiffType.Inserted);
-          }
-          else
-            yield return matchIntraLine;
-        }
-        else
-          yield return matchIntraLine;
-      }
-    }
+		internal StringDiffAlgorithm(string left, string right, bool calcIntraLines)
+		{
+			if (left == null)
+			{
+				throw new ArgumentNullException("left");
+			}
+			if (right == null)
+			{
+				throw new ArgumentNullException("right");
+			}
+			intraLines = calcIntraLines;
+			leftLines = Array.ConvertAll(left.Split('\n'), (string text) => text.Trim('\r'));
+			rightLines = Array.ConvertAll(right.Split('\n'), (string text) => text.Trim('\r'));
+		}
 
-    private static bool StringRawSimilarity(string left, string right)
-    {
-      if (left.Length == 0)
-        return right.Length == 0;
-      return right.Length != 0 && (double) Math.Abs(left.Length - right.Length) <= 1.0 / 10.0 * (double) (left.Length + right.Length) && (double) (LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence<char>((IEnumerable<char>) left.Substring(0, left.Length / 2), (IEnumerable<char>) right.Substring(0, right.Length / 2)).Count + LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence<char>((IEnumerable<char>) left.Substring(left.Length / 2, left.Length - left.Length / 2), (IEnumerable<char>) right.Substring(right.Length / 2, right.Length - right.Length / 2)).Count) > 0.45 * (double) (left.Length + right.Length);
-    }
-  }
+		public IEnumerable<DiffBlockPair> Execute()
+		{
+			bool partialCompare = intraLines && leftLines.Length + rightLines.Length < 1000;
+			IEnumerable<RunPair> runPairs = ((!partialCompare) ? LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence(leftLines, rightLines).RunPairs : LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence(leftLines, rightLines, StringRawSimilarity).RunPairs);
+			foreach (RunPair pair in runPairs)
+			{
+				if (pair.IsIdentical)
+				{
+					int m = pair.LeftBegin;
+					int n = pair.RightBegin;
+					while (m < pair.LeftEnd)
+					{
+						if (!partialCompare || leftLines[m] == rightLines[n])
+						{
+							yield return new DiffBlockPair(leftLines[m], rightLines[n], DiffType.Identical);
+						}
+						else
+						{
+							foreach (DiffBlockPair item in MatchIntraLines(leftLines[m], rightLines[n]))
+							{
+								yield return item;
+							}
+						}
+						m++;
+						n++;
+					}
+				}
+				else if (pair.LeftBegin == pair.LeftEnd)
+				{
+					for (int l = pair.RightBegin; l < pair.RightEnd; l++)
+					{
+						yield return new DiffBlockPair(string.Empty, rightLines[l], DiffType.Inserted);
+					}
+				}
+				else if (pair.RightBegin == pair.RightEnd)
+				{
+					for (int k = pair.LeftBegin; k < pair.LeftEnd; k++)
+					{
+						yield return new DiffBlockPair(leftLines[k], string.Empty, DiffType.Deleted);
+					}
+				}
+				else if (intraLines)
+				{
+					foreach (DiffBlockPair item2 in LinesCompare(pair.LeftBegin, pair.LeftEnd, pair.RightBegin, pair.RightEnd))
+					{
+						yield return item2;
+					}
+				}
+				else
+				{
+					for (int j = pair.LeftBegin; j < pair.LeftEnd; j++)
+					{
+						yield return new DiffBlockPair(leftLines[j], string.Empty, DiffType.Deleted);
+					}
+					for (int i = pair.RightBegin; i < pair.RightEnd; i++)
+					{
+						yield return new DiffBlockPair(string.Empty, rightLines[i], DiffType.Inserted);
+					}
+				}
+			}
+		}
+
+		private static IEnumerable<string> Tokenize(string text)
+		{
+			if (string.IsNullOrEmpty(text))
+			{
+				yield break;
+			}
+			bool lastCharIsAlphaNum = false;
+			bool beginningOfWord = true;
+			StringBuilder tokenConnector = new StringBuilder();
+			try
+			{
+				foreach (char ch in text)
+				{
+					if (ch != '\r')
+					{
+						if (!beginningOfWord && (!char.IsLetterOrDigit(ch) || !lastCharIsAlphaNum))
+						{
+							yield return tokenConnector.ToString();
+							tokenConnector.Length = 0;
+						}
+						beginningOfWord = false;
+						lastCharIsAlphaNum = char.IsLetterOrDigit(ch);
+						tokenConnector.Append(ch);
+					}
+				}
+			}
+			finally
+			{
+			}
+			yield return tokenConnector.ToString();
+		}
+
+		private static string Combine(List<string> list, int from, int to)
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+			for (int i = from; i < to; i++)
+			{
+				stringBuilder.Append(list[i]);
+			}
+			return stringBuilder.ToString();
+		}
+
+		private static DiffBlockPair ConvertTokensToBlock(List<DiffTokenPair> Elements)
+		{
+			StringBuilder stringBuilder = new StringBuilder();
+			StringBuilder stringBuilder2 = new StringBuilder();
+			DiffType diffType = Elements[0].Type;
+			foreach (DiffTokenPair Element in Elements)
+			{
+				stringBuilder.Append(Element.Left);
+				stringBuilder2.Append(Element.Right);
+				if (diffType != Element.Type)
+				{
+					diffType = DiffType.Changed;
+				}
+			}
+			return new DiffBlockPair(stringBuilder.ToString(), stringBuilder2.ToString(), diffType, Elements);
+		}
+
+		private static IEnumerable<DiffBlockPair> MatchIntraLines(string leftLine, string rightLine)
+		{
+			if (leftLine == null)
+			{
+				throw new ArgumentNullException("leftLine");
+			}
+			if (rightLine == null)
+			{
+				throw new ArgumentNullException("rightLine");
+			}
+			List<string> left = new List<string>(Tokenize(leftLine));
+			List<string> right = new List<string>(Tokenize(rightLine));
+			IEnumerable<RunPair> ilist = LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence(left, right).RunPairs;
+			List<DiffTokenPair> subTokens = new List<DiffTokenPair>();
+			foreach (RunPair pair in ilist)
+			{
+				if (pair.IsIdentical)
+				{
+					int k = pair.LeftBegin;
+					int l = pair.RightBegin;
+					while (k < pair.LeftEnd)
+					{
+						if (left[k] == "\n")
+						{
+							if (subTokens.Count > 0)
+							{
+								yield return ConvertTokensToBlock(subTokens);
+								subTokens = new List<DiffTokenPair>();
+							}
+						}
+						else
+						{
+							subTokens.Add(new DiffTokenPair(left[k], right[l], DiffType.Identical));
+						}
+						k++;
+						l++;
+					}
+				}
+				else if (pair.LeftBegin == pair.LeftEnd)
+				{
+					for (int j = pair.RightBegin; j < pair.RightEnd; j++)
+					{
+						if (right[j] == "\n")
+						{
+							if (subTokens.Count > 0)
+							{
+								yield return ConvertTokensToBlock(subTokens);
+								subTokens = new List<DiffTokenPair>();
+							}
+						}
+						else
+						{
+							subTokens.Add(new DiffTokenPair("", right[j], DiffType.Inserted));
+						}
+					}
+				}
+				else if (pair.RightBegin == pair.RightEnd)
+				{
+					for (int i = pair.LeftBegin; i < pair.LeftEnd; i++)
+					{
+						if (left[i] == "\n")
+						{
+							if (subTokens.Count > 0)
+							{
+								yield return ConvertTokensToBlock(subTokens);
+								subTokens = new List<DiffTokenPair>();
+							}
+						}
+						else
+						{
+							subTokens.Add(new DiffTokenPair(left[i], "", DiffType.Deleted));
+						}
+					}
+				}
+				else
+				{
+					subTokens.Add(new DiffTokenPair(Combine(left, pair.LeftBegin, pair.LeftEnd), Combine(right, pair.RightBegin, pair.RightEnd), DiffType.Changed));
+				}
+			}
+			if (subTokens.Count > 0)
+			{
+				yield return ConvertTokensToBlock(subTokens);
+			}
+		}
+
+		private IEnumerable<DiffBlockPair> LinesCompare(int leftStart, int leftStop, int rightStart, int rightStop)
+		{
+			StringBuilder leftStringBuilder = new StringBuilder();
+			StringBuilder rightStringBuilder = new StringBuilder();
+			for (int i = leftStart; i < leftStop; i++)
+			{
+				leftStringBuilder.Append(leftLines[i]);
+				leftStringBuilder.Append("\n");
+			}
+			for (int j = rightStart; j < rightStop; j++)
+			{
+				rightStringBuilder.Append(rightLines[j]);
+				rightStringBuilder.Append("\n");
+			}
+			foreach (DiffBlockPair pair in MatchIntraLines(leftStringBuilder.ToString(), rightStringBuilder.ToString()))
+			{
+				if (pair.Type == DiffType.Changed)
+				{
+					int max = LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence(pair.Left, pair.Right).Count;
+					if ((double)max <= 0.3 * (double)(pair.Left.Length + pair.Right.Length))
+					{
+						try
+						{
+							string[] array = pair.Left.Split('\n');
+							foreach (string leftLine in array)
+							{
+								yield return new DiffBlockPair(leftLine, "", DiffType.Deleted);
+							}
+						}
+						finally
+						{
+						}
+						try
+						{
+							string[] array2 = pair.Right.Split('\n');
+							foreach (string rightLine in array2)
+							{
+								yield return new DiffBlockPair("", rightLine, DiffType.Inserted);
+							}
+						}
+						finally
+						{
+						}
+					}
+					else
+					{
+						yield return pair;
+					}
+				}
+				else
+				{
+					yield return pair;
+				}
+			}
+		}
+
+		private static bool StringRawSimilarity(string left, string right)
+		{
+			if (left.Length == 0)
+			{
+				return right.Length == 0;
+			}
+			if (right.Length == 0)
+			{
+				return false;
+			}
+			if ((double)Math.Abs(left.Length - right.Length) > 0.099999999999999978 * (double)(left.Length + right.Length))
+			{
+				return false;
+			}
+			int count = LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence(left.Substring(0, left.Length / 2), right.Substring(0, right.Length / 2)).Count;
+			int count2 = LongestCommonSubsequenceAlgorithm.CalculateLongestCommonSubsequence(left.Substring(left.Length / 2, left.Length - left.Length / 2), right.Substring(right.Length / 2, right.Length - right.Length / 2)).Count;
+			int num = count + count2;
+			return (double)num > 0.45 * (double)(left.Length + right.Length);
+		}
+	}
 }

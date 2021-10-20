@@ -1,81 +1,79 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.Viewer.AnnotationFormatter
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
 using System;
 using System.Text;
 
 namespace Microsoft.SpecExplorer.Viewer
 {
-  internal class AnnotationFormatter
-  {
-    internal static readonly string TabPadding = "  ";
-    private static readonly string LineBreakIndent = string.Empty;
-    internal static readonly string SoftLineBreakIndent = AnnotationFormatter.LineBreakIndent + AnnotationFormatter.TabPadding;
-    internal static readonly int DefaultLineWidth = 15;
+	internal class AnnotationFormatter
+	{
+		internal static readonly string TabPadding = "  ";
 
-    public static string Format(string text, int maxWidth)
-    {
-      maxWidth = maxWidth > AnnotationFormatter.DefaultLineWidth ? maxWidth : AnnotationFormatter.DefaultLineWidth;
-      text = text.Replace("\r", string.Empty);
-      StringBuilder stringBuilder = new StringBuilder();
-      string[] strArray = text.Split(new char[1]{ '\n' }, StringSplitOptions.None);
-      for (int index = 0; index < strArray.Length; ++index)
-      {
-        string str1 = AnnotationFormatter.LineBreakIndent;
-        if (index > 0)
-          stringBuilder.AppendLine();
-        string str2 = strArray[index];
-        int num1;
-        if (!str2.Contains("\t") && str2.Length <= maxWidth)
-          stringBuilder.Append(str2);
-        else if (str2.Contains("\t"))
-        {
-          do
-          {
-            for (int length = str2.IndexOf('\t'); length >= 0 && length < maxWidth; length = str2.IndexOf('\t'))
-            {
-              string str3 = length < maxWidth - 1 ? AnnotationFormatter.TabPadding : " ";
-              str2 = str2.Substring(0, length) + str3 + str2.Substring(length + 1);
-            }
-            if (str2.Length > maxWidth)
-            {
-              int num2 = str2.LastIndexOf(' ', maxWidth - 1, maxWidth - str1.Length);
-              str1 = AnnotationFormatter.SoftLineBreakIndent;
-              int num3 = num2 > 0 ? num2 + 1 : maxWidth;
-              stringBuilder.AppendLine(str2.Substring(0, num3));
-              str2 = AnnotationFormatter.SoftLineBreakIndent + str2.Substring(num3);
-            }
-            else
-              goto label_11;
-          }
-          while (str2.Length > 0);
-          continue;
-label_11:
-          stringBuilder.Append(str2);
-        }
-        else
-        {
-          for (; str2.Length > 0; str2 = AnnotationFormatter.SoftLineBreakIndent + str2.Substring(num1))
-          {
-            if (str2.Length > maxWidth)
-            {
-              int num2 = str2.LastIndexOf(' ', maxWidth - 1, maxWidth - str1.Length);
-              str1 = AnnotationFormatter.SoftLineBreakIndent;
-              num1 = num2 > 0 ? num2 + 1 : maxWidth;
-              stringBuilder.AppendLine(str2.Substring(0, num1));
-            }
-            else
-            {
-              stringBuilder.Append(str2);
-              break;
-            }
-          }
-        }
-      }
-      return stringBuilder.ToString();
-    }
-  }
+		private static readonly string LineBreakIndent = string.Empty;
+
+		internal static readonly string SoftLineBreakIndent = LineBreakIndent + TabPadding;
+
+		internal static readonly int DefaultLineWidth = 15;
+
+		public static string Format(string text, int maxWidth)
+		{
+			maxWidth = ((maxWidth > DefaultLineWidth) ? maxWidth : DefaultLineWidth);
+			text = text.Replace("\r", string.Empty);
+			StringBuilder stringBuilder = new StringBuilder();
+			string[] array = text.Split(new char[1] { '\n' }, StringSplitOptions.None);
+			for (int i = 0; i < array.Length; i++)
+			{
+				string text2 = LineBreakIndent;
+				if (i > 0)
+				{
+					stringBuilder.AppendLine();
+				}
+				string text3 = array[i];
+				if (!text3.Contains("\t") && text3.Length <= maxWidth)
+				{
+					stringBuilder.Append(text3);
+					continue;
+				}
+				if (text3.Contains("\t"))
+				{
+					do
+					{
+						int num = text3.IndexOf('\t');
+						while (num >= 0 && num < maxWidth)
+						{
+							string text4 = ((num < maxWidth - 1) ? TabPadding : " ");
+							text3 = text3.Substring(0, num) + text4 + text3.Substring(num + 1);
+							num = text3.IndexOf('\t');
+						}
+						if (text3.Length > maxWidth)
+						{
+							num = text3.LastIndexOf(' ', maxWidth - 1, maxWidth - text2.Length);
+							text2 = SoftLineBreakIndent;
+							int num2 = ((num > 0) ? (num + 1) : maxWidth);
+							stringBuilder.AppendLine(text3.Substring(0, num2));
+							text3 = SoftLineBreakIndent + text3.Substring(num2);
+							continue;
+						}
+						stringBuilder.Append(text3);
+						break;
+					}
+					while (text3.Length > 0);
+					continue;
+				}
+				while (text3.Length > 0)
+				{
+					if (text3.Length > maxWidth)
+					{
+						int num3 = text3.LastIndexOf(' ', maxWidth - 1, maxWidth - text2.Length);
+						text2 = SoftLineBreakIndent;
+						int num4 = ((num3 > 0) ? (num3 + 1) : maxWidth);
+						stringBuilder.AppendLine(text3.Substring(0, num4));
+						text3 = SoftLineBreakIndent + text3.Substring(num4);
+						continue;
+					}
+					stringBuilder.Append(text3);
+					break;
+				}
+			}
+			return stringBuilder.ToString();
+		}
+	}
 }

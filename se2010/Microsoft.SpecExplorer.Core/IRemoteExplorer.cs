@@ -1,37 +1,27 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.IRemoteExplorer
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.SpecExplorer.ObjectModel;
 using System;
 using System.Collections.Generic;
+using Microsoft.SpecExplorer.ObjectModel;
 
 namespace Microsoft.SpecExplorer
 {
-  public interface IRemoteExplorer : IDisposable
-  {
-    void Configure(
-      ExplorerConfiguration explorerConfig,
-      EventManager eventManager,
-      ExplorerMediator explorerMediator,
-      bool isRemoteAppDomain);
+	public interface IRemoteExplorer : IDisposable
+	{
+		ExplorationResult ExplorationResult { get; }
 
-    void StartBuild();
+		IEnumerable<string> TempAssemblyFiles { get; }
 
-    void StartExploration();
+		ExplorationState State { get; set; }
 
-    ExplorationResult ExplorationResult { get; }
+		object AbortLock { get; }
 
-    IEnumerable<string> TempAssemblyFiles { get; }
+		void Configure(ExplorerConfiguration explorerConfig, EventManager eventManager, ExplorerMediator explorerMediator, bool isRemoteAppDomain);
 
-    void SuspendExploration();
+		void StartBuild();
 
-    ExplorationState State { set; get; }
+		void StartExploration();
 
-    void Abort();
+		void SuspendExploration();
 
-    object AbortLock { get; }
-  }
+		void Abort();
+	}
 }

@@ -1,11 +1,3 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.ViewDefinitionManagerForm
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.SpecExplorer.Properties;
-using Microsoft.SpecExplorer.Viewer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,402 +6,440 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Windows.Forms;
+using Microsoft.SpecExplorer.Properties;
+using Microsoft.SpecExplorer.Viewer;
 
 namespace Microsoft.SpecExplorer
 {
-  public class ViewDefinitionManagerForm : Form
-  {
-    private const string viewDefinitionExtetionFilter = "View definition file (*.sevu)|*.sevu|All (*.*)|*.*";
-    private IHost host;
-    private IViewDefinitionManager manager;
-    private string fileName;
-    private HashSet<IViewDefinition> updatedViewDefinitiions;
-    private IContainer components;
-    internal ViewDefinitionsControl viewDefinitionsControl;
-    private Button New;
-    private Button Delete;
-    private Button Import;
-    private Button Export;
-    private Button OK;
-    private Button Cancel;
-    private Button Apply;
-    private GroupBox groupBox1;
+	public class ViewDefinitionManagerForm : Form
+	{
+		private const string viewDefinitionExtetionFilter = "View definition file (*.sevu)|*.sevu|All (*.*)|*.*";
 
-    public event EventHandler ShowHelp;
+		private IHost host;
 
-    public ViewDefinitionManagerForm(IHost host, IViewDefinitionManager ivd, string fileName)
-    {
-      this.host = host;
-      this.fileName = fileName;
-      this.manager = ivd;
-      this.InitializeComponent();
-      this.viewDefinitionsControl.Host = host;
-      this.viewDefinitionsControl.ViewDefinitionList = (IEnumerable<IViewDefinition>) new List<IViewDefinition>(ivd.Views);
-      this.viewDefinitionsControl.IsDirty = false;
-      this.viewDefinitionsControl.CurrentViewDefinition = this.manager.CurrentView;
-      this.updatedViewDefinitiions = new HashSet<IViewDefinition>();
-      this.InitializeUI();
-    }
+		private IViewDefinitionManager manager;
 
-    private void InitializeUI()
-    {
-      this.FormClosing += new FormClosingEventHandler(this.OnClose);
-      this.New.Click += new EventHandler(this.OnNew);
-      this.Delete.Click += new EventHandler(this.OnDelete);
-      this.Import.Click += new EventHandler(this.OnImport);
-      this.Export.Click += new EventHandler(this.OnExport);
-      this.OK.Click += new EventHandler(this.OnOK);
-      this.Cancel.Click += (EventHandler) ((sender, e) => this.Close());
-      this.Apply.Click += new EventHandler(this.OnApply);
-      this.viewDefinitionsControl.propertyGrid.PropertyValueChanged += new PropertyValueChangedEventHandler(this.OnUpdate);
-      if (!string.IsNullOrEmpty(this.fileName))
-        return;
-      this.New.Enabled = false;
-      this.Delete.Enabled = false;
-      this.Import.Enabled = false;
-      this.Export.Enabled = false;
-      this.Apply.Enabled = false;
-    }
+		private string fileName;
 
-    private void OnNew(object sender, EventArgs e)
-    {
-      ViewDefinition viewDefinition1 = new ViewDefinition();
-      string str = "View1";
-      HashSet<string> stringSet = new HashSet<string>();
-      foreach (ViewDefinition viewDefinition2 in this.viewDefinitionsControl.ViewDefinitionList)
-        stringSet.Add(viewDefinition2.Name);
-      int num = 2;
-      while (stringSet.Contains(str))
-      {
-        str = "View" + num.ToString();
-        ++num;
-      }
-      viewDefinition1.Name = str;
-      this.viewDefinitionsControl.Add((IViewDefinition) viewDefinition1);
-      this.viewDefinitionsControl.CurrentViewDefinition = (IViewDefinition) viewDefinition1;
-      this.Apply.Enabled = true;
-    }
+		private HashSet<IViewDefinition> updatedViewDefinitiions;
 
-    private void OnDelete(object sender, EventArgs e)
-    {
-      if (this.viewDefinitionsControl.CurrentViewDefinition.IsDefault)
-      {
-        this.host.NotificationDialog(Resources.SpecExplorer, "Default view cannot be deleted.");
-      }
-      else
-      {
-        this.viewDefinitionsControl.RemoveCurrentViewDefinition();
-        this.Apply.Enabled = true;
-      }
-    }
+		private IContainer components;
 
-    private void OnApply(object sender, EventArgs e) => this.ApplyChange();
+		internal ViewDefinitionsControl viewDefinitionsControl;
 
-    private bool ApplyChange()
-    {
-      try
-      {
-        FileInfo fileInfo = new FileInfo(this.fileName);
-        if (fileInfo.Exists && fileInfo.IsReadOnly)
-        {
-          switch (this.host.DecisionDialog(Resources.SpecExplorer, "The view definition file is read-only, do you want to set it to writable?", MessageButton.YESNOCANCEL))
-          {
-            case MessageResult.YES:
-              try
-              {
-                fileInfo.IsReadOnly = false;
-                break;
-              }
-              catch (UnauthorizedAccessException ex)
-              {
-                ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-                return false;
-              }
-            case MessageResult.NO:
-              return true;
-            default:
-              return false;
-          }
-        }
-        using (FileStream fileStream = new FileStream(this.fileName, FileMode.Create))
-        {
-          try
-          {
-            this.manager.Store(this.viewDefinitionsControl.ViewDefinitionList, (Stream) fileStream);
-          }
-          catch (ViewDefinitionManagerException ex)
-          {
-            this.host.NotificationDialog(Resources.SpecExplorer, string.Format("Error occured while storing view definitions:\n{0}", (object) ex.Message));
-            return false;
-          }
-        }
-        this.manager.Views = (IEnumerable<IViewDefinition>) new List<IViewDefinition>(this.viewDefinitionsControl.ViewDefinitionList);
-      }
-      catch (SecurityException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (FileNotFoundException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (DirectoryNotFoundException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (PathTooLongException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (UnauthorizedAccessException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      this.viewDefinitionsControl.IsDirty = false;
-      this.Apply.Enabled = false;
-      return true;
-    }
+		private Button New;
 
-    private void OnImport(object sender, EventArgs e)
-    {
-      string fileName;
-      using (OpenFileDialog openFileDialog = new OpenFileDialog())
-      {
-        openFileDialog.Multiselect = false;
-        openFileDialog.Filter = "View definition file (*.sevu)|*.sevu|All (*.*)|*.*";
-        int num = (int) openFileDialog.ShowDialog();
-        fileName = openFileDialog.FileName;
-      }
-      this.ImportFile(fileName);
-      this.viewDefinitionsControl.CurrentViewDefinition = this.manager.DefaultViews.First<IViewDefinition>();
-      this.Apply.Enabled = true;
-    }
+		private Button Delete;
 
-    private void ImportFile(string fileName)
-    {
-      if (string.IsNullOrEmpty(fileName))
-        return;
-      try
-      {
-        using (FileStream fileStream = File.OpenRead(fileName))
-        {
-          try
-          {
-            this.manager.Load((Stream) fileStream);
-          }
-          catch (ViewDefinitionManagerException ex)
-          {
-            this.host.NotificationDialog(Resources.SpecExplorer, string.Format("Error occured while loading view definitions:\n{0}", (object) ex.Message));
-            return;
-          }
-        }
-      }
-      catch (SecurityException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (FileNotFoundException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (DirectoryNotFoundException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (PathTooLongException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      this.viewDefinitionsControl.ViewDefinitionList = (IEnumerable<IViewDefinition>) new List<IViewDefinition>(this.manager.Views);
-    }
+		private Button Import;
 
-    private void OnExport(object sender, EventArgs e)
-    {
-      string fileName;
-      using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-      {
-        saveFileDialog.Filter = "View definition file (*.sevu)|*.sevu|All (*.*)|*.*";
-        int num = (int) saveFileDialog.ShowDialog();
-        fileName = saveFileDialog.FileName;
-      }
-      if (string.IsNullOrEmpty(fileName))
-        return;
-      try
-      {
-        using (FileStream fileStream = new FileStream(fileName, FileMode.Create))
-          this.manager.Store(this.viewDefinitionsControl.ViewDefinitionList, (Stream) fileStream);
-      }
-      catch (SecurityException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (FileNotFoundException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (DirectoryNotFoundException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-      catch (PathTooLongException ex)
-      {
-        ViewDefinitionManagerForm.ShowFileStreamExcptionMessageBox((Exception) ex);
-      }
-    }
+		private Button Export;
 
-    private void OnOK(object sender, EventArgs e)
-    {
-      if (this.Apply.Enabled)
-      {
-        if (!this.ApplyChange())
-          return;
-        this.manager.CurrentView = this.viewDefinitionsControl.CurrentViewDefinition;
-        this.manager.UpdateEventRaise((IEnumerable<IViewDefinition>) this.updatedViewDefinitiions);
-        this.Close();
-      }
-      else
-      {
-        this.manager.CurrentView = this.viewDefinitionsControl.CurrentViewDefinition;
-        this.manager.UpdateEventRaise((IEnumerable<IViewDefinition>) this.updatedViewDefinitiions);
-        this.Close();
-      }
-    }
+		private Button OK;
 
-    private void OnUpdate(object sender, PropertyValueChangedEventArgs e)
-    {
-      this.Apply.Enabled = true;
-      this.updatedViewDefinitiions.Add(this.viewDefinitionsControl.CurrentViewDefinition);
-    }
+		private Button Cancel;
 
-    private void OnClose(object sender, EventArgs e)
-    {
-      if (!this.viewDefinitionsControl.IsDirty)
-        return;
-      this.manager.Reset();
-      if (File.Exists(this.fileName))
-        this.ImportFile(this.fileName);
-      this.viewDefinitionsControl.IsDirty = false;
-    }
+		private Button Apply;
 
-    private static void ShowFileStreamExcptionMessageBox(Exception e)
-    {
-      int num = (int) MessageBox.Show(e.Message, "File IO error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-    }
+		private GroupBox groupBox1;
 
-    private void ViewDefinitionManagerForm_HelpButtonClicked(object sender, CancelEventArgs e)
-    {
-      if (this.ShowHelp == null)
-        return;
-      this.ShowHelp(sender, (EventArgs) e);
-    }
+		public event EventHandler ShowHelp;
 
-    private void ViewDefinitionManagerForm_HelpRequested(object sender, HelpEventArgs hlpevent)
-    {
-      if (this.ShowHelp == null)
-        return;
-      this.ShowHelp(sender, (EventArgs) hlpevent);
-    }
+		public ViewDefinitionManagerForm(IHost host, IViewDefinitionManager ivd, string fileName)
+		{
+			this.host = host;
+			this.fileName = fileName;
+			manager = ivd;
+			InitializeComponent();
+			viewDefinitionsControl.Host = host;
+			viewDefinitionsControl.ViewDefinitionList = new List<IViewDefinition>(ivd.Views);
+			viewDefinitionsControl.IsDirty = false;
+			viewDefinitionsControl.CurrentViewDefinition = manager.CurrentView;
+			updatedViewDefinitiions = new HashSet<IViewDefinition>();
+			InitializeUI();
+		}
 
-    protected override void Dispose(bool disposing)
-    {
-      if (disposing && this.components != null)
-        this.components.Dispose();
-      base.Dispose(disposing);
-    }
+		private void InitializeUI()
+		{
+			base.FormClosing += OnClose;
+			New.Click += OnNew;
+			Delete.Click += OnDelete;
+			Import.Click += OnImport;
+			Export.Click += OnExport;
+			OK.Click += OnOK;
+			Cancel.Click += delegate
+			{
+				Close();
+			};
+			Apply.Click += OnApply;
+			viewDefinitionsControl.propertyGrid.PropertyValueChanged += OnUpdate;
+			if (string.IsNullOrEmpty(fileName))
+			{
+				New.Enabled = false;
+				Delete.Enabled = false;
+				Import.Enabled = false;
+				Export.Enabled = false;
+				Apply.Enabled = false;
+			}
+		}
 
-    private void InitializeComponent()
-    {
-      this.viewDefinitionsControl = new ViewDefinitionsControl();
-      this.New = new Button();
-      this.Delete = new Button();
-      this.Import = new Button();
-      this.Export = new Button();
-      this.OK = new Button();
-      this.Cancel = new Button();
-      this.Apply = new Button();
-      this.groupBox1 = new GroupBox();
-      this.SuspendLayout();
-      this.viewDefinitionsControl.BackColor = SystemColors.ButtonFace;
-      this.viewDefinitionsControl.CurrentViewDefinition = (IViewDefinition) null;
-      this.viewDefinitionsControl.IsDirty = false;
-      this.viewDefinitionsControl.Location = new Point(12, 12);
-      this.viewDefinitionsControl.Name = "viewDefinitionsControl";
-      this.viewDefinitionsControl.Size = new Size(513, 382);
-      this.viewDefinitionsControl.TabIndex = 0;
-      this.New.Location = new Point(12, 400);
-      this.New.Name = "New";
-      this.New.Size = new Size(75, 23);
-      this.New.TabIndex = 1;
-      this.New.Text = "&New";
-      this.New.UseVisualStyleBackColor = true;
-      this.Delete.Location = new Point(93, 400);
-      this.Delete.Name = "Delete";
-      this.Delete.Size = new Size(75, 23);
-      this.Delete.TabIndex = 2;
-      this.Delete.Text = "&Delete";
-      this.Delete.UseVisualStyleBackColor = true;
-      this.Import.Location = new Point(12, 448);
-      this.Import.Name = "Import";
-      this.Import.Size = new Size(75, 23);
-      this.Import.TabIndex = 3;
-      this.Import.Text = "&Import...";
-      this.Import.UseVisualStyleBackColor = true;
-      this.Export.Location = new Point(93, 448);
-      this.Export.Name = "Export";
-      this.Export.Size = new Size(75, 23);
-      this.Export.TabIndex = 4;
-      this.Export.Text = "&Export...";
-      this.Export.UseVisualStyleBackColor = true;
-      this.OK.Location = new Point(288, 448);
-      this.OK.Name = "OK";
-      this.OK.Size = new Size(75, 23);
-      this.OK.TabIndex = 5;
-      this.OK.Text = "&OK";
-      this.OK.UseVisualStyleBackColor = true;
-      this.Cancel.DialogResult = DialogResult.Cancel;
-      this.Cancel.Location = new Point(369, 448);
-      this.Cancel.Name = "Cancel";
-      this.Cancel.Size = new Size(75, 23);
-      this.Cancel.TabIndex = 6;
-      this.Cancel.Text = "&Cancel";
-      this.Cancel.UseVisualStyleBackColor = true;
-      this.Apply.Enabled = false;
-      this.Apply.Location = new Point(450, 448);
-      this.Apply.Name = "Apply";
-      this.Apply.Size = new Size(75, 23);
-      this.Apply.TabIndex = 7;
-      this.Apply.Text = "&Apply";
-      this.Apply.UseVisualStyleBackColor = true;
-      this.groupBox1.Location = new Point(12, 429);
-      this.groupBox1.Name = "groupBox1";
-      this.groupBox1.Size = new Size(513, 8);
-      this.groupBox1.TabIndex = 8;
-      this.groupBox1.TabStop = false;
-      this.AcceptButton = (IButtonControl) this.Apply;
-      this.AutoScaleDimensions = new SizeF(6f, 13f);
-      this.AutoScaleMode = AutoScaleMode.Font;
-      this.CancelButton = (IButtonControl) this.Cancel;
-      this.ClientSize = new Size(537, 478);
-      this.Controls.Add((Control) this.groupBox1);
-      this.Controls.Add((Control) this.Apply);
-      this.Controls.Add((Control) this.Cancel);
-      this.Controls.Add((Control) this.OK);
-      this.Controls.Add((Control) this.Export);
-      this.Controls.Add((Control) this.Import);
-      this.Controls.Add((Control) this.Delete);
-      this.Controls.Add((Control) this.New);
-      this.Controls.Add((Control) this.viewDefinitionsControl);
-      this.FormBorderStyle = FormBorderStyle.FixedDialog;
-      this.HelpButton = true;
-      this.MaximizeBox = false;
-      this.MinimizeBox = false;
-      this.Name = nameof (ViewDefinitionManagerForm);
-      this.ShowInTaskbar = false;
-      this.StartPosition = FormStartPosition.CenterParent;
-      this.Text = "Spec Explorer View Definitions";
-      this.HelpButtonClicked += new CancelEventHandler(this.ViewDefinitionManagerForm_HelpButtonClicked);
-      this.HelpRequested += new HelpEventHandler(this.ViewDefinitionManagerForm_HelpRequested);
-      this.ResumeLayout(false);
-    }
-  }
+		private void OnNew(object sender, EventArgs e)
+		{
+			ViewDefinition viewDefinition = new ViewDefinition();
+			string text = "View1";
+			HashSet<string> hashSet = new HashSet<string>();
+			foreach (ViewDefinition viewDefinition2 in viewDefinitionsControl.ViewDefinitionList)
+			{
+				hashSet.Add(viewDefinition2.Name);
+			}
+			int num = 2;
+			while (hashSet.Contains(text))
+			{
+				text = "View" + num;
+				num++;
+			}
+			viewDefinition.Name = text;
+			viewDefinitionsControl.Add(viewDefinition);
+			viewDefinitionsControl.CurrentViewDefinition = viewDefinition;
+			Apply.Enabled = true;
+		}
+
+		private void OnDelete(object sender, EventArgs e)
+		{
+			IViewDefinition currentViewDefinition = viewDefinitionsControl.CurrentViewDefinition;
+			if (currentViewDefinition.IsDefault)
+			{
+				host.NotificationDialog(Resources.SpecExplorer, "Default view cannot be deleted.");
+				return;
+			}
+			viewDefinitionsControl.RemoveCurrentViewDefinition();
+			Apply.Enabled = true;
+		}
+
+		private void OnApply(object sender, EventArgs e)
+		{
+			ApplyChange();
+		}
+
+		private bool ApplyChange()
+		{
+			try
+			{
+				FileInfo fileInfo = new FileInfo(fileName);
+				if (fileInfo.Exists && fileInfo.IsReadOnly)
+				{
+					switch (host.DecisionDialog(Resources.SpecExplorer, "The view definition file is read-only, do you want to set it to writable?", MessageButton.YESNOCANCEL))
+					{
+					case MessageResult.YES:
+						break;
+					case MessageResult.NO:
+						return true;
+					default:
+						return false;
+					}
+					try
+					{
+						fileInfo.IsReadOnly = false;
+					}
+					catch (UnauthorizedAccessException e)
+					{
+						ShowFileStreamExcptionMessageBox(e);
+						return false;
+					}
+				}
+				using (FileStream outputStream = new FileStream(fileName, FileMode.Create))
+				{
+					try
+					{
+						manager.Store(viewDefinitionsControl.ViewDefinitionList, outputStream);
+					}
+					catch (ViewDefinitionManagerException ex)
+					{
+						host.NotificationDialog(Resources.SpecExplorer, string.Format("Error occured while storing view definitions:\n{0}", ex.Message));
+						return false;
+					}
+				}
+				manager.Views = new List<IViewDefinition>(viewDefinitionsControl.ViewDefinitionList);
+			}
+			catch (SecurityException e2)
+			{
+				ShowFileStreamExcptionMessageBox(e2);
+			}
+			catch (FileNotFoundException e3)
+			{
+				ShowFileStreamExcptionMessageBox(e3);
+			}
+			catch (DirectoryNotFoundException e4)
+			{
+				ShowFileStreamExcptionMessageBox(e4);
+			}
+			catch (PathTooLongException e5)
+			{
+				ShowFileStreamExcptionMessageBox(e5);
+			}
+			catch (UnauthorizedAccessException e6)
+			{
+				ShowFileStreamExcptionMessageBox(e6);
+			}
+			viewDefinitionsControl.IsDirty = false;
+			Apply.Enabled = false;
+			return true;
+		}
+
+		private void OnImport(object sender, EventArgs e)
+		{
+			string text;
+			using (OpenFileDialog openFileDialog = new OpenFileDialog())
+			{
+				openFileDialog.Multiselect = false;
+				openFileDialog.Filter = "View definition file (*.sevu)|*.sevu|All (*.*)|*.*";
+				openFileDialog.ShowDialog();
+				text = openFileDialog.FileName;
+			}
+			ImportFile(text);
+			viewDefinitionsControl.CurrentViewDefinition = manager.DefaultViews.First();
+			Apply.Enabled = true;
+		}
+
+		private void ImportFile(string fileName)
+		{
+			if (string.IsNullOrEmpty(fileName))
+			{
+				return;
+			}
+			try
+			{
+				using (FileStream inputStream = File.OpenRead(fileName))
+				{
+					try
+					{
+						manager.Load(inputStream);
+					}
+					catch (ViewDefinitionManagerException ex)
+					{
+						host.NotificationDialog(Resources.SpecExplorer, string.Format("Error occured while loading view definitions:\n{0}", ex.Message));
+						return;
+					}
+				}
+			}
+			catch (SecurityException e)
+			{
+				ShowFileStreamExcptionMessageBox(e);
+			}
+			catch (FileNotFoundException e2)
+			{
+				ShowFileStreamExcptionMessageBox(e2);
+			}
+			catch (DirectoryNotFoundException e3)
+			{
+				ShowFileStreamExcptionMessageBox(e3);
+			}
+			catch (PathTooLongException e4)
+			{
+				ShowFileStreamExcptionMessageBox(e4);
+			}
+			viewDefinitionsControl.ViewDefinitionList = new List<IViewDefinition>(manager.Views);
+		}
+
+		private void OnExport(object sender, EventArgs e)
+		{
+			string text;
+			using (SaveFileDialog saveFileDialog = new SaveFileDialog())
+			{
+				saveFileDialog.Filter = "View definition file (*.sevu)|*.sevu|All (*.*)|*.*";
+				saveFileDialog.ShowDialog();
+				text = saveFileDialog.FileName;
+			}
+			if (string.IsNullOrEmpty(text))
+			{
+				return;
+			}
+			try
+			{
+				using (FileStream outputStream = new FileStream(text, FileMode.Create))
+				{
+					manager.Store(viewDefinitionsControl.ViewDefinitionList, outputStream);
+				}
+			}
+			catch (SecurityException e2)
+			{
+				ShowFileStreamExcptionMessageBox(e2);
+			}
+			catch (FileNotFoundException e3)
+			{
+				ShowFileStreamExcptionMessageBox(e3);
+			}
+			catch (DirectoryNotFoundException e4)
+			{
+				ShowFileStreamExcptionMessageBox(e4);
+			}
+			catch (PathTooLongException e5)
+			{
+				ShowFileStreamExcptionMessageBox(e5);
+			}
+		}
+
+		private void OnOK(object sender, EventArgs e)
+		{
+			if (Apply.Enabled)
+			{
+				if (ApplyChange())
+				{
+					manager.CurrentView = viewDefinitionsControl.CurrentViewDefinition;
+					manager.UpdateEventRaise(updatedViewDefinitiions);
+					Close();
+				}
+			}
+			else
+			{
+				manager.CurrentView = viewDefinitionsControl.CurrentViewDefinition;
+				manager.UpdateEventRaise(updatedViewDefinitiions);
+				Close();
+			}
+		}
+
+		private void OnUpdate(object sender, PropertyValueChangedEventArgs e)
+		{
+			Apply.Enabled = true;
+			updatedViewDefinitiions.Add(viewDefinitionsControl.CurrentViewDefinition);
+		}
+
+		private void OnClose(object sender, EventArgs e)
+		{
+			if (viewDefinitionsControl.IsDirty)
+			{
+				manager.Reset();
+				if (File.Exists(fileName))
+				{
+					ImportFile(fileName);
+				}
+				viewDefinitionsControl.IsDirty = false;
+			}
+		}
+
+		private static void ShowFileStreamExcptionMessageBox(Exception e)
+		{
+			MessageBox.Show(e.Message, "File IO error", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+		}
+
+		private void ViewDefinitionManagerForm_HelpButtonClicked(object sender, CancelEventArgs e)
+		{
+			if (this.ShowHelp != null)
+			{
+				this.ShowHelp(sender, e);
+			}
+		}
+
+		private void ViewDefinitionManagerForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		{
+			if (this.ShowHelp != null)
+			{
+				this.ShowHelp(sender, hlpevent);
+			}
+		}
+
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && components != null)
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
+		private void InitializeComponent()
+		{
+			viewDefinitionsControl = new Microsoft.SpecExplorer.Viewer.ViewDefinitionsControl();
+			New = new System.Windows.Forms.Button();
+			Delete = new System.Windows.Forms.Button();
+			Import = new System.Windows.Forms.Button();
+			Export = new System.Windows.Forms.Button();
+			OK = new System.Windows.Forms.Button();
+			Cancel = new System.Windows.Forms.Button();
+			Apply = new System.Windows.Forms.Button();
+			groupBox1 = new System.Windows.Forms.GroupBox();
+			SuspendLayout();
+			viewDefinitionsControl.BackColor = System.Drawing.SystemColors.ButtonFace;
+			viewDefinitionsControl.CurrentViewDefinition = null;
+			viewDefinitionsControl.IsDirty = false;
+			viewDefinitionsControl.Location = new System.Drawing.Point(12, 12);
+			viewDefinitionsControl.Name = "viewDefinitionsControl";
+			viewDefinitionsControl.Size = new System.Drawing.Size(513, 382);
+			viewDefinitionsControl.TabIndex = 0;
+			New.Location = new System.Drawing.Point(12, 400);
+			New.Name = "New";
+			New.Size = new System.Drawing.Size(75, 23);
+			New.TabIndex = 1;
+			New.Text = "&New";
+			New.UseVisualStyleBackColor = true;
+			Delete.Location = new System.Drawing.Point(93, 400);
+			Delete.Name = "Delete";
+			Delete.Size = new System.Drawing.Size(75, 23);
+			Delete.TabIndex = 2;
+			Delete.Text = "&Delete";
+			Delete.UseVisualStyleBackColor = true;
+			Import.Location = new System.Drawing.Point(12, 448);
+			Import.Name = "Import";
+			Import.Size = new System.Drawing.Size(75, 23);
+			Import.TabIndex = 3;
+			Import.Text = "&Import...";
+			Import.UseVisualStyleBackColor = true;
+			Export.Location = new System.Drawing.Point(93, 448);
+			Export.Name = "Export";
+			Export.Size = new System.Drawing.Size(75, 23);
+			Export.TabIndex = 4;
+			Export.Text = "&Export...";
+			Export.UseVisualStyleBackColor = true;
+			OK.Location = new System.Drawing.Point(288, 448);
+			OK.Name = "OK";
+			OK.Size = new System.Drawing.Size(75, 23);
+			OK.TabIndex = 5;
+			OK.Text = "&OK";
+			OK.UseVisualStyleBackColor = true;
+			Cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			Cancel.Location = new System.Drawing.Point(369, 448);
+			Cancel.Name = "Cancel";
+			Cancel.Size = new System.Drawing.Size(75, 23);
+			Cancel.TabIndex = 6;
+			Cancel.Text = "&Cancel";
+			Cancel.UseVisualStyleBackColor = true;
+			Apply.Enabled = false;
+			Apply.Location = new System.Drawing.Point(450, 448);
+			Apply.Name = "Apply";
+			Apply.Size = new System.Drawing.Size(75, 23);
+			Apply.TabIndex = 7;
+			Apply.Text = "&Apply";
+			Apply.UseVisualStyleBackColor = true;
+			groupBox1.Location = new System.Drawing.Point(12, 429);
+			groupBox1.Name = "groupBox1";
+			groupBox1.Size = new System.Drawing.Size(513, 8);
+			groupBox1.TabIndex = 8;
+			groupBox1.TabStop = false;
+			base.AcceptButton = Apply;
+			base.AutoScaleDimensions = new System.Drawing.SizeF(6f, 13f);
+			base.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			base.CancelButton = Cancel;
+			base.ClientSize = new System.Drawing.Size(537, 478);
+			base.Controls.Add(groupBox1);
+			base.Controls.Add(Apply);
+			base.Controls.Add(Cancel);
+			base.Controls.Add(OK);
+			base.Controls.Add(Export);
+			base.Controls.Add(Import);
+			base.Controls.Add(Delete);
+			base.Controls.Add(New);
+			base.Controls.Add(viewDefinitionsControl);
+			base.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			base.HelpButton = true;
+			base.MaximizeBox = false;
+			base.MinimizeBox = false;
+			base.Name = "ViewDefinitionManagerForm";
+			base.ShowInTaskbar = false;
+			base.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			Text = "Spec Explorer View Definitions";
+			base.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(ViewDefinitionManagerForm_HelpButtonClicked);
+			base.HelpRequested += new System.Windows.Forms.HelpEventHandler(ViewDefinitionManagerForm_HelpRequested);
+			ResumeLayout(false);
+		}
+	}
 }

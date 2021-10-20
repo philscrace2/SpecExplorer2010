@@ -1,329 +1,391 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.RemoteExplorer
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
-using Microsoft.ActionMachines;
-using Microsoft.ActionMachines.Cord;
-using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.Xrt;
 using System;
 using System.Collections.Generic;
 using System.Compiler.Metadata;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using Microsoft.ActionMachines;
+using Microsoft.ActionMachines.Cord;
+using Microsoft.SpecExplorer.ObjectModel;
+using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer
 {
-  internal class RemoteExplorer : DisposableMarshalByRefObject, IRemoteExplorer, IDisposable
-  {
-    private SpecExplorerApplicationBase application;
-    private ExplorerConfiguration explorerConfig;
-    private Thread workerThread;
-    private EventWaitHandle workerWaitHandle;
-    private EventAdapter eventAdapter;
-    private ExplorationState state;
-    private IExploringOperator exploringOperator;
-    private readonly object syncRoot = new object();
+	internal class RemoteExplorer : DisposableMarshalByRefObject, IRemoteExplorer, IDisposable
+	{
+		private SpecExplorerApplicationBase application;
 
-    public object AbortLock { get; private set; }
+		private ExplorerConfiguration explorerConfig;
 
-    public ExplorationState State
-    {
-      set
-      {
-        lock (this.syncRoot)
-          this.state = value;
-      }
-      get
-      {
-        lock (this.syncRoot)
-          return this.state;
-      }
-    }
+		private Thread workerThread;
 
-    public RemoteExplorer()
-    {
-      AppDomain.CurrentDomain.AssemblyResolve += (ResolveEventHandler) ((sender, args) => Session.ResolveAssemblyFromPotentialOtherLoadContext(args.Name));
-      this.AbortLock = new object();
-    }
+		private EventWaitHandle workerWaitHandle;
 
-    public void Configure(
-      ExplorerConfiguration explorerConfig,
-      EventManager eventManager,
-      ExplorerMediator explorerMediator,
-      bool isRemoteAppDomain)
-    {
-      this.explorerConfig = explorerConfig;
-      Version targetPlatformVersion;
-      string runtimeFolder;
-      this.AnalyzeTargetPlatformAndRuntimeAssemblyPath((IEnumerable<string>) this.explorerConfig.Assemblies, out targetPlatformVersion, out runtimeFolder);
-      this.application = new SpecExplorerApplicationBase(explorerMediator.InstallDir, true, explorerMediator, targetPlatformVersion, runtimeFolder, RemoteExplorer.GetDefinedConstraintSolverTimeoutValue(this.explorerConfig.MachineSwitches));
-      this.eventAdapter = new EventAdapter(eventManager, (IRemoteExplorer) this);
-      this.application.Setup.Add((IComponent) new DefaultErrorReportProvider(this.eventAdapter));
-      this.application.GetService<IMachineExplorationExplorerProvider>().ExplorationStatisticsEventHandler = (EventHandler<ExplorationStatisticsEventArgs>) ((sender, args) => this.eventAdapter.ShowStatistics(args.Statistics));
-      Console.SetOut((TextWriter) new RedirectedTextWriter(this.eventAdapter));
-      Debug.Listeners.Add((TraceListener) new TextWriterTraceListener((TextWriter) new RedirectedTextWriter(this.eventAdapter)));
-      this.workerWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-      this.workerThread = new Thread(new ThreadStart(this.Work));
-      this.workerThread.CurrentCulture = new CultureInfo("en-US");
-      this.state = ExplorationState.Created;
-    }
+		private EventAdapter eventAdapter;
 
-    private static int? GetDefinedConstraintSolverTimeoutValue(
-      IDictionary<string, string> machineSwitches)
-    {
-      string s;
-      int result;
-      return machineSwitches.TryGetValue("constraintsolvertimeout", out s) && int.TryParse(s, out result) ? new int?(result) : new int?();
-    }
+		private ExplorationState state;
 
-    private void AnalyzeTargetPlatformAndRuntimeAssemblyPath(
-      IEnumerable<string> assemblies,
-      out Version targetPlatformVersion,
-      out string runtimeFolder)
-    {
-      targetPlatformVersion = (Version) null;
-      runtimeFolder = (string) null;
-      if (assemblies == null || assemblies.Count<string>() == 0)
-        return;
-      string assemblyFile = assemblies.FirstOrDefault<string>();
-      if (string.IsNullOrEmpty(assemblyFile))
-        return;
-      System.Reflection.Assembly assembly1;
-      try
-      {
-        assembly1 = System.Reflection.Assembly.LoadFrom(assemblyFile);
-      }
-      catch
-      {
-        return;
-      }
-      if (assembly1 == (System.Reflection.Assembly) null)
-        return;
-      AssemblyName[] referencedAssemblies = assembly1.GetReferencedAssemblies();
-      if (referencedAssemblies == null)
-        return;
-      AssemblyName assemblyName = ((IEnumerable<AssemblyName>) referencedAssemblies).FirstOrDefault<AssemblyName>((Func<AssemblyName, bool>) (r => r.Name.Equals("mscorlib", StringComparison.CurrentCultureIgnoreCase)));
-      if (assemblyName == null)
-        return;
-      targetPlatformVersion = assemblyName.Version;
-      AssemblyName assemblyRef = ((IEnumerable<AssemblyName>) referencedAssemblies).FirstOrDefault<AssemblyName>((Func<AssemblyName, bool>) (r => r.Name.Equals("Microsoft.Xrt.Runtime", StringComparison.CurrentCultureIgnoreCase)));
-      if (assemblyRef == null)
-        return;
-      System.Reflection.Assembly assembly2 = (System.Reflection.Assembly) null;
-      try
-      {
-        assembly2 = System.Reflection.Assembly.Load(assemblyRef);
-      }
-      catch
-      {
-      }
-      if (!(assembly2 != (System.Reflection.Assembly) null) || string.IsNullOrEmpty(assembly2.CodeBase))
-        return;
-      runtimeFolder = Path.GetDirectoryName(new Uri(assembly2.CodeBase).AbsolutePath);
-    }
+		private IExploringOperator exploringOperator;
 
-    public void Abort() => this.DisposeWorker(new int?(-1));
+		private readonly object syncRoot = new object();
 
-    private void DisposeWorker(int? joinTimeout)
-    {
-      if (this.workerThread != null)
-      {
-        lock (this.AbortLock)
-        {
-          this.workerThread.Abort();
-          if (joinTimeout.HasValue)
-            this.workerThread.Join(joinTimeout.Value);
-          else if (this.application != null)
-            this.workerThread.Join(this.application.Configuration.Options.ConstraintSolverTimeout);
-        }
-        this.State = ExplorationState.Aborted;
-        this.workerThread = (Thread) null;
-      }
-      if (this.application != null)
-      {
-        this.application.Dispose();
-        this.application = (SpecExplorerApplicationBase) null;
-      }
-      if (this.workerWaitHandle == null)
-        return;
-      this.workerWaitHandle.Close();
-      this.workerWaitHandle = (EventWaitHandle) null;
-    }
+		public object AbortLock { get; private set; }
 
-    public override void Dispose()
-    {
-      if (this.IsDisposed)
-        return;
-      this.DisposeWorker(new int?());
-      base.Dispose();
-      GC.SuppressFinalize((object) this);
-    }
+		public ExplorationState State
+		{
+			get
+			{
+				lock (syncRoot)
+				{
+					return state;
+				}
+			}
+			set
+			{
+				lock (syncRoot)
+				{
+					state = value;
+				}
+			}
+		}
 
-    public void StartBuild()
-    {
-      lock (this.syncRoot)
-      {
-        if (this.state != ExplorationState.Created)
-          return;
-        this.workerThread.Start();
-      }
-    }
+		public ExplorationResult ExplorationResult
+		{
+			get
+			{
+				if (exploringOperator != null)
+				{
+					return exploringOperator.ExplorationResult;
+				}
+				return null;
+			}
+		}
 
-    public void StartExploration()
-    {
-      lock (this.syncRoot)
-      {
-        if (this.state == ExplorationState.Created)
-          this.workerThread.Start();
-        this.workerWaitHandle.Set();
-      }
-    }
+		public IEnumerable<string> TempAssemblyFiles
+		{
+			get
+			{
+				if (application != null)
+				{
+					ICodeGeneratorProvider service = application.GetService<ICodeGeneratorProvider>();
+					if (service != null)
+					{
+						return service.TempAssemblyFiles;
+					}
+				}
+				return Enumerable.Empty<string>();
+			}
+		}
 
-    private void Wait() => this.workerWaitHandle.WaitOne();
+		public RemoteExplorer()
+		{
+			AppDomain.CurrentDomain.AssemblyResolve += (object sender, ResolveEventArgs args) => Session.ResolveAssemblyFromPotentialOtherLoadContext(args.Name);
+			AbortLock = new object();
+		}
 
-    private void Work()
-    {
-      CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
-      try
-      {
-        IMachine machine = (IMachine) null;
-        IAssembly mainAssembly = (IAssembly) null;
-        IConfiguration config = (IConfiguration) null;
-        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-        if (!new MachineConfigBuilder((ApplicationBase) this.application, this.eventAdapter, this.explorerConfig).Build(out machine, out config, out mainAssembly))
-          return;
-        this.Wait();
-        this.Explore(machine, config);
-      }
-      catch (ThreadInterruptedException ex)
-      {
-      }
-      catch (FileLoadException ex)
-      {
-        FieldInfo field = ex.GetType().GetField("_HResult", BindingFlags.Instance | BindingFlags.NonPublic);
-        if (field == (FieldInfo) null)
-        {
-          this.eventAdapter.RecoverFromFatalError((Exception) new MissingMemberException("Cannot get HRESULT property from FileLoadException"));
-          this.eventAdapter.SwitchState(ExplorationState.Aborted);
-          this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-        }
-        else
-        {
-          if ((int) field.GetValue((object) ex) == -2146233063)
-            return;
-          this.eventAdapter.RecoverFromFatalError((Exception) ex);
-          this.eventAdapter.SwitchState(ExplorationState.Aborted);
-          this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-        }
-      }
-      catch (ConformanceTestingException ex)
-      {
-        this.eventAdapter.DiagMessage(DiagnosisKind.Error, "fatal conformance testing failure: " + ex.Message);
-        this.eventAdapter.Log("=== remote explorer failure ===");
-        this.eventAdapter.Log(ex.Message);
-        this.eventAdapter.SwitchState(ExplorationState.Aborted);
-        this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-      }
-      catch (UnsupportedILException ex)
-      {
-        this.eventAdapter.DiagMessage(DiagnosisKind.Error, string.Format("fatal execution failure: {0}.\r\nSetting type \"{1}\" to native with \"Microsoft.Xrt.Runtime.NativeTypeAttribute\" or in XRT.Config file might solve the problem.", (object) ex.Message, (object) ex.TypeName));
-        this.eventAdapter.Log("=== remote explorer failure ===");
-        this.eventAdapter.Log(ex.Message);
-        this.eventAdapter.SwitchState(ExplorationState.Aborted);
-        this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-      }
-      catch (InvalidProbeException ex)
-      {
-        TextLocation textLocation = !(ex.Location.Document is ITextDocument document1) ? new TextLocation("<unspecified source>", (short) 1, (short) 1) : new TextLocation(document1.ShortName, (short) document1.GetLine(ex.Location.StartPosition), (short) document1.GetColumn(ex.Location.StartPosition));
-        this.eventAdapter.DiagMessage(DiagnosisKind.Error, string.Format("Invalid state probe '{0}': {1}.", (object) ex.ProbeName, (object) ex.Message), (object) textLocation);
-        this.eventAdapter.Log("=== remote explorer failure ===");
-        this.eventAdapter.Log(ex.Message);
-        this.eventAdapter.SwitchState(ExplorationState.Aborted);
-        this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-      }
-      catch (ExplorationRuntimeException ex)
-      {
-        this.eventAdapter.DiagMessage(DiagnosisKind.Error, "fatal execution failure: " + ex.Message);
-        this.eventAdapter.Log("=== remote explorer failure ===");
-        this.eventAdapter.Log(ex.Message);
-        this.eventAdapter.SwitchState(ExplorationState.Aborted);
-        this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-      }
-      catch (InvalidMetadataException ex)
-      {
-        this.eventAdapter.DiagMessage(DiagnosisKind.Error, "fatal execution failure: " + ex.Message);
-        this.eventAdapter.Log("=== remote explorer failure ===");
-        this.eventAdapter.Log(ex.Message);
-        this.eventAdapter.SwitchState(ExplorationState.Aborted);
-        this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-      }
-      catch (NonDeterministicChoicesException ex)
-      {
-        this.eventAdapter.DiagMessage(DiagnosisKind.Error, ex.Message);
-        this.eventAdapter.Log("=== remote explorer failure ===");
-        this.eventAdapter.Log(ex.Message);
-        this.eventAdapter.SwitchState(ExplorationState.Aborted);
-        this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-      }
-      catch (Exception ex)
-      {
-        if (!(ex is ThreadAbortException))
-        {
-          this.eventAdapter.RecoverFromFatalError(ex);
-          this.eventAdapter.SwitchState(ExplorationState.Aborted);
-          this.eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
-        }
-        else
-          throw;
-      }
-      finally
-      {
-        Thread.CurrentThread.CurrentCulture = currentCulture;
-      }
-    }
+		public void Configure(ExplorerConfiguration explorerConfig, EventManager eventManager, ExplorerMediator explorerMediator, bool isRemoteAppDomain)
+		{
+			this.explorerConfig = explorerConfig;
+			Version targetPlatformVersion;
+			string runtimeFolder;
+			AnalyzeTargetPlatformAndRuntimeAssemblyPath(this.explorerConfig.Assemblies, out targetPlatformVersion, out runtimeFolder);
+			application = new SpecExplorerApplicationBase(explorerMediator.InstallDir, true, explorerMediator, targetPlatformVersion, runtimeFolder, GetDefinedConstraintSolverTimeoutValue(this.explorerConfig.MachineSwitches));
+			eventAdapter = new EventAdapter(eventManager, this);
+			application.Setup.Add(new DefaultErrorReportProvider(eventAdapter));
+			IMachineExplorationExplorerProvider service = application.GetService<IMachineExplorationExplorerProvider>();
+			service.ExplorationStatisticsEventHandler = delegate(object sender, ExplorationStatisticsEventArgs args)
+			{
+				eventAdapter.ShowStatistics(args.Statistics);
+			};
+			Console.SetOut(new RedirectedTextWriter(eventAdapter));
+			Debug.Listeners.Add(new TextWriterTraceListener(new RedirectedTextWriter(eventAdapter)));
+			workerWaitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+			workerThread = new Thread(Work);
+			workerThread.CurrentCulture = new CultureInfo("en-US");
+			state = ExplorationState.Created;
+		}
 
-    private void Explore(IMachine machine, IConfiguration config)
-    {
-      lock (this.syncRoot)
-      {
-        if (this.state == ExplorationState.Exploring)
-          return;
-      }
-      ExplorationOptions options = this.application.GetRequiredService<IOptionSetManager>().CurrentOptionSet.GetOptions<ExplorationOptions>();
-      this.exploringOperator = this.explorerConfig.ExplorationMode != ExplorationMode.Exploration ? (IExploringOperator) new TestingOperator(machine, config, this.eventAdapter, this.explorerConfig, options, this.workerWaitHandle, (IRemoteExplorer) this) : (IExploringOperator) new ExploringOperator(machine, config, this.eventAdapter, this.explorerConfig, options, this.workerWaitHandle, (IRemoteExplorer) this);
-      this.exploringOperator.ExplorationResultUpdated += (EventHandler<ExplorationResultEventArgs>) ((sender, args) => this.eventAdapter.UpdateExplorationResult(args.ExplorationResult));
-      this.exploringOperator.Explore();
-    }
+		private static int? GetDefinedConstraintSolverTimeoutValue(IDictionary<string, string> machineSwitches)
+		{
+			string value;
+			int result;
+			if (machineSwitches.TryGetValue("constraintsolvertimeout", out value) && int.TryParse(value, out result))
+			{
+				return result;
+			}
+			return null;
+		}
 
-    public void SuspendExploration()
-    {
-      if (this.exploringOperator == null)
-        throw new InvalidOperationException("The exploring operator has not been created.");
-      this.exploringOperator.SuspendExploration();
-    }
+		private void AnalyzeTargetPlatformAndRuntimeAssemblyPath(IEnumerable<string> assemblies, out Version targetPlatformVersion, out string runtimeFolder)
+		{
+			targetPlatformVersion = null;
+			runtimeFolder = null;
+			if (assemblies == null || assemblies.Count() == 0)
+			{
+				return;
+			}
+			string text = assemblies.FirstOrDefault();
+			if (string.IsNullOrEmpty(text))
+			{
+				return;
+			}
+			Assembly assembly = null;
+			try
+			{
+				assembly = Assembly.LoadFrom(text);
+			}
+			catch
+			{
+				return;
+			}
+			if (assembly == null)
+			{
+				return;
+			}
+			AssemblyName[] referencedAssemblies = assembly.GetReferencedAssemblies();
+			if (referencedAssemblies == null)
+			{
+				return;
+			}
+			AssemblyName assemblyName = referencedAssemblies.FirstOrDefault((AssemblyName r) => r.Name.Equals("mscorlib", StringComparison.CurrentCultureIgnoreCase));
+			if (assemblyName == null)
+			{
+				return;
+			}
+			targetPlatformVersion = assemblyName.Version;
+			AssemblyName assemblyName2 = referencedAssemblies.FirstOrDefault((AssemblyName r) => r.Name.Equals("Microsoft.Xrt.Runtime", StringComparison.CurrentCultureIgnoreCase));
+			if (assemblyName2 != null)
+			{
+				Assembly assembly2 = null;
+				try
+				{
+					assembly2 = Assembly.Load(assemblyName2);
+				}
+				catch
+				{
+				}
+				if (assembly2 != null && !string.IsNullOrEmpty(assembly2.CodeBase))
+				{
+					runtimeFolder = Path.GetDirectoryName(new Uri(assembly2.CodeBase).AbsolutePath);
+				}
+			}
+		}
 
-    public ExplorationResult ExplorationResult => this.exploringOperator != null ? this.exploringOperator.ExplorationResult : (ExplorationResult) null;
+		public void Abort()
+		{
+			DisposeWorker(-1);
+		}
 
-    public IEnumerable<string> TempAssemblyFiles
-    {
-      get
-      {
-        if (this.application != null)
-        {
-          ICodeGeneratorProvider service = this.application.GetService<ICodeGeneratorProvider>();
-          if (service != null)
-            return service.TempAssemblyFiles;
-        }
-        return Enumerable.Empty<string>();
-      }
-    }
-  }
+		private void DisposeWorker(int? joinTimeout)
+		{
+			if (workerThread != null)
+			{
+				lock (AbortLock)
+				{
+					workerThread.Abort();
+					if (joinTimeout.HasValue)
+					{
+						workerThread.Join(joinTimeout.Value);
+					}
+					else if (application != null)
+					{
+						workerThread.Join(application.Configuration.Options.ConstraintSolverTimeout);
+					}
+				}
+				State = ExplorationState.Aborted;
+				workerThread = null;
+			}
+			if (application != null)
+			{
+				application.Dispose();
+				application = null;
+			}
+			if (workerWaitHandle != null)
+			{
+				workerWaitHandle.Close();
+				workerWaitHandle = null;
+			}
+		}
+
+		public override void Dispose()
+		{
+			if (!IsDisposed)
+			{
+				DisposeWorker(null);
+				base.Dispose();
+				GC.SuppressFinalize(this);
+			}
+		}
+
+		public void StartBuild()
+		{
+			lock (syncRoot)
+			{
+				if (state == ExplorationState.Created)
+				{
+					workerThread.Start();
+				}
+			}
+		}
+
+		public void StartExploration()
+		{
+			lock (syncRoot)
+			{
+				if (state == ExplorationState.Created)
+				{
+					workerThread.Start();
+				}
+				workerWaitHandle.Set();
+			}
+		}
+
+		private void Wait()
+		{
+			workerWaitHandle.WaitOne();
+		}
+
+		private void Work()
+		{
+			CultureInfo currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{
+				IMachine machine = null;
+				IAssembly mainAssembly = null;
+				IConfiguration config = null;
+				Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+				MachineConfigBuilder machineConfigBuilder = new MachineConfigBuilder(application, eventAdapter, explorerConfig);
+				if (machineConfigBuilder.Build(out machine, out config, out mainAssembly))
+				{
+					machineConfigBuilder = null;
+					Wait();
+					Explore(machine, config);
+				}
+			}
+			catch (ThreadInterruptedException)
+			{
+			}
+			catch (FileLoadException ex2)
+			{
+				FieldInfo field = ex2.GetType().GetField("_HResult", BindingFlags.Instance | BindingFlags.NonPublic);
+				if (field == null)
+				{
+					eventAdapter.RecoverFromFatalError(new MissingMemberException("Cannot get HRESULT property from FileLoadException"));
+					eventAdapter.SwitchState(ExplorationState.Aborted);
+					eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+					return;
+				}
+				int num = (int)field.GetValue(ex2);
+				if (num != -2146233063)
+				{
+					eventAdapter.RecoverFromFatalError(ex2);
+					eventAdapter.SwitchState(ExplorationState.Aborted);
+					eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+				}
+			}
+			catch (ConformanceTestingException ex3)
+			{
+				eventAdapter.DiagMessage(DiagnosisKind.Error, "fatal conformance testing failure: " + ex3.Message);
+				eventAdapter.Log("=== remote explorer failure ===");
+				eventAdapter.Log(ex3.Message);
+				eventAdapter.SwitchState(ExplorationState.Aborted);
+				eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+			}
+			catch (UnsupportedILException ex4)
+			{
+				eventAdapter.DiagMessage(DiagnosisKind.Error, string.Format("fatal execution failure: {0}.\r\nSetting type \"{1}\" to native with \"Microsoft.Xrt.Runtime.NativeTypeAttribute\" or in XRT.Config file might solve the problem.", ex4.Message, ex4.TypeName));
+				eventAdapter.Log("=== remote explorer failure ===");
+				eventAdapter.Log(ex4.Message);
+				eventAdapter.SwitchState(ExplorationState.Aborted);
+				eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+			}
+			catch (InvalidProbeException ex5)
+			{
+				ITextDocument textDocument = ex5.Location.Document as ITextDocument;
+				TextLocation textLocation = ((textDocument == null) ? new TextLocation("<unspecified source>", 1, 1) : new TextLocation(textDocument.ShortName, (short)textDocument.GetLine(ex5.Location.StartPosition), (short)textDocument.GetColumn(ex5.Location.StartPosition)));
+				eventAdapter.DiagMessage(DiagnosisKind.Error, string.Format("Invalid state probe '{0}': {1}.", ex5.ProbeName, ex5.Message), textLocation);
+				eventAdapter.Log("=== remote explorer failure ===");
+				eventAdapter.Log(ex5.Message);
+				eventAdapter.SwitchState(ExplorationState.Aborted);
+				eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+			}
+			catch (ExplorationRuntimeException ex6)
+			{
+				eventAdapter.DiagMessage(DiagnosisKind.Error, "fatal execution failure: " + ex6.Message);
+				eventAdapter.Log("=== remote explorer failure ===");
+				eventAdapter.Log(ex6.Message);
+				eventAdapter.SwitchState(ExplorationState.Aborted);
+				eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+			}
+			catch (InvalidMetadataException ex7)
+			{
+				eventAdapter.DiagMessage(DiagnosisKind.Error, "fatal execution failure: " + ((Exception)(object)ex7).Message);
+				eventAdapter.Log("=== remote explorer failure ===");
+				eventAdapter.Log(((Exception)(object)ex7).Message);
+				eventAdapter.SwitchState(ExplorationState.Aborted);
+				eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+			}
+			catch (NonDeterministicChoicesException ex8)
+			{
+				eventAdapter.DiagMessage(DiagnosisKind.Error, ex8.Message);
+				eventAdapter.Log("=== remote explorer failure ===");
+				eventAdapter.Log(ex8.Message);
+				eventAdapter.SwitchState(ExplorationState.Aborted);
+				eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+			}
+			catch (Exception ex9)
+			{
+				if (!(ex9 is ThreadAbortException))
+				{
+					eventAdapter.RecoverFromFatalError(ex9);
+					eventAdapter.SwitchState(ExplorationState.Aborted);
+					eventAdapter.ProgressMessage(VerbosityLevel.Minimal, "Exploration job aborted.");
+					return;
+				}
+				throw;
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
+		}
+
+		private void Explore(IMachine machine, IConfiguration config)
+		{
+			lock (syncRoot)
+			{
+				if (state == ExplorationState.Exploring)
+				{
+					return;
+				}
+			}
+			IOptionSetManager requiredService = application.GetRequiredService<IOptionSetManager>();
+			ExplorationOptions options = requiredService.CurrentOptionSet.GetOptions<ExplorationOptions>();
+			if (explorerConfig.ExplorationMode == ExplorationMode.Exploration)
+			{
+				exploringOperator = new ExploringOperator(machine, config, eventAdapter, explorerConfig, options, workerWaitHandle, this);
+			}
+			else
+			{
+				exploringOperator = new TestingOperator(machine, config, eventAdapter, explorerConfig, options, workerWaitHandle, this);
+			}
+			exploringOperator.ExplorationResultUpdated += delegate(object sender, ExplorationResultEventArgs args)
+			{
+				eventAdapter.UpdateExplorationResult(args.ExplorationResult);
+			};
+			exploringOperator.Explore();
+		}
+
+		public void SuspendExploration()
+		{
+			if (exploringOperator == null)
+			{
+				throw new InvalidOperationException("The exploring operator has not been created.");
+			}
+			exploringOperator.SuspendExploration();
+		}
+	}
 }

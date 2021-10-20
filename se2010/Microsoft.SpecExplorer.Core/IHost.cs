@@ -1,51 +1,42 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.IHost
-// Assembly: Microsoft.SpecExplorer.Core, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 442F5921-BF3A-42D5-916D-7CC5E2AD42CC
-// Assembly location: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll
-
 using System;
 using System.Windows.Forms;
 
 namespace Microsoft.SpecExplorer
 {
-  public interface IHost
-  {
-    Exception FatalError(string message, params Exception[] exceptions);
+	public interface IHost
+	{
+		bool Logging { get; }
 
-    void RecoverFromFatalError(Exception exception);
+		VerbosityLevel Verbosity { get; }
 
-    void RunProtected(ProtectedAction action);
+		IWin32Window DialogOwner { get; }
 
-    EventHandler Protect(EventHandler handler);
+		Exception FatalError(string message, params Exception[] exceptions);
 
-    void Log(string line);
+		void RecoverFromFatalError(Exception exception);
 
-    bool Logging { get; }
+		void RunProtected(ProtectedAction action);
 
-    void ProgressMessage(VerbosityLevel verbosity, string message);
+		EventHandler Protect(EventHandler handler);
 
-    VerbosityLevel Verbosity { get; }
+		void Log(string line);
 
-    void DiagMessage(DiagnosisKind kind, string message, object location);
+		void ProgressMessage(VerbosityLevel verbosity, string message);
 
-    void NotificationDialog(string title, string message);
+		void DiagMessage(DiagnosisKind kind, string message, object location);
 
-    MessageResult DecisionDialog(
-      string title,
-      string message,
-      MessageButton messageButton);
+		void NotificationDialog(string title, string message);
 
-    DialogResult ModalDialog(Form form);
+		MessageResult DecisionDialog(string title, string message, MessageButton messageButton);
 
-    object GetService(System.Type type);
+		DialogResult ModalDialog(Form form);
 
-    IWin32Window DialogOwner { get; }
+		object GetService(Type type);
 
-    bool TryFindLocation(MemberInfo member, out TextLocation location);
+		bool TryFindLocation(MemberInfo member, out TextLocation location);
 
-    bool TryGetExtensionData(string key, object inputValue, out object outputValue);
+		bool TryGetExtensionData(string key, object inputValue, out object outputValue);
 
-    void NavigateTo(string fileName, int line, int column);
-  }
+		void NavigateTo(string fileName, int line, int column);
+	}
 }
