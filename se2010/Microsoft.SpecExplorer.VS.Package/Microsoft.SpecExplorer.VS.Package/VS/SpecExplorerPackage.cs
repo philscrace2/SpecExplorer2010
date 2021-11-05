@@ -1413,9 +1413,10 @@ public bool TryFindLocation(MemberInfo member, out TextLocation location)
       try
       {
         SolutionConfiguration2 activeConfiguration = this.DTE.Solution.SolutionBuild.ActiveConfiguration as SolutionConfiguration2;
-        this.Assert(activeConfiguration != null);
-                //this.DTE.Solution.SolutionBuild.BuildProject(activeConfiguration + "|" + activeConfiguration.PlatformName, project.UniqueName, true);
-        this.DTE.Solution.SolutionBuild.BuildProject("Debug" + "|" + "Any CPU", project.UniqueName, true);
+        string platformName = activeConfiguration.PlatformName;
+        string activeConfigurationName = activeConfiguration.Name;        
+        this.Assert(activeConfiguration != null);        
+        this.DTE.Solution.SolutionBuild.BuildProject(activeConfigurationName + "|" + platformName, project.UniqueName, true);
       }
       catch (COMException ex)
       {
