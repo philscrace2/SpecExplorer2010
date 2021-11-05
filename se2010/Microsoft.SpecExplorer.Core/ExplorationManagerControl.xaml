@@ -135,33 +135,33 @@
           <Button Name="validateButton" Command="local:ExplorationManagerControl.ValidateCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Validate script(s)">
-            <Image Source="..\Resources\Check.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\check.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Button Name="exploreButton" Command="local:ExplorationManagerControl.ExploreCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Explore">
-            <Image Source="..\Resources\Explore.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\explore.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Button Name="reexploreButton" Command="local:ExplorationManagerControl.ReexploreCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Re-explore">
-            <Image Source="..\Resources\Reexplore.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\explore.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Button Name="OnTheFlyButton" Command="local:ExplorationManagerControl.OnTheFlyTestCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Run On-The-Fly Test">
-            <Image Source="..\Resources\OnTheFlyTest.bmp" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\ontheflytest.bmp" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Button Name="generateTestCodeButton" Command="local:ExplorationManagerControl.GenerateTestCodeCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Generate Test Code">
-            <Image Source="..\Resources\TestGen.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\testgen.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Separator/>
           <Button Name="stopButton" Command="local:ExplorationManagerControl.AbortTaskCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Stop">
-            <Image Source="..\Resources\Stop.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\stop.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Separator/>
           <ComboBox SelectionChanged="FilterSelectionChanged" Name="filterComboBox" IsReadOnly="true" SelectedIndex="0"
@@ -201,18 +201,18 @@
           <Button Name="clearSearchTextButton" Command="local:ExplorationManagerControl.ClearFilterCommand"
                   ToolTipService.ShowOnDisabled="true" CommandTarget="{Binding ElementName=explorationManagerWindow}"
                   ToolTip="Clear Filter">
-            <Image Source="..\Resources\Clear.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\clear.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
           <Separator/>
           <Button Click="RefreshButton_Click" Name="refreshButton" ToolTipService.ShowOnDisabled="true"
                   ToolTip="Refresh">
-            <Image Source="..\Resources\Refresh.ico" Style="{StaticResource toolbarImageStyle}"/>
+            <Image Source="Resources\refresh.ico" Style="{StaticResource toolbarImageStyle}"/>
           </Button>
         </ToolBar>
       </ToolBarTray>
     </StackPanel>
     <StackPanel Grid.Row="1" Grid.Column="0" Height="Auto" Background="LightYellow" Orientation="Horizontal">
-      <Image Source="..\Resources\Info.ico" HorizontalAlignment="Left"/>
+      <Image Source="Resources\info.ico" HorizontalAlignment="Left"/>
       <Label x:Name="informationBar" x:FieldModifier="private"/>
     </StackPanel>
   </Grid>
