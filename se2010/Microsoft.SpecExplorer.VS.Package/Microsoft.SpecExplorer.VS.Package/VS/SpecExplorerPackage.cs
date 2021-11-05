@@ -1429,9 +1429,9 @@ public bool TryFindLocation(MemberInfo member, out TextLocation location)
     {
       this.Assert(project != null);
       List<string> stringList = new List<string>();
-      string str1 = project.Properties.Item("FullPath").ToString();
-      string str2 = project.Properties.Item("OutputFileName").ToString();
-      string str3 = project.ConfigurationManager.ActiveConfiguration.Properties.Item((object) "OutputPath").ToString();
+      string str1 = GetProperty(project, "FullPath");
+      string str2 = GetProperty(project, "OutputFileName");
+      string str3 = GetPropertyFromActiveConfig(project, "OutputPath");
       string str4 = string.Format("{0}\\{1}\\{2}", (object) str1, (object) str3, (object) str2);
       stringList.Add(str4);
       this.ProgressMessage((VerbosityLevel) 2, string.Format("referencing {0}", (object) str4));
@@ -1456,11 +1456,45 @@ public bool TryFindLocation(MemberInfo member, out TextLocation location)
           }
         }
       }
-      stringList.RemoveAt(0);
+      
       return (ICollection<string>) stringList;
     }
 
-    internal void CollectScripts(List<string> scripts, ProjectItems items)
+    private static string GetProperty(Project proj, string propertyName)
+    {
+        string propertyValue = "";
+
+        foreach (Property prop in proj.Properties)
+        {
+            if (prop.Name == propertyName)
+            {
+                propertyValue = prop.Value.ToString();
+            }
+        }
+
+        return propertyValue;
+    }
+
+    private static string GetPropertyFromActiveConfig(Project proj, string propertyName)
+    {
+        string propertyValue = "";
+
+        ConfigurationManager configManager = proj.ConfigurationManager;
+
+        Configuration activeConfig = configManager.ActiveConfiguration;
+
+        foreach (Property prop in activeConfig.Properties)
+        {
+            if (prop.Name == propertyName)
+            {
+                propertyValue = prop.Value.ToString();
+            }
+        }
+
+        return propertyValue;
+    }
+
+        internal void CollectScripts(List<string> scripts, ProjectItems items)
     {
       foreach (ProjectItem projectItem in items)
       {

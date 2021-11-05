@@ -849,8 +849,8 @@ namespace Microsoft.SpecExplorer
                         this.package.ProgressMessage(VerbosityLevel.Minimal, message1);
                         if (this.package.BuildProject(project))
                         {
-                            //ICollection<string> assemblies = this.package.CollectReferences(project);
-                            ICollection<string> assemblies = new List<string>() { @"C:\Users\pls2\Documents\Spec Explorer 2010\Samples2\Account\Model\bin\Debug\AccountModel.dll", @"C:\Users\pls2\Documents\Spec Explorer 2010\Samples2\Account\Model\bin\Debug\AccountImpl.dll" };
+                            ICollection<string> assemblies = this.package.CollectReferences(project);
+                            //ICollection<string> assemblies = new List<string>() { @"C:\Users\pls2\Documents\Spec Explorer 2010\Samples2\Account\Model\bin\Debug\AccountModel.dll", @"C:\Users\pls2\Documents\Spec Explorer 2010\Samples2\Account\Model\bin\Debug\AccountImpl.dll" };
                             List<string> scripts = new List<string>();
                             this.package.CollectScripts(scripts, project.ProjectItems);
                             ExplorationWorker.ProjectUnit projectUnit = new ExplorationWorker.ProjectUnit()

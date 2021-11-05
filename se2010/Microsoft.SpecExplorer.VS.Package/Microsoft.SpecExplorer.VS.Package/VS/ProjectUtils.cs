@@ -1,144 +1,163 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.VS.ProjectUtils
-// Assembly: Microsoft.SpecExplorer.VS.Package, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 04778F4E-8525-4D68-B061-08FAB43841FA
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\Microsoft\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Package.dll
-
-using EnvDTE;
-using Microsoft.ActionMachines.Cord;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio;
 using System;
 using System.Collections.Generic;
+using EnvDTE;
+using Microsoft.ActionMachines.Cord;
+using Microsoft.VisualStudio;
 
 namespace Microsoft.SpecExplorer.VS
 {
-  internal class ProjectUtils
-  {
-    internal static IEnumerable<Project> GetAllRealProjects(DTE dte)
-    {
-      List<Project> projectList = new List<Project>();
-      if (dte.Solution != null && dte.Solution.Projects != null)
-      {
-        foreach (Project project in dte.Solution.Projects)
-        {
-          if (project != null)
-            ProjectUtils.CollectProjects(project, (IList<Project>) projectList);
-        }
-      }
-      return (IEnumerable<Project>) projectList;
-    }
+	internal class ProjectUtils
+	{
+		internal static IEnumerable<Project> GetAllRealProjects(DTE dte)
+		{
+			//IL_0034: Unknown result type (might be due to invalid IL or missing references)
+			//IL_003a: Expected O, but got Unknown
+			List<Project> list = new List<Project>();
+			if (((_DTE)dte).Solution != null && ((_Solution)((_DTE)dte).Solution).Projects != null)
+			{
+				foreach (Project project in ((_Solution)((_DTE)dte).Solution).Projects)
+				{
+					Project val = project;
+					if (val != null)
+					{
+						CollectProjects(val, list);
+					}
+				}
+				return list;
+			}
+			return list;
+		}
 
-    internal static IEnumerable<Project> GetProjectsContainingCordScript(
-      DTE dte,
-      ICordDesignTimeScopeManager scopeManager)
-    {
-      List<Project> projectList = new List<Project>();
-      foreach (Project allRealProject in ProjectUtils.GetAllRealProjects(dte))
-      {
-        if (allRealProject != null && allRealProject.UniqueName != null)
-        {
-          ICordDesignTimeManager designTimeManager = scopeManager.GetCordDesignTimeManager(allRealProject.UniqueName);
-          if (designTimeManager != null && designTimeManager.ManagedScripts.Count > 0)
-            projectList.Add(allRealProject);
-        }
-      }
-      return (IEnumerable<Project>) projectList;
-    }
+		internal static IEnumerable<Project> GetProjectsContainingCordScript(DTE dte, ICordDesignTimeScopeManager scopeManager)
+		{
+			List<Project> list = new List<Project>();
+			foreach (Project allRealProject in GetAllRealProjects(dte))
+			{
+				if (allRealProject != null && allRealProject.UniqueName != null)
+				{
+					ICordDesignTimeManager cordDesignTimeManager = scopeManager.GetCordDesignTimeManager(allRealProject.UniqueName);
+					if (cordDesignTimeManager != null && cordDesignTimeManager.ManagedScripts.Count > 0)
+					{
+						list.Add(allRealProject);
+					}
+				}
+			}
+			return list;
+		}
 
-    private static void CollectProjects(Project project, IList<Project> projects)
-    {
-      if (project.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
-      {
-        if (project.ProjectItems == null)
-          return;
-        foreach (ProjectItem projectItem in project.ProjectItems)
-        {
-          if (projectItem != null && projectItem.SubProject != null)
-            ProjectUtils.CollectProjects(projectItem.SubProject, projects);
-        }
-      }
-      else
-      {
-        if (string.Compare("{67294A52-A4F0-11D2-AA88-00C04F688DDE}", project.Kind, StringComparison.OrdinalIgnoreCase) == 0)
-          return;
-        projects.Add(project);
-      }
-    }
+		private static void CollectProjects(Project project, IList<Project> projects)
+		{
+			if (project.Kind == "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}")
+			{
+				if (project.ProjectItems == null)
+					return;
+				foreach (ProjectItem projectItem in project.ProjectItems)
+				{
+					if (projectItem != null && projectItem.SubProject != null)
+						ProjectUtils.CollectProjects(projectItem.SubProject, projects);
+				}
+			}
+			else
+			{
+				if (string.Compare("{67294A52-A4F0-11D2-AA88-00C04F688DDE}", project.Kind, StringComparison.OrdinalIgnoreCase) == 0)
+					return;
+				projects.Add(project);
+			}
+		}
 
-    internal static Project GetProjectOfFile(string filePath, DTE dte)
-    {
-      foreach (Project allRealProject in ProjectUtils.GetAllRealProjects(dte))
-      {
-        if (allRealProject != null && ProjectUtils.IsFileInProject(filePath, allRealProject))
-          return allRealProject;
-      }
-      return (Project) null;
-    }
+		internal static Project GetProjectOfFile(string filePath, DTE dte)
+		{
+			foreach (Project allRealProject in GetAllRealProjects(dte))
+			{
+				if (allRealProject != null && IsFileInProject(filePath, allRealProject))
+				{
+					return allRealProject;
+				}
+			}
+			return null;
+		}
 
-    private static bool IsFileUnderProjectItem(string filePath, ProjectItem projectItem)
-    {
-      Guid guid = new Guid(projectItem.Kind);
-      if (guid == VSConstants.GUID_ItemType_PhysicalFile)
-      {
-          string strA = projectItem.get_FileNames((short)1);
-        if (strA != null && string.Compare(strA, filePath, true) == 0)
-          return true;
-      }
-      else if (guid == VSConstants.GUID_ItemType_PhysicalFolder)
-      {
-        foreach (ProjectItem projectItem1 in projectItem.ProjectItems)
-        {
-          if (ProjectUtils.IsFileUnderProjectItem(filePath, projectItem1))
-            return true;
-        }
-      }
-      return false;
-    }
+		private static bool IsFileUnderProjectItem(string filePath, ProjectItem projectItem)
+		{
+			//IL_0054: Unknown result type (might be due to invalid IL or missing references)
+			//IL_005a: Expected O, but got Unknown
+			Guid guid = new Guid(projectItem.Kind);
+			if (guid == VSConstants.GUID_ItemType_PhysicalFile)
+			{
+				string text = projectItem.get_FileNames((short)1);
+				if (text != null && string.Compare(text, filePath, true) == 0)
+				{
+					return true;
+				}
+			}
+			else if (guid == VSConstants.GUID_ItemType_PhysicalFolder)
+			{
+				foreach (ProjectItem projectItem3 in projectItem.ProjectItems)
+				{
+					ProjectItem projectItem2 = projectItem3;
+					if (IsFileUnderProjectItem(filePath, projectItem2))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 
-    private static bool IsFileInProject(string filePath, Project project)
-    {
-      if (project.ProjectItems != null)
-      {
-        foreach (ProjectItem projectItem in project.ProjectItems)
-        {
-          if (projectItem != null && ProjectUtils.IsFileUnderProjectItem(filePath, projectItem))
-            return true;
-        }
-      }
-      return false;
-    }
+		private static bool IsFileInProject(string filePath, Project project)
+		{
+			//IL_001c: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0022: Expected O, but got Unknown
+			if (project.ProjectItems != null)
+			{
+				foreach (ProjectItem projectItem in project.ProjectItems)
+				{
+					ProjectItem val = projectItem;
+					if (val != null && IsFileUnderProjectItem(filePath, val))
+					{
+						return true;
+					}
+				}
+			}
+			return false;
+		}
 
-    internal static IList<string> GetDocumentsInProject(Project project, string fileExtension)
-    {
-      return ProjectUtils.GetDocumentsInProjectItems(project.ProjectItems, fileExtension);
-    }
+		internal static IList<string> GetDocumentsInProject(Project project, string fileExtension)
+		{
+			return GetDocumentsInProjectItems(project.ProjectItems, fileExtension);
+		}
 
-    private static IList<string> GetDocumentsInProjectItems(
-      ProjectItems projectItems,
-      string fileExtension)
-    {
-      List<string> stringList = new List<string>();
-      if (projectItems != null)
-      {
-        foreach (ProjectItem projectItem in projectItems)
-        {
-          if (projectItem != null)
-          {
-            Guid guid = new Guid(projectItem.Kind);
-            if (guid == VSConstants.GUID_ItemType_PhysicalFile)
-            {
-              string str1 = projectItem.Name;
-              string str2 = projectItem.get_FileNames((short) 0);
-              if (!string.IsNullOrEmpty(str1) && str1.EndsWith(fileExtension, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(str2))
-                stringList.Add(str2);
-            }
-            else if (guid == VSConstants.GUID_ItemType_PhysicalFolder)
-              stringList.AddRange((IEnumerable<string>) ProjectUtils.GetDocumentsInProjectItems(projectItem.ProjectItems, fileExtension));
-          }
-        }
-      }
-      return (IList<string>) stringList;
-    }
-  }
+		private static IList<string> GetDocumentsInProjectItems(ProjectItems projectItems, string fileExtension)
+		{
+			//IL_001d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0023: Expected O, but got Unknown
+			List<string> list = new List<string>();
+			if (projectItems != null)
+			{
+				foreach (ProjectItem projectItem in projectItems)
+				{
+					ProjectItem val = projectItem;
+					if (val != null)
+					{
+						Guid guid = new Guid(val.Kind);
+						if (guid == VSConstants.GUID_ItemType_PhysicalFile)
+						{
+							string name = val.Name;
+							string text = val.get_FileNames((short)0);
+							if (!string.IsNullOrEmpty(name) && name.EndsWith(fileExtension, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(text))
+							{
+								list.Add(text);
+							}
+						}
+						else if (guid == VSConstants.GUID_ItemType_PhysicalFolder)
+						{
+							list.AddRange(GetDocumentsInProjectItems(val.ProjectItems, fileExtension));
+						}
+					}
+				}
+				return list;
+			}
+			return list;
+		}
+	}
 }

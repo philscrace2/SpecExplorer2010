@@ -1,268 +1,300 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.VS.CodeElementItem
-// Assembly: Microsoft.SpecExplorer.VS.Package, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 04778F4E-8525-4D68-B061-08FAB43841FA
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\Microsoft\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Package.dll
-
-using EnvDTE;
-using EnvDTE80;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using EnvDTE;
+using EnvDTE80;
 
 namespace Microsoft.SpecExplorer.VS
 {
-  public class CodeElementItem : INotifyPropertyChanged
-  {
-    private Func<CodeElementItem, CodeElement, bool> childElementValidator;
-    private Func<CodeElementItem, string> nameFabricator;
-    private ObservableCollection<CodeElementItem> children;
-    private bool isSelected;
+	public class CodeElementItem : INotifyPropertyChanged
+	{
+		private Func<CodeElementItem, CodeElement, bool> childElementValidator;
 
-    public CodeElementItem(
-      CodeElement rootElement,
-      Func<CodeElementItem, CodeElement, bool> childElementValidator,
-      Func<CodeElementItem, string> nameFabricator)
-      : this(rootElement, (CodeElementItem) null, childElementValidator, nameFabricator)
-    {
-    }
+		private Func<CodeElementItem, string> nameFabricator;
 
-    public CodeElementItem(
-      CodeElement rootElement,
-      CodeElementItem parent,
-      Func<CodeElementItem, CodeElement, bool> childElementValidator,
-      Func<CodeElementItem, string> nameFabricator)
-    {
-      if (rootElement == null && parent == null)
-        throw new ArgumentNullException(rootElement.Name, "rootElement and parent cannot be null at the same time.");
-      this.RootElement = rootElement;
-      this.Parent = parent;
-      this.nameFabricator = nameFabricator;
-      this.childElementValidator = childElementValidator;
-    }
+		private ObservableCollection<CodeElementItem> children;
 
-    public CodeElement RootElement { get; private set; }
+		private bool isSelected;
 
-    public CodeElementItem Parent { get; private set; }
+		public CodeElement RootElement { get; private set; }
 
-    public ObservableCollection<CodeElementItem> Children
-    {
-      get
-      {
-        if (this.children == null)
-        {
-          this.children = new ObservableCollection<CodeElementItem>();
-          if (this.Kind != CodeElementItemType.BaseContainer)
-          {
-            this.AddChildren(this.RootElement, false);
-            this.AddBaseTypesAsChildren();
-          }
-          else
-            this.AddChildren(this.Parent.RootElement, true);
-        }
-        return this.children;
-      }
-    }
+		public CodeElementItem Parent { get; private set; }
 
-    public bool IsStatic
-    {
-      get
-      {
-        switch (this.Kind)
-        {
-          case CodeElementItemType.Class:
-            return (this.RootElement as CodeClass2).IsShared;
-          case CodeElementItemType.Event:
-            return (this.RootElement as CodeEvent).IsShared;
-          case CodeElementItemType.Function:
-            return (this.RootElement as CodeFunction).IsShared;
-          default:
-            return false;
-        }
-      }
-    }
+		public ObservableCollection<CodeElementItem> Children
+		{
+			get
+			{
+				if (children == null)
+				{
+					children = new ObservableCollection<CodeElementItem>();
+					if (Kind != CodeElementItemType.BaseContainer)
+					{
+						AddChildren(RootElement, false);
+						AddBaseTypesAsChildren();
+					}
+					else
+					{
+						AddChildren(Parent.RootElement, true);
+					}
+				}
+				return children;
+			}
+		}
 
-    public string FullName
-    {
-      get
-      {
-        string prototype = this.GetPrototype(true);
-        switch (this.Kind)
-        {
-          case CodeElementItemType.Namespace:
-            return "namespace " + prototype;
-          case CodeElementItemType.Class:
-            return (this.IsStatic ? "static " : string.Empty) + "class " + prototype;
-          case CodeElementItemType.Interface:
-            return "interface " + prototype;
-          case CodeElementItemType.Event:
-            return (this.IsStatic ? "static " : string.Empty) + "event " + prototype;
-          case CodeElementItemType.Function:
-            return (this.IsStatic ? "static " : string.Empty) + prototype;
-          case CodeElementItemType.BaseContainer:
-            return "Base Types";
-          default:
-            return (string) null;
-        }
-      }
-    }
+		public bool IsStatic
+		{
+			get
+			{
+				switch (Kind)
+				{
+				case CodeElementItemType.Function:
+				{
+					CodeElement rootElement3 = RootElement;
+					return ((CodeFunction)((rootElement3 is CodeFunction) ? rootElement3 : null)).IsShared;
+				}
+				case CodeElementItemType.Event:
+				{
+					CodeElement rootElement2 = RootElement;
+					return ((CodeEvent)((rootElement2 is CodeEvent) ? rootElement2 : null)).IsShared;
+				}
+				case CodeElementItemType.Class:
+				{
+					CodeElement rootElement = RootElement;
+					return ((CodeClass2)((rootElement is CodeClass2) ? rootElement : null)).IsShared;
+				}
+				default:
+					return false;
+				}
+			}
+		}
 
-    public string Name
-    {
-      get
-      {
-        if (this.nameFabricator == null)
-          return this.GetPrototype(false);
-        return this.nameFabricator(this);
-      }
-    }
+		public string FullName
+		{
+			get
+			{
+				string prototype = GetPrototype(true);
+				switch (Kind)
+				{
+				case CodeElementItemType.BaseContainer:
+					return "Base Types";
+				case CodeElementItemType.Class:
+					return (IsStatic ? "static " : string.Empty) + "class " + prototype;
+				case CodeElementItemType.Interface:
+					return "interface " + prototype;
+				case CodeElementItemType.Function:
+					return (IsStatic ? "static " : string.Empty) + prototype;
+				case CodeElementItemType.Event:
+					return (IsStatic ? "static " : string.Empty) + "event " + prototype;
+				case CodeElementItemType.Namespace:
+					return "namespace " + prototype;
+				default:
+					return null;
+				}
+			}
+		}
 
-    public CodeElementItemType Kind
-    {
-      get
-      {
-        if (this.RootElement == null)
-          return CodeElementItemType.BaseContainer;
-        switch (this.RootElement.Kind)
-        {
-          case vsCMElement.vsCMElementClass:
-            return CodeElementItemType.Class;
-          case vsCMElement.vsCMElementFunction:
-            return CodeElementItemType.Function;
-          case vsCMElement.vsCMElementNamespace:
-            return CodeElementItemType.Namespace;
-          case vsCMElement.vsCMElementInterface:
-            return CodeElementItemType.Interface;
-          case vsCMElement.vsCMElementEvent:
-            return CodeElementItemType.Event;
-          default:
-            return CodeElementItemType.None;
-        }
-      }
-    }
+		public string Name
+		{
+			get
+			{
+				if (nameFabricator == null)
+				{
+					return GetPrototype(false);
+				}
+				return nameFabricator(this);
+			}
+		}
 
-    public bool IsSelected
-    {
-      get
-      {
-        return this.isSelected;
-      }
-      set
-      {
-        this.isSelected = value;
-        this.SendNotification(IsSelected.ToString());
-      }
-    }
+		public CodeElementItemType Kind
+		{
+			get
+			{
+				if (this.RootElement == null)
+					return CodeElementItemType.BaseContainer;
+				switch (this.RootElement.Kind)
+				{
+					case vsCMElement.vsCMElementClass:
+						return CodeElementItemType.Class;
+					case vsCMElement.vsCMElementFunction:
+						return CodeElementItemType.Function;
+					case vsCMElement.vsCMElementNamespace:
+						return CodeElementItemType.Namespace;
+					case vsCMElement.vsCMElementInterface:
+						return CodeElementItemType.Interface;
+					case vsCMElement.vsCMElementEvent:
+						return CodeElementItemType.Event;
+					default:
+						return CodeElementItemType.None;
+				}
+			}
+		}
 
-    public string GetPrototype(bool enableFullName)
-    {
-      switch (this.Kind)
-      {
-        case CodeElementItemType.Namespace:
-          return this.RootElement.FullName;
-        case CodeElementItemType.Class:
-        case CodeElementItemType.Interface:
-          if (!enableFullName)
-            return this.RootElement.Name;
-          return this.RootElement.FullName;
-        case CodeElementItemType.Event:
-          CodeEvent rootElement1 = this.RootElement as CodeEvent;
-          return string.Format("{0} {1}", (object) rootElement1.Type.AsString, enableFullName ? (object) rootElement1.FullName : (object) rootElement1.Name);
-        case CodeElementItemType.Function:
-          CodeFunction rootElement2 = this.RootElement as CodeFunction;
-          return rootElement2.get_Prototype((rootElement2.FunctionKind == vsCMFunction.vsCMFunctionConstructor || rootElement2.FunctionKind == vsCMFunction.vsCMFunctionDestructor ? 0 : 128) | 16 | 8 | (enableFullName ? 1 : 0));
-        case CodeElementItemType.BaseContainer:
-          return "Base Types";
-        default:
-          return (string) null;
-      }
-    }
+		public bool IsSelected
+		{
+			get
+			{
+				return isSelected;
+			}
+			set
+			{
+				isSelected = value;
+				SendNotification("IsSelected");
+			}
+		}
 
-    public event PropertyChangedEventHandler PropertyChanged;
+		public event PropertyChangedEventHandler PropertyChanged;
 
-    private void SendNotification(string propertyName)
-    {
-      if (this.PropertyChanged == null)
-        return;
-      this.PropertyChanged((object) this, new PropertyChangedEventArgs(propertyName));
-    }
+		public CodeElementItem(CodeElement rootElement, Func<CodeElementItem, CodeElement, bool> childElementValidator, Func<CodeElementItem, string> nameFabricator)
+			: this(rootElement, null, childElementValidator, nameFabricator)
+		{
+		}
 
-    private void AddBaseTypesAsChildren()
-    {
-      if (this.Kind != CodeElementItemType.Class && this.Kind != CodeElementItemType.Interface)
-        return;
-      foreach (CodeElement codeElement in (this.RootElement as CodeType).Bases)
-      {
-        if (this.childElementValidator(this, codeElement))
-        {
-          this.AddChild((CodeElement) null);
-          break;
-        }
-      }
-    }
+		public CodeElementItem(CodeElement rootElement, CodeElementItem parent, Func<CodeElementItem, CodeElement, bool> childElementValidator, Func<CodeElementItem, string> nameFabricator)
+		{
+			if (rootElement == null && parent == null)
+			{
+				throw new ArgumentNullException("rootElement", "rootElement and parent cannot be null at the same time.");
+			}
+			RootElement = rootElement;
+			Parent = parent;
+			this.nameFabricator = nameFabricator;
+			this.childElementValidator = childElementValidator;
+		}
 
-    private void AddChildren(CodeElement childrenProvider, bool baseClassAsChildren)
-    {
-      switch (childrenProvider.Kind)
-      {
-        case vsCMElement.vsCMElementClass:
-        case vsCMElement.vsCMElementInterface:
-          CodeType codeType = childrenProvider as CodeType;
-          if (codeType == null)
-            break;
-          if (baseClassAsChildren)
-          {
-            if (codeType.Bases == null)
-              break;
-            IEnumerator enumerator = codeType.Bases.GetEnumerator();
-            try
-            {
-              while (enumerator.MoveNext())
-                this.AddChild((CodeElement) enumerator.Current);
-              break;
-            }
-            finally
-            {
-              (enumerator as IDisposable).Dispose();
-            }
-          }
-          else
-          {            
-            using (IEnumerator<CodeElement> enumerator = codeType.GetAllMembers().GetEnumerator())
-            {
-              while (enumerator.MoveNext())
-                this.AddChild(enumerator.Current);
-              break;
-            }
-          }
-        case vsCMElement.vsCMElementNamespace:
-          CodeNamespace codeNamespace = childrenProvider as CodeNamespace;
-          if (codeNamespace.Members == null)
-            break;
-          IEnumerator enumerator1 = codeNamespace.Members.GetEnumerator();
-          try
-          {
-            while (enumerator1.MoveNext())
-              this.AddChild((CodeElement) enumerator1.Current);
-            break;
-          }
-          finally
-          {
-            (enumerator1 as IDisposable).Dispose();
-          }
-      }
-    }
+		public string GetPrototype(bool enableFullName)
+		{
+			//IL_009a: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00a0: Invalid comparison between Unknown and I4
+			//IL_00a3: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00ad: Invalid comparison between Unknown and I4
+			switch (Kind)
+			{
+			case CodeElementItemType.BaseContainer:
+				return "Base Types";
+			case CodeElementItemType.Class:
+			case CodeElementItemType.Interface:
+				if (!enableFullName)
+				{
+					return RootElement.Name;
+				}
+				return RootElement.FullName;
+			case CodeElementItemType.Namespace:
+				return RootElement.FullName;
+			case CodeElementItemType.Event:
+			{
+				CodeElement rootElement2 = RootElement;
+				CodeEvent val2 = (CodeEvent)(object)((rootElement2 is CodeEvent) ? rootElement2 : null);
+				return string.Format("{0} {1}", val2.Type.AsString, enableFullName ? val2.FullName : val2.Name);
+			}
+			case CodeElementItemType.Function:
+			{
+				CodeElement rootElement = RootElement;
+				CodeFunction val = (CodeFunction)(object)((rootElement is CodeFunction) ? rootElement : null);
+				return val.get_Prototype((((int)val.FunctionKind != 1 && (int)val.FunctionKind != 512) ? 128 : 0) | 0x10 | 8 | (enableFullName ? 1 : 0));
+			}
+			default:
+				return null;
+			}
+		}
 
-    private bool AddChild(CodeElement element)
-    {
-      if (element == null || !this.childElementValidator(this, element))
-        return false;
-      CodeElementItem codeElementItem = new CodeElementItem(element, this, this.childElementValidator, this.nameFabricator);
-      codeElementItem.PropertyChanged += this.PropertyChanged;
-      this.children.Add(codeElementItem);
-      return true;
-    }
-  }
+		private void SendNotification(string propertyName)
+		{
+			if (this.PropertyChanged != null)
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+
+		private void AddBaseTypesAsChildren()
+		{
+			//IL_0030: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0036: Expected O, but got Unknown
+			if (Kind != CodeElementItemType.Class && Kind != CodeElementItemType.Interface)
+			{
+				return;
+			}
+			CodeElement rootElement = RootElement;
+			foreach (CodeElement basis in ((CodeType)((rootElement is CodeType) ? rootElement : null)).Bases)
+			{
+				CodeElement arg = basis;
+				if (childElementValidator(this, arg))
+				{
+					AddChild(null);
+					break;
+				}
+			}
+		}
+
+		private void AddChildren(CodeElement childrenProvider, bool baseClassAsChildren)
+		{
+			//IL_0001: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0006: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0008: Unknown result type (might be due to invalid IL or missing references)
+			//IL_000b: Invalid comparison between Unknown and I4
+			//IL_000d: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0010: Invalid comparison between Unknown and I4
+			//IL_0015: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0018: Invalid comparison between Unknown and I4
+			//IL_004c: Unknown result type (might be due to invalid IL or missing references)
+			//IL_0052: Expected O, but got Unknown
+			//IL_00d8: Unknown result type (might be due to invalid IL or missing references)
+			//IL_00df: Expected O, but got Unknown
+			vsCMElement kind = childrenProvider.Kind;
+			if ((int)kind != 1)
+			{
+				if ((int)kind == 5)
+				{
+					CodeNamespace val = (CodeNamespace)(object)((childrenProvider is CodeNamespace) ? childrenProvider : null);
+					if (val.Members == null)
+					{
+						return;
+					}
+					foreach (CodeElement member in val.Members)
+					{
+						CodeElement element = member;
+						AddChild(element);
+					}
+					return;
+				}
+				if ((int)kind != 8)
+				{
+					return;
+				}
+			}
+			CodeType val2 = (CodeType)(object)((childrenProvider is CodeType) ? childrenProvider : null);
+			if (val2 == null)
+			{
+				return;
+			}
+			if (baseClassAsChildren)
+			{
+				if (val2.Bases == null)
+				{
+					return;
+				}
+				foreach (CodeElement basis in val2.Bases)
+				{
+					CodeElement element2 = basis;
+					AddChild(element2);
+				}
+				return;
+			}
+			foreach (CodeElement allMember in val2.GetAllMembers())
+			{
+				AddChild(allMember);
+			}
+		}
+
+		private bool AddChild(CodeElement element)
+		{
+			if (element != null && childElementValidator(this, element))
+			{
+				CodeElementItem codeElementItem = new CodeElementItem(element, this, childElementValidator, nameFabricator);
+				codeElementItem.PropertyChanged += this.PropertyChanged;
+				children.Add(codeElementItem);
+				return true;
+			}
+			return false;
+		}
+	}
 }

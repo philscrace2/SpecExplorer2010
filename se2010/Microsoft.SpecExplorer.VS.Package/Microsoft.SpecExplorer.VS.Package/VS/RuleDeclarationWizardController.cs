@@ -1,320 +1,337 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.VS.RuleDeclarationWizardController
-// Assembly: Microsoft.SpecExplorer.VS.Package, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 04778F4E-8525-4D68-B061-08FAB43841FA
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\Microsoft\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Package.dll
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Interop;
 using EnvDTE;
 using Microsoft.ActionMachines.Cord;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Interop;
 
 namespace Microsoft.SpecExplorer.VS
 {
-  internal class RuleDeclarationWizardController
-  {
-    private AssistedProcedureWizardWindow wizardWindow;
-    private ActionSelectionControl actionSelection;
-    private TypeMapControl typeMapSelection;
-    private CodeElementViewer hostClassViewer;
-    private GenericSelectionControl configSelection;
-    private Stack<RuleDeclarationWizardController.WizardState> stateStack;
-    private ProcedureType[] typesNeedingHostClass;
-    private int currentITypeHostIndex;
-    private HashSet<ProcedureType> typesNeedingTypeBinding;
-    private bool isFurtherTypeBindingRequired;
-    private SpecExplorerPackage package;
-    public ActionConfigClauseResolver ResolveActionClause;
-    public SourceBindingTypeProvider GetSourceBindingTypes;
+	internal class RuleDeclarationWizardController
+	{
+		private enum WizardState
+		{
+			InConfigSelection,
+			InActionsSelection,
+			InHostClassSelection,
+			InTypeBinding,
+			Finished
+		}
 
-    private RuleDeclarationWizardController.WizardState CurrentState
-    {
-      get
-      {
-        return this.stateStack.Peek();
-      }
-    }
+		private AssistedProcedureWizardWindow wizardWindow;
 
-    public RuleDeclarationWizardController(SpecExplorerPackage package)
-    {
-      this.package = package;
-    }
+		private ActionSelectionControl actionSelection;
 
-    public RuleDeclarationWizardData WizardData { get; private set; }
+		private TypeMapControl typeMapSelection;
 
-    public bool LaunchWizard()
-    {
-      this.InitializeControls();
-      this.InitializeStateVariables();
-      this.LoadConfigs();
-      this.UpdateUserControl(true);
-      bool? nullable = new bool?();
-      try
-      {
-        this.package.AssertOk(this.package.UIShell.EnableModeless(0));
-        nullable = this.wizardWindow.ShowDialog();
-      }
-      finally
-      {
-        this.package.AssertOk(this.package.UIShell.EnableModeless(1));
-      }
-      if (nullable.HasValue)
-        return nullable.Value;
-      return false;
-    }
+		private CodeElementViewer hostClassViewer;
 
-    private bool TryMovingToNextState()
-    {
-      bool refreshControl = true;
-      switch (this.CurrentState)
-      {
-        case RuleDeclarationWizardController.WizardState.InConfigSelection:
-          if (this.configSelection.SelectedItem == null)
-          {
-            this.package.NotificationDialog(Resources.SpecExplorer, "Select a configuration having action clause.");
-            return false;
-          }
-          Project projectByUniqueName = this.package.GetProjectByUniqueName((this.configSelection.SelectedItem as ConfigInfo).ContainerProject);
-          this.package.Assert(projectByUniqueName != null, "Unexpected Error: unable to locate container project");
-          if (!this.package.ProjectHasCSharpClass(projectByUniqueName))
-          {
-            this.package.NotificationDialog(Resources.SpecExplorer, "Project containing the selected configuration does not have any CSharp class to host rule method stub.");
-            return false;
-          }
-          refreshControl = (this.WizardData.ConfigInfo != null ? (this.WizardData.ConfigInfo.Equals((object) this.configSelection.SelectedItem) ? 1 : 0) : 0) == 0;
-          this.WizardData.ConfigInfo = (ConfigInfo) this.configSelection.SelectedItem;
-          this.stateStack.Push(RuleDeclarationWizardController.WizardState.InActionsSelection);
-          break;
-        case RuleDeclarationWizardController.WizardState.InActionsSelection:
-          IEnumerable<ConfigClause> selectedActions = this.actionSelection.ControlModel.SelectedActions;
-          if (selectedActions.Count<ConfigClause>() == 0)
-          {
-            this.package.NotificationDialog(Resources.SpecExplorer, "At least one action is to be selected");
-            return false;
-          }
-          Dictionary<ProcedureType, HashSet<MethodDescriptor>> methodDescriptors;
-          HashSet<ProcedureType> adapterTypes;
-          int num = this.ResolveActionClause(selectedActions, out methodDescriptors, out adapterTypes) ? 1 : 0;
-          Dictionary<ProcedureType, CodeClass> existTypeBinding;
-          this.typesNeedingTypeBinding = this.GetSourceBindingTypes(methodDescriptors, this.GetCodeElementsFromProjectFiles(), out existTypeBinding);
-          foreach (KeyValuePair<ProcedureType, CodeClass> keyValuePair in existTypeBinding)
-            this.WizardData.TypeBindingMap[keyValuePair.Key] = keyValuePair.Value;
-          this.typesNeedingHostClass = ((IEnumerable<ProcedureType>) methodDescriptors.Keys).ToArray<ProcedureType>();
-          this.isFurtherTypeBindingRequired = ((IEnumerable<ProcedureType>) this.typesNeedingHostClass).Intersect<ProcedureType>((IEnumerable<ProcedureType>) this.typesNeedingTypeBinding).Count<ProcedureType>() < this.typesNeedingTypeBinding.Count<ProcedureType>();
-          this.WizardData.AdapterTypes = adapterTypes;
-          this.WizardData.MethodDescriptors = methodDescriptors;
-          this.currentITypeHostIndex = 0;
-          this.stateStack.Push(RuleDeclarationWizardController.WizardState.InHostClassSelection);
-          break;
-        case RuleDeclarationWizardController.WizardState.InHostClassSelection:
-          CodeElementAndContainerPair andContainerPair = this.hostClassViewer.ViewerModel.RetrieveSelectedItems(vsCMElement.vsCMElementClass).SingleOrDefault<CodeElementAndContainerPair>();
-          if (andContainerPair == null || !(andContainerPair.Element is CodeClass))
-          {
-            this.package.NotificationDialog(Resources.SpecExplorer, "One host class is required to be selected");
-            return false;
-          }
-          this.WizardData.HostClassMap[this.typesNeedingHostClass[this.currentITypeHostIndex++]] = andContainerPair.Element as CodeClass;
-          if (this.currentITypeHostIndex < this.typesNeedingHostClass.Length)
-          {
-            this.stateStack.Push(RuleDeclarationWizardController.WizardState.InHostClassSelection);
-            break;
-          }
-          foreach (ProcedureType key in this.typesNeedingTypeBinding)
-          {
-            CodeClass codeClass;
-            this.WizardData.TypeBindingMap[key] = this.WizardData.HostClassMap.TryGetValue(key, out codeClass) ? codeClass : (CodeClass) null;
-          }
-          this.stateStack.Push(this.isFurtherTypeBindingRequired ? RuleDeclarationWizardController.WizardState.InTypeBinding : RuleDeclarationWizardController.WizardState.Finished);
-          break;
-        case RuleDeclarationWizardController.WizardState.InTypeBinding:
-          foreach (TypeMapUnit type in (Collection<TypeMapUnit>) this.typeMapSelection.TypeMap)
-            this.WizardData.TypeBindingMap[type.ImplementationType] = type.ModelClass;
-          this.stateStack.Push(RuleDeclarationWizardController.WizardState.Finished);
-          break;
-        case RuleDeclarationWizardController.WizardState.Finished:
-          return false;
-      }
-      this.UpdateUserControl(refreshControl);
-      return true;
-    }
+		private GenericSelectionControl configSelection;
 
-    private bool TryMovingToPreviousState()
-    {
-      switch (this.CurrentState)
-      {
-        case RuleDeclarationWizardController.WizardState.InConfigSelection:
-        case RuleDeclarationWizardController.WizardState.Finished:
-          return false;
-        case RuleDeclarationWizardController.WizardState.InHostClassSelection:
-        case RuleDeclarationWizardController.WizardState.InTypeBinding:
-          --this.currentITypeHostIndex;
-          break;
-      }
-      int num = (int) this.stateStack.Pop();
-      this.UpdateUserControl(false);
-      return true;
-    }
+		private Stack<WizardState> stateStack;
 
-    private void UpdateUserControl(bool refreshControl)
-    {
-      switch (this.CurrentState)
-      {
-        case RuleDeclarationWizardController.WizardState.InConfigSelection:
-          this.wizardWindow.IsStartState = true;
-          this.wizardWindow.IsFinalState = false;
-          this.wizardWindow.BannerHeader = "Select Config";
-          this.wizardWindow.BannerText = "Select the cord config containing the action declarations to create rule methods for";
-          this.wizardWindow.LoadUserControl((UserControl) this.configSelection);
-          break;
-        case RuleDeclarationWizardController.WizardState.InActionsSelection:
-          this.wizardWindow.IsStartState = false;
-          this.wizardWindow.IsFinalState = false;
-          this.wizardWindow.BannerHeader = "Select Actions";
-          this.wizardWindow.BannerText = "Select actions for which rule methods will be declared";
-          this.LoadActions(refreshControl);
-          this.wizardWindow.LoadUserControl((UserControl) this.actionSelection);
-          break;
-        case RuleDeclarationWizardController.WizardState.InHostClassSelection:
-          this.wizardWindow.IsStartState = false;
-          this.wizardWindow.IsFinalState = !this.isFurtherTypeBindingRequired && this.currentITypeHostIndex == this.typesNeedingHostClass.Length - 1;
-          this.wizardWindow.BannerHeader = "Select Host Class for Rule Methods";
-          this.wizardWindow.BannerText = "Select host class for rule methods to model actions of type: " + this.typesNeedingHostClass[this.currentITypeHostIndex].ShortName;
-          this.LoadCodeElementsFromProjectFiles();
-          this.wizardWindow.LoadUserControl((UserControl) this.hostClassViewer);
-          break;
-        case RuleDeclarationWizardController.WizardState.InTypeBinding:
-          this.wizardWindow.IsStartState = false;
-          this.wizardWindow.IsFinalState = true;
-          this.wizardWindow.BannerHeader = "Bind Types";
-          this.wizardWindow.BannerText = "Select a model type to map each of the following implementation parameter types";
-          this.LoadTypeBindingRequirements();
-          this.wizardWindow.LoadUserControl((UserControl) this.typeMapSelection);
-          break;
-      }
-    }
+		private ProcedureType[] typesNeedingHostClass;
 
-    private void InitializeControls()
-    {
-      this.wizardWindow = new AssistedProcedureWizardWindow("Modeling Guidance: Declare Rules");
-      IntPtr phwnd;
-      this.package.AssertOk(this.package.UIShell.GetDialogOwnerHwnd(out phwnd));
-      new WindowInteropHelper((System.Windows.Window) this.wizardWindow).Owner = phwnd;
-      this.actionSelection = new ActionSelectionControl();
-      this.typeMapSelection = new TypeMapControl()
-      {
-        ContainerWindow = (System.Windows.Window) this.wizardWindow,
-        Package = this.package
-      };
-      this.configSelection = new GenericSelectionControl(false, "Configurations");
-      this.hostClassViewer = new CodeElementViewer();
-      this.hostClassViewer.ViewerModel.CodeElementDisplayTextFabricator = new Func<CodeElementItem, string>(this.FabricateCodeElementDisplayText);
-      this.wizardWindow.NextPageRequestedEvent += (EventHandler) delegate
-      {
-        if (!this.TryMovingToNextState() || this.CurrentState != RuleDeclarationWizardController.WizardState.Finished)
-          return;
-        this.wizardWindow.DialogResult = new bool?(true);
-      };
-      this.wizardWindow.PreviousPageRequestedEvent += (EventHandler) delegate
-      {
-        this.TryMovingToPreviousState();
-      };
-    }
+		private int currentITypeHostIndex;
 
-    private void InitializeStateVariables()
-    {
-      this.WizardData = new RuleDeclarationWizardData();
-      this.stateStack = new Stack<RuleDeclarationWizardController.WizardState>();
-      this.stateStack.Push(RuleDeclarationWizardController.WizardState.InConfigSelection);
-    }
+		private HashSet<ProcedureType> typesNeedingTypeBinding;
 
-    private void LoadConfigs()
-    {
-      this.configSelection.ItemList.Clear();
-      foreach (string allScope in (IEnumerable<string>) this.package.CordScopeManager.AllScopes)
-      {
-        using (IEnumerator<Config> enumerator = ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(allScope).AllConfigurations).GetEnumerator())
-        {
-          while (((IEnumerator) enumerator).MoveNext())
-          {
-            Config current = enumerator.Current;
-            if (((IEnumerable<ConfigClause>) current.Clauses).Any<ConfigClause>((Func<ConfigClause, bool>) (cl =>
-            {
-              if (!(cl is ConfigClause.ImportMethod) && !(cl is ConfigClause.ImportAllFromScope))
-                return cl is ConfigClause.DeclareMethod;
-              return true;
-            })))
-              this.configSelection.ItemList.Add((ICordSyntaxElementInfo) new ConfigInfo(allScope, ((SyntaxElement) current).Location.FileName, (string) current.Name));
-          }
-        }
-      }
-    }
+		private bool isFurtherTypeBindingRequired;
 
-    private void LoadActions(bool configChanged)
-    {
-      if (!configChanged)
-        return;
-      this.actionSelection.ControlModel.LoadActions((IEnumerable<ConfigClause>) ((IEnumerable<Config>) this.package.CordScopeManager.GetCordDesignTimeManager(this.WizardData.ConfigInfo.ContainerProject).AllConfigurations).FirstOrDefault<Config>((Func<Config, bool>) (confName => (string) confName.Name == this.WizardData.ConfigInfo.ConfigName)).Clauses);
-    }
+		private SpecExplorerPackage package;
 
-    private void LoadCodeElementsFromProjectFiles()
-    {
-      this.hostClassViewer.ViewerModel.LoadCodeElements((IEnumerable) this.GetCodeElementsFromProjectFiles(), false, CodeElementExpandOptions.ExpandToNamespaces | CodeElementExpandOptions.ExpandToClasses, false);
-    }
+		public ActionConfigClauseResolver ResolveActionClause;
 
-    private IEnumerable<CodeElement> GetCodeElementsFromProjectFiles()
-    {
-      Project project = this.package.GetProjectByUniqueName(this.WizardData.ConfigInfo.ContainerProject);
-      this.package.Assert(project != null, "Unexpected Error: Unable to locate container project");
-      foreach (ProjectItem authoredCsharpDocument in this.package.GetAuthoredCSharpDocuments(project.ProjectItems))
-      {
-        IEnumerator enumerator = authoredCsharpDocument.FileCodeModel.CodeElements.GetEnumerator();
-        try
-        {
-          while (enumerator.MoveNext())
-          {
-            CodeElement elem = (CodeElement) enumerator.Current;
-            yield return elem;
-          }
-        }
-        finally
-        {
-          IDisposable disposable = enumerator as IDisposable;
-          disposable.Dispose();
-        }
-      }
-    }
+		public SourceBindingTypeProvider GetSourceBindingTypes;
 
-    private void LoadTypeBindingRequirements()
-    {
-      if (this.package.GetProjectByUniqueName(this.WizardData.ConfigInfo.ContainerProject) == null)
-        return;
-      this.typeMapSelection.LoadImplementationTypes(this.WizardData.TypeBindingMap.Where<KeyValuePair<ProcedureType, CodeClass>>((Func<KeyValuePair<ProcedureType, CodeClass>, bool>) (typeMap => typeMap.Value == null)).Select<KeyValuePair<ProcedureType, CodeClass>, ProcedureType>((Func<KeyValuePair<ProcedureType, CodeClass>, ProcedureType>) (typeMap => typeMap.Key)), (IEnumerable) this.GetCodeElementsFromProjectFiles());
-    }
+		private WizardState CurrentState
+		{
+			get
+			{
+				return stateStack.Peek();
+			}
+		}
 
-    private string FabricateCodeElementDisplayText(CodeElementItem codeElement)
-    {
-      string prototype = codeElement.GetPrototype(false);
-      if (codeElement.RootElement == null)
-        return prototype;
-      ProjectItem projectItem = codeElement.RootElement.ProjectItem;
-      this.package.Assert(projectItem.ContainingProject != null, "Unexpected Error: Unable to locate container project");
-      string relativeToProject = this.package.ComputePathRelativeToProject(projectItem.ContainingProject, projectItem);
-      this.package.Assert(!string.IsNullOrEmpty(relativeToProject), "Unexpected Error: Unable to compute relative file path");
-      return string.Format("{0} [{1}]", (object) prototype, (object) relativeToProject);
-    }
+		public RuleDeclarationWizardData WizardData { get; private set; }
 
-    private enum WizardState
-    {
-      InConfigSelection,
-      InActionsSelection,
-      InHostClassSelection,
-      InTypeBinding,
-      Finished,
-    }
-  }
+		public RuleDeclarationWizardController(SpecExplorerPackage package)
+		{
+			this.package = package;
+		}
+
+		public bool LaunchWizard()
+		{
+			InitializeControls();
+			InitializeStateVariables();
+			LoadConfigs();
+			UpdateUserControl(true);
+			bool? flag = null;
+			try
+			{
+				int hr = package.UIShell.EnableModeless(0);
+				package.AssertOk(hr);
+				flag = wizardWindow.ShowDialog();
+			}
+			finally
+			{
+				int hr2 = package.UIShell.EnableModeless(1);
+				package.AssertOk(hr2);
+			}
+			if (flag.HasValue)
+			{
+				return flag.Value;
+			}
+			return false;
+		}
+
+		private bool TryMovingToNextState()
+		{
+			bool refreshControl = true;
+			switch (CurrentState)
+			{
+			case WizardState.Finished:
+				return false;
+			case WizardState.InConfigSelection:
+			{
+				if (configSelection.SelectedItem == null)
+				{
+					package.NotificationDialog(Resources.SpecExplorer, "Select a configuration having action clause.");
+					return false;
+				}
+				Project projectByUniqueName = package.GetProjectByUniqueName((configSelection.SelectedItem as ConfigInfo).ContainerProject);
+				package.Assert(projectByUniqueName != null, "Unexpected Error: unable to locate container project");
+				if (!package.ProjectHasCSharpClass(projectByUniqueName))
+				{
+					package.NotificationDialog(Resources.SpecExplorer, "Project containing the selected configuration does not have any CSharp class to host rule method stub.");
+					return false;
+				}
+				refreshControl = WizardData.ConfigInfo == null || !WizardData.ConfigInfo.Equals(configSelection.SelectedItem);
+				WizardData.ConfigInfo = (ConfigInfo)configSelection.SelectedItem;
+				stateStack.Push(WizardState.InActionsSelection);
+				break;
+			}
+			case WizardState.InActionsSelection:
+			{
+				IEnumerable<ConfigClause> selectedActions = actionSelection.ControlModel.SelectedActions;
+				if (selectedActions.Count() == 0)
+				{
+					package.NotificationDialog(Resources.SpecExplorer, "At least one action is to be selected");
+					return false;
+				}
+				Dictionary<ProcedureType, HashSet<MethodDescriptor>> methodDescriptors;
+				HashSet<ProcedureType> adapterTypes;
+				ResolveActionClause(selectedActions, out methodDescriptors, out adapterTypes);
+				Dictionary<ProcedureType, CodeClass> existTypeBinding;
+				typesNeedingTypeBinding = GetSourceBindingTypes(methodDescriptors, GetCodeElementsFromProjectFiles(), out existTypeBinding);
+				foreach (KeyValuePair<ProcedureType, CodeClass> item in existTypeBinding)
+				{
+					WizardData.TypeBindingMap[item.Key] = item.Value;
+				}
+				typesNeedingHostClass = methodDescriptors.Keys.ToArray();
+				isFurtherTypeBindingRequired = typesNeedingHostClass.Intersect(typesNeedingTypeBinding).Count() < typesNeedingTypeBinding.Count();
+				WizardData.AdapterTypes = adapterTypes;
+				WizardData.MethodDescriptors = methodDescriptors;
+				currentITypeHostIndex = 0;
+				stateStack.Push(WizardState.InHostClassSelection);
+				break;
+			}
+			case WizardState.InHostClassSelection:
+			{
+				CodeElementAndContainerPair codeElementAndContainerPair = hostClassViewer.ViewerModel.RetrieveSelectedItems((vsCMElement)1).SingleOrDefault();
+				if (codeElementAndContainerPair == null || !(codeElementAndContainerPair.Element is CodeClass))
+				{
+					package.NotificationDialog(Resources.SpecExplorer, "One host class is required to be selected");
+					return false;
+				}
+				CodeElement element = codeElementAndContainerPair.Element;
+				CodeClass value = (CodeClass)(object)((element is CodeClass) ? element : null);
+				WizardData.HostClassMap[typesNeedingHostClass[currentITypeHostIndex++]] = value;
+				if (currentITypeHostIndex < typesNeedingHostClass.Length)
+				{
+					stateStack.Push(WizardState.InHostClassSelection);
+					break;
+				}
+				foreach (ProcedureType item2 in typesNeedingTypeBinding)
+				{
+					CodeClass value2;
+					WizardData.TypeBindingMap[item2] = (WizardData.HostClassMap.TryGetValue(item2, out value2) ? value2 : null);
+				}
+				stateStack.Push(isFurtherTypeBindingRequired ? WizardState.InTypeBinding : WizardState.Finished);
+				break;
+			}
+			case WizardState.InTypeBinding:
+				foreach (TypeMapUnit item3 in typeMapSelection.TypeMap)
+				{
+					WizardData.TypeBindingMap[item3.ImplementationType] = item3.ModelClass;
+				}
+				stateStack.Push(WizardState.Finished);
+				break;
+			}
+			UpdateUserControl(refreshControl);
+			return true;
+		}
+
+		private bool TryMovingToPreviousState()
+		{
+			switch (CurrentState)
+			{
+			case WizardState.InConfigSelection:
+			case WizardState.Finished:
+				return false;
+			case WizardState.InHostClassSelection:
+			case WizardState.InTypeBinding:
+				currentITypeHostIndex--;
+				break;
+			}
+			stateStack.Pop();
+			UpdateUserControl(false);
+			return true;
+		}
+
+		private void UpdateUserControl(bool refreshControl)
+		{
+			switch (CurrentState)
+			{
+			case WizardState.InConfigSelection:
+				wizardWindow.IsStartState = true;
+				wizardWindow.IsFinalState = false;
+				wizardWindow.BannerHeader = "Select Config";
+				wizardWindow.BannerText = "Select the cord config containing the action declarations to create rule methods for";
+				wizardWindow.LoadUserControl(configSelection);
+				break;
+			case WizardState.InActionsSelection:
+				wizardWindow.IsStartState = false;
+				wizardWindow.IsFinalState = false;
+				wizardWindow.BannerHeader = "Select Actions";
+				wizardWindow.BannerText = "Select actions for which rule methods will be declared";
+				LoadActions(refreshControl);
+				wizardWindow.LoadUserControl(actionSelection);
+				break;
+			case WizardState.InHostClassSelection:
+				wizardWindow.IsStartState = false;
+				wizardWindow.IsFinalState = !isFurtherTypeBindingRequired && currentITypeHostIndex == typesNeedingHostClass.Length - 1;
+				wizardWindow.BannerHeader = "Select Host Class for Rule Methods";
+				wizardWindow.BannerText = "Select host class for rule methods to model actions of type: " + typesNeedingHostClass[currentITypeHostIndex].ShortName;
+				LoadCodeElementsFromProjectFiles();
+				wizardWindow.LoadUserControl(hostClassViewer);
+				break;
+			case WizardState.InTypeBinding:
+				wizardWindow.IsStartState = false;
+				wizardWindow.IsFinalState = true;
+				wizardWindow.BannerHeader = "Bind Types";
+				wizardWindow.BannerText = "Select a model type to map each of the following implementation parameter types";
+				LoadTypeBindingRequirements();
+				wizardWindow.LoadUserControl(typeMapSelection);
+				break;
+			case WizardState.Finished:
+				break;
+			}
+		}
+
+		private void InitializeControls()
+		{
+			wizardWindow = new AssistedProcedureWizardWindow("Modeling Guidance: Declare Rules");
+			IntPtr owner = default(IntPtr);
+			int dialogOwnerHwnd = package.UIShell.GetDialogOwnerHwnd(out owner);
+			package.AssertOk(dialogOwnerHwnd);
+			WindowInteropHelper windowInteropHelper = new WindowInteropHelper(wizardWindow);
+			windowInteropHelper.Owner = owner;
+			actionSelection = new ActionSelectionControl();
+			typeMapSelection = new TypeMapControl
+			{
+				ContainerWindow = wizardWindow,
+				Package = package
+			};
+			configSelection = new GenericSelectionControl(false, "Configurations");
+			hostClassViewer = new CodeElementViewer();
+			hostClassViewer.ViewerModel.CodeElementDisplayTextFabricator = FabricateCodeElementDisplayText;
+			wizardWindow.NextPageRequestedEvent += delegate
+			{
+				if (TryMovingToNextState() && CurrentState == WizardState.Finished)
+				{
+					wizardWindow.DialogResult = true;
+				}
+			};
+			wizardWindow.PreviousPageRequestedEvent += delegate
+			{
+				TryMovingToPreviousState();
+			};
+		}
+
+		private void InitializeStateVariables()
+		{
+			WizardData = new RuleDeclarationWizardData();
+			stateStack = new Stack<WizardState>();
+			stateStack.Push(WizardState.InConfigSelection);
+		}
+
+		private void LoadConfigs()
+		{
+			configSelection.ItemList.Clear();
+			foreach (string allScope in package.CordScopeManager.AllScopes)
+			{
+				ICordDesignTimeManager cordDesignTimeManager = package.CordScopeManager.GetCordDesignTimeManager(allScope);
+				foreach (Config allConfiguration in cordDesignTimeManager.AllConfigurations)
+				{
+					if (allConfiguration.Clauses.Any((ConfigClause cl) => cl is ConfigClause.ImportMethod || cl is ConfigClause.ImportAllFromScope || cl is ConfigClause.DeclareMethod))
+					{
+						configSelection.ItemList.Add(new ConfigInfo(allScope, allConfiguration.Location.FileName, allConfiguration.Name));
+					}
+				}
+			}
+		}
+
+		private void LoadActions(bool configChanged)
+		{
+			if (configChanged)
+			{
+				ICordDesignTimeManager cordDesignTimeManager = package.CordScopeManager.GetCordDesignTimeManager(WizardData.ConfigInfo.ContainerProject);
+				actionSelection.ControlModel.LoadActions(cordDesignTimeManager.AllConfigurations.FirstOrDefault((Config confName) => confName.Name == WizardData.ConfigInfo.ConfigName).Clauses);
+			}
+		}
+
+		private void LoadCodeElementsFromProjectFiles()
+		{
+			hostClassViewer.ViewerModel.LoadCodeElements(GetCodeElementsFromProjectFiles(), false, CodeElementExpandOptions.ExpandToNamespaces | CodeElementExpandOptions.ExpandToClasses, false);
+		}
+
+		private IEnumerable<CodeElement> GetCodeElementsFromProjectFiles()
+		{
+			Project project = package.GetProjectByUniqueName(WizardData.ConfigInfo.ContainerProject);
+			package.Assert(project != null, "Unexpected Error: Unable to locate container project");
+			foreach (ProjectItem projItem in package.GetAuthoredCSharpDocuments(project.ProjectItems))
+			{
+				foreach (CodeElement codeElement in projItem.FileCodeModel.CodeElements)
+				{
+					yield return codeElement;
+				}
+			}
+		}
+
+		private void LoadTypeBindingRequirements()
+		{
+			Project projectByUniqueName = package.GetProjectByUniqueName(WizardData.ConfigInfo.ContainerProject);
+			if (projectByUniqueName != null)
+			{
+				IEnumerable<ProcedureType> types = from typeMap in WizardData.TypeBindingMap
+					where typeMap.Value == null
+					select typeMap.Key;
+				typeMapSelection.LoadImplementationTypes(types, GetCodeElementsFromProjectFiles());
+			}
+		}
+
+		private string FabricateCodeElementDisplayText(CodeElementItem codeElement)
+		{
+			string prototype = codeElement.GetPrototype(false);
+			if (codeElement.RootElement != null)
+			{
+				ProjectItem projectItem = codeElement.RootElement.ProjectItem;
+				package.Assert(projectItem.ContainingProject != null, "Unexpected Error: Unable to locate container project");
+				string text = package.ComputePathRelativeToProject(projectItem.ContainingProject, projectItem);
+				package.Assert(!string.IsNullOrEmpty(text), "Unexpected Error: Unable to compute relative file path");
+				return string.Format("{0} [{1}]", prototype, text);
+			}
+			return prototype;
+		}
+	}
 }

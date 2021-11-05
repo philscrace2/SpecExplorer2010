@@ -1,90 +1,93 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: Microsoft.SpecExplorer.VS.SummaryDocumentControl
-// Assembly: Microsoft.SpecExplorer.VS.Package, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35
-// MVID: 04778F4E-8525-4D68-B061-08FAB43841FA
-// Assembly location: C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\Extensions\Microsoft\Spec Explorer 2010\Microsoft.SpecExplorer.VS.Package.dll
-
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.VisualStudio.Shell;
 
 namespace Microsoft.SpecExplorer.VS
 {
-  public class SummaryDocumentControl : UserControl
-  {
-    private WebBrowser webBrowser1;
-    private SpecExplorerPackage package;
+	public class SummaryDocumentControl : UserControl
+	{
+		private WebBrowser webBrowser1;
 
-    internal SummaryDocumentControl(SpecExplorerPackage package, string filePath)
-    {
-      this.InitializeComponent();
-      this.package = package;
-      using (StreamReader streamReader = new StreamReader(filePath))
-      {
-        try
-        {
-          this.webBrowser1.DocumentText = streamReader.ReadToEnd();
-        }
-        catch (IOException ex)
-        {
-          this.package.DecisionDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("Invalid summary file: {0}", (object) filePath), (MessageButton) 0);
-        }
-      }
-    }
+		private SpecExplorerPackage package;
 
-    private void InitializeComponent()
-    {
-      this.webBrowser1 = new WebBrowser();
-      this.SuspendLayout();
-      this.webBrowser1.Dock = DockStyle.Fill;
-      this.webBrowser1.IsWebBrowserContextMenuEnabled = false;
-      this.webBrowser1.WebBrowserShortcutsEnabled = false;
-      this.webBrowser1.Location = new Point(0, 0);
-      this.webBrowser1.MinimumSize = new Size(20, 20);
-      this.webBrowser1.Name = "webBrowser1";
-      this.webBrowser1.Size = new Size(629, 442);
-      this.webBrowser1.TabIndex = 0;
-      this.webBrowser1.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
-      this.Controls.Add((Control) this.webBrowser1);
-      this.Name = "Changed in souce by phil scrace";
-      this.Size = new Size(629, 442);
-      this.ResumeLayout(false);
-    }
+		internal SummaryDocumentControl(SpecExplorerPackage package, string filePath)
+		{
+			InitializeComponent();
+			this.package = package;
+			using (StreamReader streamReader = new StreamReader(filePath))
+			{
+				try
+				{
+					webBrowser1.DocumentText = streamReader.ReadToEnd();
+				}
+				catch (IOException)
+				{
+					this.package.DecisionDialog(Resources.SpecExplorer, string.Format("Invalid summary file: {0}", filePath), MessageButton.OK);
+				}
+			}
+		}
 
-    private void webBrowser1_DocumentCompleted(
-      object sender,
-      WebBrowserDocumentCompletedEventArgs e)
-    {
-      this.webBrowser1.Navigating += new WebBrowserNavigatingEventHandler(this.webBrowser1_Navigating);
-    }
+		private void InitializeComponent()
+		{
+			webBrowser1 = new System.Windows.Forms.WebBrowser();
+			SuspendLayout();
+			webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
+			webBrowser1.IsWebBrowserContextMenuEnabled = false;
+			webBrowser1.WebBrowserShortcutsEnabled = false;
+			webBrowser1.Location = new System.Drawing.Point(0, 0);
+			webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+			webBrowser1.Name = "webBrowser1";
+			webBrowser1.Size = new System.Drawing.Size(629, 442);
+			webBrowser1.TabIndex = 0;
+			webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(webBrowser1_DocumentCompleted);
+			base.Controls.Add(webBrowser1);
+			base.Name = "SummaryDocumentControl";
+			base.Size = new System.Drawing.Size(629, 442);
+			ResumeLayout(false);
+		}
 
-    private string GetFilePath(string filePath)
-    {
-      if (string.IsNullOrEmpty(filePath))
-        return string.Empty;
-      string str = "about:_file:///";
-      if (filePath.StartsWith(str, StringComparison.InvariantCultureIgnoreCase))
-        filePath = filePath.Substring(str.Length);
-      try
-      {
-        return new Uri(filePath).LocalPath;
-      }
-      catch (UriFormatException ex)
-      {
-        return string.Empty;
-      }
-    }
+		private void webBrowser1_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+		{
+			webBrowser1.Navigating += webBrowser1_Navigating;
+		}
 
-    private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
-    {
-      string filePath = this.GetFilePath(e.Url.ToString());
-      if (File.Exists(filePath))
-        VsShellUtilities.OpenDocument((System.IServiceProvider) this.package, filePath);
-      else
-        this.package.DecisionDialog(Microsoft.SpecExplorer.Resources.SpecExplorer, string.Format("\"{0}\" does not exist.", (object) filePath), (MessageButton) 0);
-      e.Cancel = true;
-    }
-  }
+		private string GetFilePath(string filePath)
+		{
+			if (string.IsNullOrEmpty(filePath))
+			{
+				return string.Empty;
+			}
+			string text = "about:_file:///";
+			if (filePath.StartsWith(text, StringComparison.InvariantCultureIgnoreCase))
+			{
+				filePath = filePath.Substring(text.Length);
+			}
+			Uri uri = null;
+			try
+			{
+				uri = new Uri(filePath);
+				return uri.LocalPath;
+			}
+			catch (UriFormatException)
+			{
+				return string.Empty;
+			}
+		}
+
+		private void webBrowser1_Navigating(object sender, WebBrowserNavigatingEventArgs e)
+		{
+			string filePath = GetFilePath(e.Url.ToString());
+			if (File.Exists(filePath))
+			{
+				VsShellUtilities.OpenDocument((IServiceProvider)(object)package, filePath);
+			}
+			else
+			{
+				package.DecisionDialog(Resources.SpecExplorer, string.Format("\"{0}\" does not exist.", filePath), MessageButton.OK);
+			}
+			e.Cancel = true;
+		}
+	}
 }
