@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.SpecExplorer.Properties;
+
 
 namespace Microsoft.SpecExplorer.ModelingGuidance
 {
@@ -99,7 +99,7 @@ namespace Microsoft.SpecExplorer.ModelingGuidance
 				}
 				catch (FormatException)
 				{
-					MessageBox.Show("Failed Invoking assisted procedure: Invalid format for Assisted Procedure Id", Resources.SpecExplorer);
+					MessageBox.Show("Failed Invoking assisted procedure: Invalid format for Assisted Procedure Id", Resource.SpecExplorer);
 				}
 			}
 		}

@@ -117,62 +117,336 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="Check" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\check.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="CannotResolveTypeFormat" xml:space="preserve">
+    <value>Cannot resolve type '{0}'.</value>
   </data>
+  <data name="DefaultTaskName" xml:space="preserve">
+    <value>NewTask</value>
+  </data>
+  <data name="ExtensionDirectoryName" xml:space="preserve">
+    <value>Extensions</value>
+  </data>
+  <data name="FailedToStoreTasks" xml:space="preserve">
+    <value>Failed to store task definitions.</value>
+  </data>
+  <data name="GraphTraversalAssemblyName" xml:space="preserve">
+    <value>Microsoft.GraphTraversal.dll</value>
+  </data>
+  <data name="GuidanceDefinitionSchema" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" &gt;
+
+  &lt;xs:element name="Guidance" type="SEGuidance" /&gt;
+  
+  &lt;xs:complexType name="SEGuidance"&gt;
+    &lt;xs:sequence&gt;
+      
+      &lt;xs:element name="Explanation" type="xs:string" minOccurs="0" maxOccurs="1" /&gt;
+      
+      &lt;xs:element name="Activities" minOccurs="1" maxOccurs="1"&gt;
+        &lt;xs:complexType&gt;
+          &lt;xs:sequence&gt;
+            &lt;xs:element name="Activity" type="GuidanceActivity" minOccurs="1" maxOccurs="unbounded" /&gt;
+          &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+        &lt;xs:unique name="UniqueActivityId"&gt;
+          &lt;xs:selector xpath="Activity" /&gt;
+          &lt;xs:field xpath="@Id" /&gt;
+        &lt;/xs:unique&gt;        
+      &lt;/xs:element&gt;
+
+      &lt;xs:element name="Structure" minOccurs="1" maxOccurs="1"&gt;
+        &lt;xs:complexType&gt;
+          &lt;xs:sequence&gt;
+            &lt;xs:element name="Activity" type="GuidanceActivityRef" minOccurs="1" maxOccurs="unbounded" /&gt;
+          &lt;/xs:sequence&gt;
+        &lt;/xs:complexType&gt;
+        &lt;xs:unique name="UniqueActivityRef"&gt;
+          &lt;xs:selector xpath="Activity" /&gt;
+          &lt;xs:field xpath="@Ref" /&gt;
+        &lt;/xs:unique&gt;
+      &lt;/xs:element&gt;
+      
+    &lt;/xs:sequence&gt;
+    &lt;xs:attribute name="Id" type="xs:ID" use="required" /&gt;
+    &lt;xs:attribute name="Description" type="xs:string" use="required" /&gt;    
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="GuidanceActivity"&gt;
+    &lt;xs:sequence&gt;
+      &lt;xs:element name="Explanation" type="xs:string" minOccurs="0" maxOccurs="1" /&gt;
+      &lt;xs:element name="Instructions" type="ActivityInstructions" minOccurs="1" maxOccurs="1" /&gt;
+    &lt;/xs:sequence&gt;
+    &lt;xs:attribute name="Id" type="xs:ID" /&gt;
+    &lt;xs:attribute name="Description" type="xs:string" /&gt;    
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="GuidanceActivityRef" &gt;
+    &lt;xs:attribute name="Ref" type="xs:IDREF" use="required" /&gt;
+    &lt;xs:attribute name="Optional" type="xs:boolean" use="optional" /&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="ActivityInstructions"&gt;
+    &lt;xs:sequence&gt;
+      &lt;xs:element name="Prerequisites" type="xs:string" minOccurs="0" maxOccurs="1" /&gt;
+      &lt;xs:element name="Step" type="InstructionStep" minOccurs="0" maxOccurs="unbounded" /&gt;
+    &lt;/xs:sequence&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="InstructionStep"&gt;
+    &lt;xs:sequence&gt;
+      &lt;xs:element name="StepDetails" type="xs:string" minOccurs="0" maxOccurs="1" /&gt;
+      &lt;xs:element name="Code" type="CodeBlock" minOccurs="0" maxOccurs="1" /&gt;
+    &lt;/xs:sequence&gt;
+    &lt;xs:attribute name="Optional" type="xs:boolean" use="optional"/&gt;
+    &lt;xs:attribute name="Header" type="xs:string" use="optional" /&gt;
+    &lt;xs:attribute name="Instructive" type="xs:boolean" use="optional" default="true" /&gt;
+  &lt;/xs:complexType&gt;
+
+  &lt;xs:complexType name="CodeBlock"&gt;
+    &lt;xs:sequence&gt;
+      &lt;xs:element name="FormattedText" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+      &lt;xs:element name="RawText" type="xs:string" minOccurs="1" maxOccurs="1" /&gt;
+    &lt;/xs:sequence&gt;
+    &lt;xs:attribute name="Language" type="xs:string" use="optional" /&gt;
+  &lt;/xs:complexType&gt;
+  
+&lt;/xs:schema&gt;
+</value>
+  </data>
+  <data name="InvalidTaskName" xml:space="preserve">
+    <value>Task name contains invalid character.</value>
+  </data>
+  <data name="InvalidViews" xml:space="preserve">
+    <value>Invalid views in exploration manager control.</value>
+  </data>
+  <data name="NoSelectedMachine" xml:space="preserve">
+    <value>No machine is selected to create a new task.</value>
+  </data>
+  <data name="SpecExplorer" xml:space="preserve">
+    <value>Spec Explorer</value>
+  </data>
+  <data name="TaskDeletionAlertMessageFormat" xml:space="preserve">
+    <value>Exploration task '{0}' will be deleted.</value>
+  </data>
+  <data name="TaskExist" xml:space="preserve">
+    <value>A task with this name is already exist.</value>
+  </data>
+  <data name="TaskNameCannotBeEmpty" xml:space="preserve">
+    <value>Task name cannot be empty.</value>
+  </data>
+  <data name="ViewDefinitionSchema" xml:space="preserve">
+    <value>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;xs:schema
+    elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+&gt;
+  &lt;xs:element name="Views"&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:sequence&gt;
+        &lt;xs:element name="ViewList"&gt;
+          &lt;xs:complexType&gt;
+            &lt;xs:sequence&gt;
+              &lt;xs:element name="ViewDefinition" minOccurs="0" maxOccurs="unbounded"&gt;
+                &lt;xs:complexType&gt;
+                  &lt;xs:sequence&gt;
+                    &lt;xs:element name="Name"&gt;
+                      &lt;xs:simpleType&gt;
+                        &lt;xs:restriction base="xs:string"&gt;
+                          &lt;xs:pattern value="^((?!Default)[a-zA-Z][a-zA-Z0-9]{0,19})|(?&amp;lt;=Default[a-zA-Z0-9]{1,13})$" /&gt;
+                        &lt;/xs:restriction&gt;
+                      &lt;/xs:simpleType&gt;
+                      &lt;xs:unique name="ViewName"&gt;
+                        &lt;xs:selector xpath="viewName" /&gt;
+                        &lt;xs:field xpath="@viewName" /&gt;
+                      &lt;/xs:unique&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="SelectQuery" minOccurs="0"&gt;
+                      &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                          &lt;xs:element name="Query"&gt;
+                            &lt;xs:complexType&gt;
+                              &lt;xs:sequence&gt;
+                                &lt;xs:element name="Param" /&gt;
+                              &lt;/xs:sequence&gt;
+                            &lt;/xs:complexType&gt;
+                          &lt;/xs:element&gt;
+                        &lt;/xs:sequence&gt;
+                      &lt;/xs:complexType&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="GroupQuery" minOccurs="0"&gt;
+                      &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                          &lt;xs:element name="Query"&gt;
+                            &lt;xs:complexType&gt;
+                              &lt;xs:sequence&gt;
+                                &lt;xs:element name="Param" /&gt;
+                              &lt;/xs:sequence&gt;
+                            &lt;/xs:complexType&gt;
+                          &lt;/xs:element&gt;
+                        &lt;/xs:sequence&gt;
+                      &lt;/xs:complexType&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="ViewCollapseLabels" type="xs:boolean" minOccurs="0" /&gt;
+                    &lt;xs:element name="ViewCollapseSteps" type="xs:boolean" minOccurs="0" /&gt;
+                    &lt;xs:element name="NodeFillColor" minOccurs="0"&gt;
+                      &lt;xs:simpleType&gt;
+                        &lt;xs:restriction base="xs:int"&gt;
+                          &lt;xs:minInclusive value="-16777216" /&gt;
+                          &lt;xs:maxInclusive value ="-1" /&gt;
+                        &lt;/xs:restriction&gt;
+                      &lt;/xs:simpleType&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="EdgeColor" minOccurs="0"&gt;
+                      &lt;xs:simpleType&gt;
+                        &lt;xs:restriction base="xs:int"&gt;
+                          &lt;xs:minInclusive value="-16777216" /&gt;
+                          &lt;xs:maxInclusive value ="-1" /&gt;
+                        &lt;/xs:restriction&gt;
+                      &lt;/xs:simpleType&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="StateDescription" minOccurs="0"&gt; 
+                      &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                          &lt;xs:element name="Param" /&gt;
+                        &lt;/xs:sequence&gt;
+                      &lt;/xs:complexType&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="RenderingTimeOut" minOccurs="0"&gt;
+                      &lt;xs:simpleType&gt;
+                        &lt;xs:restriction base="xs:int" /&gt;
+                      &lt;/xs:simpleType&gt;
+                    &lt;/xs:element&gt;
+                    &lt;xs:element name="DisplayRequirements" minOccurs="0" type="xs:boolean" /&gt;
+                    &lt;xs:element name="ShowErrorPathsOnly" type="xs:boolean" minOccurs="0" /&gt;
+                    &lt;xs:element name="ShowParameters" type="xs:boolean" minOccurs="0" /&gt;
+                    &lt;xs:element name="HideQuery" minOccurs="0"&gt;
+                      &lt;xs:complexType&gt;
+                        &lt;xs:sequence&gt;
+                          &lt;xs:element name="Query"&gt;
+                            &lt;xs:complexType&gt;
+                              &lt;xs:sequence&gt;
+                                &lt;xs:element name="Param" /&gt;
+                              &lt;/xs:sequence&gt;
+                            &lt;/xs:complexType&gt;
+                          &lt;/xs:element&gt;
+                        &lt;/xs:sequence&gt;
+                      &lt;/xs:complexType&gt;
+                    &lt;/xs:element&gt;
+                  &lt;/xs:sequence&gt;
+                &lt;/xs:complexType&gt;
+              &lt;/xs:element&gt;
+            &lt;/xs:sequence&gt;
+          &lt;/xs:complexType&gt;
+        &lt;/xs:element&gt;
+      &lt;/xs:sequence&gt;
+      &lt;xs:attribute name="Version" /&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+&lt;/xs:schema&gt;
+</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="clear" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\clear.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\clear.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="downarrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\downarrow.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\downarrow.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="error" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\error.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\error.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="explore" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\explore.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\explore.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="help" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\help.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="Image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\Image1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\help.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="info" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\info.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ontheflytest" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\ontheflytest.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="play" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\play.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="playone" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\playone.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\info.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="reexplore" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\reexplore.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\reexplore.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\refresh.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\refresh.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="snipimage" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\snipimage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\snipimage.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\stop.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="stop1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\stop.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="stop2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\stop.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="testgen" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\testgen.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\testgen.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="check" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\check.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BuilderDialog_delete" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\BuilderDialog_delete.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BuilderDialog_movedown1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\BuilderDialog_movedown1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BuilderDialog_moveup2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\BuilderDialog_moveup2.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FindState" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\FindState.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Fixtoscreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Fixtoscreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="FullScreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\FullScreen.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Image1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Image1.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ManageView" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ManageView.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Maximize" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Maximize.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Move" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Move.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="OnTheFlyTest" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\OnTheFlyTest.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Pause" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Pause.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Play" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Play.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="PlayOne" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\PlayOne.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Save" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Save.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SaveImage" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SaveImage.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\SE.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\Stop.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="view" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\view.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>Resources\view.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="_new" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>resources\new.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VSProject_CSCodefile" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\VSProject_CSCodefile.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ZoomIn" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZoomIn.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ZoomOut" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\ZoomOut.bmp;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

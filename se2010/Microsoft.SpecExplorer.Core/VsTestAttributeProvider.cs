@@ -3,7 +3,6 @@ using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.SpecExplorer.Properties;
 
 namespace Microsoft.SpecExplorer
 {
@@ -34,7 +33,7 @@ namespace Microsoft.SpecExplorer
 
 		public virtual IEnumerable<CodeAttributeDeclaration> CreateTestClassAttributes()
 		{
-			yield return new CodeAttributeDeclaration(typeof(GeneratedCodeAttribute).FullName, new CodeAttributeArgument(null, new CodePrimitiveExpression(Resources.SpecExplorer)), new CodeAttributeArgument(null, new CodePrimitiveExpression("3.5.3146.0")));
+			yield return new CodeAttributeDeclaration(typeof(GeneratedCodeAttribute).FullName, new CodeAttributeArgument(null, new CodePrimitiveExpression(Resource.SpecExplorer)), new CodeAttributeArgument(null, new CodePrimitiveExpression("3.5.3146.0")));
 			string testClassAttribute = variableResolver.Resolve("testclassattribute");
 			if (testClassAttribute.IsNoneOrEmptyValue())
 			{

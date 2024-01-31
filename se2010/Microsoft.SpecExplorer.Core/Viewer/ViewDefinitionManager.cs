@@ -5,7 +5,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Microsoft.SpecExplorer.Properties;
 using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer.Viewer
@@ -177,7 +176,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			{
 				if (!hashSet.Add(viewDefinition.Name))
 				{
-					host.NotificationDialog(Resources.SpecExplorer, string.Format("Duplicate view name: {0}.", viewDefinition.Name));
+					host.NotificationDialog(Resource.SpecExplorer, string.Format("Duplicate view name: {0}.", viewDefinition.Name));
 					return;
 				}
 				if (!viewDefinition.IsDefault)
@@ -213,7 +212,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			{
 				XmlSerializer xmlSerializer = new XmlSerializer(typeof(Views));
 				XmlReaderSettings xmlReaderSettings = new XmlReaderSettings();
-				xmlReader2 = XmlReader.Create(new StringReader(Resources.ViewDefinitionSchema));
+				xmlReader2 = XmlReader.Create(new StringReader(Resource.ViewDefinitionSchema));
 				xmlReaderSettings.Schemas.Add(null, xmlReader2);
 				xmlReaderSettings.ValidationType = ValidationType.Schema;
 				xmlReaderSettings.ValidationEventHandler += ViewDefinitionValidationEventHandler;

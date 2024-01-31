@@ -6,7 +6,6 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Microsoft.SpecExplorer.Properties;
 using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer.ModelingGuidance
@@ -30,7 +29,7 @@ namespace Microsoft.SpecExplorer.ModelingGuidance
 			XmlSerializer xmlSerializer = new XmlSerializer(typeof(GuidanceImpl));
 			IGuidance guidance = null;
 			perLoadingErrorMsg = string.Empty;
-			using (Stream input = new MemoryStream(new ASCIIEncoding().GetBytes(Resources.GuidanceDefinitionSchema)))
+			using (Stream input = new MemoryStream(new ASCIIEncoding().GetBytes(Resource.GuidanceDefinitionSchema)))
 			{
 				using (XmlReader schemaDocument = XmlReader.Create(input))
 				{

@@ -19,7 +19,7 @@ namespace Microsoft.SpecExplorer {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource {
@@ -63,19 +63,48 @@ namespace Microsoft.SpecExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _new {
+        internal static System.Drawing.Bitmap BuilderDialog_delete {
             get {
-                object obj = ResourceManager.GetObject("_new", resourceCulture);
+                object obj = ResourceManager.GetObject("BuilderDialog_delete", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BuilderDialog_movedown1 {
+            get {
+                object obj = ResourceManager.GetObject("BuilderDialog_movedown1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BuilderDialog_moveup2 {
+            get {
+                object obj = ResourceManager.GetObject("BuilderDialog_moveup2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot resolve type &apos;{0}&apos;..
+        /// </summary>
+        internal static string CannotResolveTypeFormat {
+            get {
+                return ResourceManager.GetString("CannotResolveTypeFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon Check {
+        internal static System.Drawing.Icon check {
             get {
-                object obj = ResourceManager.GetObject("Check", resourceCulture);
+                object obj = ResourceManager.GetObject("check", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
             }
         }
@@ -87,6 +116,15 @@ namespace Microsoft.SpecExplorer {
             get {
                 object obj = ResourceManager.GetObject("clear", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NewTask.
+        /// </summary>
+        internal static string DefaultTaskName {
+            get {
+                return ResourceManager.GetString("DefaultTaskName", resourceCulture);
             }
         }
         
@@ -121,6 +159,85 @@ namespace Microsoft.SpecExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Extensions.
+        /// </summary>
+        internal static string ExtensionDirectoryName {
+            get {
+                return ResourceManager.GetString("ExtensionDirectoryName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to store task definitions..
+        /// </summary>
+        internal static string FailedToStoreTasks {
+            get {
+                return ResourceManager.GetString("FailedToStoreTasks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FindState {
+            get {
+                object obj = ResourceManager.GetObject("FindState", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Fixtoscreen {
+            get {
+                object obj = ResourceManager.GetObject("Fixtoscreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FullScreen {
+            get {
+                object obj = ResourceManager.GetObject("FullScreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft.GraphTraversal.dll.
+        /// </summary>
+        internal static string GraphTraversalAssemblyName {
+            get {
+                return ResourceManager.GetString("GraphTraversalAssemblyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;xs:schema attributeFormDefault=&quot;unqualified&quot; elementFormDefault=&quot;qualified&quot; xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; &gt;
+        ///
+        ///  &lt;xs:element name=&quot;Guidance&quot; type=&quot;SEGuidance&quot; /&gt;
+        ///  
+        ///  &lt;xs:complexType name=&quot;SEGuidance&quot;&gt;
+        ///    &lt;xs:sequence&gt;
+        ///      
+        ///      &lt;xs:element name=&quot;Explanation&quot; type=&quot;xs:string&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;1&quot; /&gt;
+        ///      
+        ///      &lt;xs:element name=&quot;Activities&quot; minOccurs=&quot;1&quot; maxOccurs=&quot;1&quot;&gt;
+        ///        &lt;xs:complexType&gt;
+        ///          &lt;xs:sequence&gt;
+        ///            &lt;x [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string GuidanceDefinitionSchema {
+            get {
+                return ResourceManager.GetString("GuidanceDefinitionSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon help {
@@ -151,11 +268,29 @@ namespace Microsoft.SpecExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Task name contains invalid character..
+        /// </summary>
+        internal static string InvalidTaskName {
+            get {
+                return ResourceManager.GetString("InvalidTaskName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid views in exploration manager control..
+        /// </summary>
+        internal static string InvalidViews {
+            get {
+                return ResourceManager.GetString("InvalidViews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ontheflytest {
+        internal static System.Drawing.Bitmap ManageView {
             get {
-                object obj = ResourceManager.GetObject("ontheflytest", resourceCulture);
+                object obj = ResourceManager.GetObject("ManageView", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +298,9 @@ namespace Microsoft.SpecExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap play {
+        internal static System.Drawing.Bitmap Maximize {
             get {
-                object obj = ResourceManager.GetObject("play", resourceCulture);
+                object obj = ResourceManager.GetObject("Maximize", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +308,58 @@ namespace Microsoft.SpecExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap playone {
+        internal static System.Drawing.Bitmap Move {
             get {
-                object obj = ResourceManager.GetObject("playone", resourceCulture);
+                object obj = ResourceManager.GetObject("Move", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No machine is selected to create a new task..
+        /// </summary>
+        internal static string NoSelectedMachine {
+            get {
+                return ResourceManager.GetString("NoSelectedMachine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap OnTheFlyTest {
+            get {
+                object obj = ResourceManager.GetObject("OnTheFlyTest", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Pause {
+            get {
+                object obj = ResourceManager.GetObject("Pause", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Play {
+            get {
+                object obj = ResourceManager.GetObject("Play", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap PlayOne {
+            get {
+                object obj = ResourceManager.GetObject("PlayOne", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -201,6 +385,36 @@ namespace Microsoft.SpecExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Save {
+            get {
+                object obj = ResourceManager.GetObject("Save", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap SaveImage {
+            get {
+                object obj = ResourceManager.GetObject("SaveImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon SE {
+            get {
+                object obj = ResourceManager.GetObject("SE", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon snipimage {
@@ -211,11 +425,20 @@ namespace Microsoft.SpecExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Spec Explorer.
+        /// </summary>
+        internal static string SpecExplorer {
+            get {
+                return ResourceManager.GetString("SpecExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap stop {
+        internal static System.Drawing.Bitmap Stop {
             get {
-                object obj = ResourceManager.GetObject("stop", resourceCulture);
+                object obj = ResourceManager.GetObject("Stop", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,10 +446,37 @@ namespace Microsoft.SpecExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
-        internal static System.Drawing.Icon stop1 {
+        internal static System.Drawing.Icon stop2 {
             get {
-                object obj = ResourceManager.GetObject("stop1", resourceCulture);
+                object obj = ResourceManager.GetObject("stop2", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exploration task &apos;{0}&apos; will be deleted..
+        /// </summary>
+        internal static string TaskDeletionAlertMessageFormat {
+            get {
+                return ResourceManager.GetString("TaskDeletionAlertMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A task with this name is already exist..
+        /// </summary>
+        internal static string TaskExist {
+            get {
+                return ResourceManager.GetString("TaskExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task name cannot be empty..
+        /// </summary>
+        internal static string TaskNameCannotBeEmpty {
+            get {
+                return ResourceManager.GetString("TaskNameCannotBeEmpty", resourceCulture);
             }
         }
         
@@ -246,6 +496,60 @@ namespace Microsoft.SpecExplorer {
         internal static System.Drawing.Bitmap view {
             get {
                 object obj = ResourceManager.GetObject("view", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+        ///&lt;xs:schema
+        ///    elementFormDefault=&quot;qualified&quot;
+        ///    xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot;
+        ///&gt;
+        ///  &lt;xs:element name=&quot;Views&quot;&gt;
+        ///    &lt;xs:complexType&gt;
+        ///      &lt;xs:sequence&gt;
+        ///        &lt;xs:element name=&quot;ViewList&quot;&gt;
+        ///          &lt;xs:complexType&gt;
+        ///            &lt;xs:sequence&gt;
+        ///              &lt;xs:element name=&quot;ViewDefinition&quot; minOccurs=&quot;0&quot; maxOccurs=&quot;unbounded&quot;&gt;
+        ///                &lt;xs:complexType&gt;
+        ///                  &lt;xs:sequence&gt;
+        ///                    &lt;xs:element name=&quot;Name&quot;&gt;
+        ///         [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string ViewDefinitionSchema {
+            get {
+                return ResourceManager.GetString("ViewDefinitionSchema", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VSProject_CSCodefile {
+            get {
+                object obj = ResourceManager.GetObject("VSProject_CSCodefile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ZoomIn {
+            get {
+                object obj = ResourceManager.GetObject("ZoomIn", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ZoomOut {
+            get {
+                object obj = ResourceManager.GetObject("ZoomOut", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

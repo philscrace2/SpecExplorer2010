@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Security;
 using System.Windows.Forms;
-using Microsoft.SpecExplorer.Properties;
 using Microsoft.SpecExplorer.Viewer;
 
 namespace Microsoft.SpecExplorer
@@ -109,7 +108,7 @@ namespace Microsoft.SpecExplorer
 			IViewDefinition currentViewDefinition = viewDefinitionsControl.CurrentViewDefinition;
 			if (currentViewDefinition.IsDefault)
 			{
-				host.NotificationDialog(Resources.SpecExplorer, "Default view cannot be deleted.");
+				host.NotificationDialog(Resource.SpecExplorer, "Default view cannot be deleted.");
 				return;
 			}
 			viewDefinitionsControl.RemoveCurrentViewDefinition();
@@ -128,7 +127,7 @@ namespace Microsoft.SpecExplorer
 				FileInfo fileInfo = new FileInfo(fileName);
 				if (fileInfo.Exists && fileInfo.IsReadOnly)
 				{
-					switch (host.DecisionDialog(Resources.SpecExplorer, "The view definition file is read-only, do you want to set it to writable?", MessageButton.YESNOCANCEL))
+					switch (host.DecisionDialog(Resource.SpecExplorer, "The view definition file is read-only, do you want to set it to writable?", MessageButton.YESNOCANCEL))
 					{
 					case MessageResult.YES:
 						break;
@@ -155,7 +154,7 @@ namespace Microsoft.SpecExplorer
 					}
 					catch (ViewDefinitionManagerException ex)
 					{
-						host.NotificationDialog(Resources.SpecExplorer, string.Format("Error occured while storing view definitions:\n{0}", ex.Message));
+						host.NotificationDialog(Resource.SpecExplorer, string.Format("Error occured while storing view definitions:\n{0}", ex.Message));
 						return false;
 					}
 				}
@@ -217,7 +216,7 @@ namespace Microsoft.SpecExplorer
 					}
 					catch (ViewDefinitionManagerException ex)
 					{
-						host.NotificationDialog(Resources.SpecExplorer, string.Format("Error occured while loading view definitions:\n{0}", ex.Message));
+						host.NotificationDialog(Resource.SpecExplorer, string.Format("Error occured while loading view definitions:\n{0}", ex.Message));
 						return;
 					}
 				}

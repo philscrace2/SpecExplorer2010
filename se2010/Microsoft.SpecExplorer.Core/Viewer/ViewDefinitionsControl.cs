@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using Microsoft.SpecExplorer.Properties;
+
+
 
 namespace Microsoft.SpecExplorer.Viewer
 {
@@ -116,7 +117,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			case "Name":
 				if (!Regex.IsMatch(viewDefinition.Name, "^([a-zA-Z][a-zA-Z0-9]{0,19})$"))
 				{
-					Host.NotificationDialog(Resources.SpecExplorer, "View name must use alphanumeric (with upper and lower case distinct), the first of which must alphabetic (upper or lower case) and maximum length is 20 characters.");
+					Host.NotificationDialog(Resource.SpecExplorer, "View name must use alphanumeric (with upper and lower case distinct), the first of which must alphabetic (upper or lower case) and maximum length is 20 characters.");
 					viewDefinition.Name = propertyValueChangedEventArgs.OldValue as string;
 					return;
 				}
@@ -124,7 +125,7 @@ namespace Microsoft.SpecExplorer.Viewer
 				{
 					if (viewDefinition != viewDefinition2 && viewDefinition.Name.Equals(viewDefinition2.Name))
 					{
-						Host.NotificationDialog(Resources.SpecExplorer, "Duplicate view name.");
+						Host.NotificationDialog(Resource.SpecExplorer, "Duplicate view name.");
 						viewDefinition.Name = propertyValueChangedEventArgs.OldValue as string;
 						return;
 					}
@@ -134,7 +135,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			case "GroupQuery":
 				if (!IsIdentifierOrEmpty(viewDefinition.GroupQueryParam))
 				{
-					Host.NotificationDialog(Resources.SpecExplorer, "GroupQuery must be an identifier.");
+					Host.NotificationDialog(Resource.SpecExplorer, "GroupQuery must be an identifier.");
 					viewDefinition.GroupQueryParam = propertyValueChangedEventArgs.OldValue as string;
 					return;
 				}
@@ -142,7 +143,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			case "HideQuery":
 				if (!IsIdentifierOrEmpty(viewDefinition.HideQueryParam))
 				{
-					Host.NotificationDialog(Resources.SpecExplorer, "HideQuery must be an identifier.");
+					Host.NotificationDialog(Resource.SpecExplorer, "HideQuery must be an identifier.");
 					viewDefinition.HideQueryParam = propertyValueChangedEventArgs.OldValue as string;
 					return;
 				}
@@ -150,7 +151,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			case "StateDescription":
 				if (!IsIdentifierOrEmpty(viewDefinition.StateDescriptionParam))
 				{
-					Host.NotificationDialog(Resources.SpecExplorer, "StateDescription must be an identifier.");
+					Host.NotificationDialog(Resource.SpecExplorer, "StateDescription must be an identifier.");
 					viewDefinition.StateDescriptionParam = propertyValueChangedEventArgs.OldValue as string;
 					return;
 				}

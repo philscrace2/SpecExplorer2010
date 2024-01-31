@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Microsoft.SpecExplorer.Properties;
 using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer.Extensions
@@ -29,13 +28,13 @@ namespace Microsoft.SpecExplorer.Extensions
 			}
 			if (needPreLoadDependentAssemblies)
 			{
-				string text = Path.Combine(baseDir, Resources.GraphTraversalAssemblyName);
+				string text = Path.Combine(baseDir, Resource.GraphTraversalAssemblyName);
 				if (File.Exists(text))
 				{
 					Assembly.LoadFrom(text);
 				}
 			}
-			string text2 = Path.Combine(baseDir, Resources.ExtensionDirectoryName);
+			string text2 = Path.Combine(baseDir, Resource.ExtensionDirectoryName);
 			try
 			{
 				if (Directory.Exists(text2))

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--Project was exported from assembly: C:\tools\Spec Explorer 2010\Microsoft.SpecExplorer.Core.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -7,21 +7,22 @@
     <ProjectGuid>{AF22FD38-5413-4C5F-B81F-DD7F5CFC156E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>Microsoft.SpecExplorer.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <ApplicationVersion>2.2.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>Microsoft.SpecExplorer</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Microsoft.SpecExplorer.Commandline\bin\Debug\</OutputPath>
+    <OutputPath>..\bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -31,58 +32,63 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ActionMachines, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.dll</HintPath>
+    <Reference Include="Microsoft.ActionMachines">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ActionMachines.Cord, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.Cord.dll</HintPath>
+    <Reference Include="Microsoft.ActionMachines.Cord">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.Cord.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.GraphTraversal">
-      <HintPath>lib\Microsoft.GraphTraversal.dll</HintPath>
+      <HintPath>..\..\..\spec_explorer_original_install\Microsoft.GraphTraversal.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Msagl">
-      <HintPath>lib\Microsoft.Msagl.dll</HintPath>
+      <HintPath>..\..\..\spec_explorer_original_install\Microsoft.Msagl.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Msagl.Drawing">
-      <HintPath>lib\Microsoft.Msagl.Drawing.dll</HintPath>
+      <HintPath>..\..\..\spec_explorer_original_install\Microsoft.Msagl.Drawing.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Msagl.GraphViewerGdi">
-      <HintPath>lib\Microsoft.Msagl.GraphViewerGdi.dll</HintPath>
+    <Reference Include="Microsoft.Msagl.GraphViewerGDI">
+      <HintPath>..\..\..\spec_explorer_original_install\Microsoft.Msagl.GraphViewerGDI.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Runtime.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SpecExplorer.Runtime.VisualStudio, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Runtime.VisualStudio.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.Runtime.VisualStudio.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SpecExplorer.VS.Common, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
+    <Reference Include="Microsoft.SpecExplorer.VS.Common">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.VS.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Xrt, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.dll</HintPath>
+    <Reference Include="Microsoft.Xrt">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Xrt.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.Runtime.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Z3, Version=2.0.31112.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=x86">
-      <HintPath>packages\SpexPackage.1.0.2\lib\Microsoft.Z3.dll</HintPath>
+    <Reference Include="Microsoft.Z3">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.Z3.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Compiler, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\System.Compiler.dll</HintPath>
+    <Reference Include="System.Compiler">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\System.Compiler.dll</HintPath>
     </Reference>
-    <Reference Include="System.Compiler.Framework, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\System.Compiler.Framework.dll</HintPath>
+    <Reference Include="System.Compiler.Framework">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\System.Compiler.Framework.dll</HintPath>
     </Reference>
-    <Reference Include="System.Compiler.Runtime, Version=1.0.20502.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\SpexPackage.1.0.2\lib\System.Compiler.Runtime.dll</HintPath>
+    <Reference Include="System.Compiler.Runtime">
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\System.Compiler.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -261,7 +267,6 @@
     <Compile Include="Viewer\CompareStateEventArgs.cs" />
     <Compile Include="Viewer\StepBrowserEventArgs.cs" />
     <Compile Include="Viewer\BrowserEdge.cs" />
-    <Compile Include="Properties\Resources.cs" />
     <Compile Include="Viewer\StateComparisonControl.cs">
       <DependentUpon>StateComparisonControl.xaml</DependentUpon>
     </Compile>
@@ -271,32 +276,12 @@
     <Compile Include="ExplorationManagerControl.cs">
       <DependentUpon>ExplorationManagerControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\check.ico" />
-    <Resource Include="Resources\clear.ico" />
-    <Resource Include="Resources\downarrow.ico" />
-    <Resource Include="Resources\error.ico" />
-    <Resource Include="Resources\explore.ico" />
-    <Resource Include="Resources\help.ico" />
-    <Resource Include="Resources\info.ico" />
-    <Resource Include="Resources\new.bmp" />
-    <Resource Include="Resources\ontheflytest.bmp" />
-    <Resource Include="Resources\play.bmp" />
-    <Resource Include="Resources\playone.bmp" />
-    <Resource Include="Resources\reexplore.ico" />
-    <Resource Include="Resources\refresh.ico" />
-    <Resource Include="Resources\snipimage.ico" />
-    <Resource Include="Resources\stop.bmp" />
-    <Resource Include="Resources\stop.ico" />
-    <Resource Include="Resources\testgen.ico" />
-    <Resource Include="Resources\view.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx" />
     <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
@@ -322,7 +307,41 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ManageView.png" />
+    <None Include="Resources\Fixtoscreen.png" />
+    <None Include="Resources\SE.ico" />
+    <None Include="Resources\BuilderDialog_moveup2.bmp" />
+    <None Include="Resources\BuilderDialog_movedown1.bmp" />
+    <None Include="Resources\BuilderDialog_delete.bmp" />
+    <Content Include="Resources\check.ico" />
+    <Content Include="Resources\clear.ico" />
+    <Content Include="Resources\downarrow.ico" />
+    <Content Include="Resources\error.ico" />
+    <Content Include="Resources\explore.ico" />
+    <None Include="Resources\ZoomOut.bmp" />
+    <None Include="Resources\ZoomIn.bmp" />
+    <None Include="Resources\VSProject_CSCodefile.bmp" />
+    <None Include="Resources\view.bmp" />
+    <None Include="Resources\Stop.bmp" />
+    <None Include="Resources\SaveImage.bmp" />
+    <None Include="Resources\Save.bmp" />
+    <None Include="Resources\PlayOne.bmp" />
+    <None Include="Resources\Play.bmp" />
+    <None Include="Resources\Pause.bmp" />
+    <None Include="Resources\OnTheFlyTest.bmp" />
+    <None Include="Resources\Move.bmp" />
+    <None Include="Resources\Maximize.bmp" />
     <None Include="Resources\Image1.bmp" />
+    <None Include="Resources\FullScreen.bmp" />
+    <None Include="Resources\FindState.bmp" />
+    <Content Include="Resources\help.ico" />
+    <Content Include="Resources\info.ico" />
+    <Content Include="Resources\new.bmp" />
+    <Content Include="Resources\reexplore.ico" />
+    <Content Include="Resources\refresh.ico" />
+    <Content Include="Resources\snipimage.ico" />
+    <Content Include="Resources\stop.ico" />
+    <Content Include="Resources\testgen.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

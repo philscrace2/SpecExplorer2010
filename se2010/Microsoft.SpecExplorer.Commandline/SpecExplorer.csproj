@@ -35,15 +35,25 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.ActionMachines">
-      <HintPath>lib\Microsoft.ActionMachines.dll</HintPath>
+    <Reference Include="Microsoft.ActionMachines, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.ActionMachines.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ActionMachines.Cord">
-      <HintPath>lib\Microsoft.ActionMachines.Cord.dll</HintPath>
+    <Reference Include="Microsoft.ActionMachines.Cord, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files (x86)\Spec Explorer 2010\Microsoft.ActionMachines.Cord.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.SpecExplorer.ObjectModel" />
-    <Reference Include="Microsoft.Xrt">
-      <HintPath>lib\Microsoft.Xrt.dll</HintPath>
+    <Reference Include="Microsoft.SpecExplorer.ObjectModel, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.SpecExplorer.ObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrt, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Xrt.Runtime, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Microsoft.SpecExplorer.VS.Package\packages\SpexPackage.1.0.2\lib\Microsoft.Xrt.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -59,13 +69,13 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Microsoft.SpecExplorer.Core\Microsoft.SpecExplorer.Core.csproj">
       <Project>{af22fd38-5413-4c5f-b81f-dd7f5cfc156e}</Project>
       <Name>Microsoft.SpecExplorer.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -257,7 +257,18 @@ namespace Microsoft.SpecExplorer
         observableCollection.Add("Project");
         observableCollection.Add("Recommended Views");
         this.FilterTexts = observableCollection;
-        this.InitializeComponent();
+
+        try
+        {
+            this.InitializeComponent();
+            }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        
         this.Loaded += (RoutedEventHandler)delegate
         {
             PresentationSource presentationSource = PresentationSource.FromVisual((Visual)this);

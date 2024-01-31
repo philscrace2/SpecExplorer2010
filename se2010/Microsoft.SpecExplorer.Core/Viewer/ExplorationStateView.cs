@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.SpecExplorer.Properties;
 using Microsoft.Xrt.UI;
 
 namespace Microsoft.SpecExplorer.Viewer
@@ -41,7 +40,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			}
 			catch (ExplorationResultLoadingException ex)
 			{
-				Host.NotificationDialog(Resources.SpecExplorer, string.Format("Failed to load file {0}:\n{1}", fileName, ex.Message));
+				Host.NotificationDialog(Resource.SpecExplorer, string.Format("Failed to load file {0}:\n{1}", fileName, ex.Message));
 				return;
 			}
 			SuspendLayout();

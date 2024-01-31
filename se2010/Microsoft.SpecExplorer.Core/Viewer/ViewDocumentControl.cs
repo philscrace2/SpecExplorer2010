@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.GraphViewerGdi;
 using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.SpecExplorer.Properties;
 
 namespace Microsoft.SpecExplorer.Viewer
 {
@@ -1173,7 +1172,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			viewDocumentTool.Text = "toolStripExplorerGraph";
 			zoomIn.AccessibleName = "ZoomIn";
 			zoomIn.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			zoomIn.Image = Microsoft.SpecExplorer.Properties.Resources.ZoomIn;
+			zoomIn.Image = Microsoft.SpecExplorer.Resource.ZoomIn;
 			zoomIn.ImageTransparentColor = System.Drawing.Color.White;
 			zoomIn.Name = "zoomIn";
 			zoomIn.Size = new System.Drawing.Size(23, 22);
@@ -1181,7 +1180,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			zoomIn.ToolTipText = "Zoom In";
 			zoomOut.AccessibleName = "ZoomOut";
 			zoomOut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			zoomOut.Image = Microsoft.SpecExplorer.Properties.Resources.ZoomOut;
+			zoomOut.Image = Microsoft.SpecExplorer.Resource.ZoomOut;
 			zoomOut.ImageTransparentColor = System.Drawing.Color.White;
 			zoomOut.Name = "zoomOut";
 			zoomOut.Size = new System.Drawing.Size(23, 22);
@@ -1189,7 +1188,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			zoomOut.ToolTipText = "Zoom Out";
 			modeSplitButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			modeSplitButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[3] { magnifyModeToolStripMenuItem, moveModeToolStripMenuItem, panModeToolStripMenuItem });
-			modeSplitButton.Image = Microsoft.SpecExplorer.Properties.Resources.Move;
+			modeSplitButton.Image = Microsoft.SpecExplorer.Resource.Move;
 			modeSplitButton.ImageTransparentColor = System.Drawing.Color.White;
 			modeSplitButton.Name = "modeSplitButton";
 			modeSplitButton.Size = new System.Drawing.Size(32, 22);
@@ -1205,7 +1204,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			panModeToolStripMenuItem.Text = "Pan";
 			saveImage.AccessibleName = "Save Image";
 			saveImage.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			saveImage.Image = Microsoft.SpecExplorer.Properties.Resources.SaveImage;
+			saveImage.Image = Microsoft.SpecExplorer.Resource.SaveImage;
 			saveImage.ImageTransparentColor = System.Drawing.Color.White;
 			saveImage.Name = "saveImage";
 			saveImage.Size = new System.Drawing.Size(23, 22);
@@ -1213,7 +1212,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			saveImage.ToolTipText = "Save Graph Image";
 			fullScreen.AccessibleName = "Full Screen";
 			fullScreen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			fullScreen.Image = Microsoft.SpecExplorer.Properties.Resources.FullScreen;
+			fullScreen.Image = Microsoft.SpecExplorer.Resource.FullScreen;
 			fullScreen.ImageTransparentColor = System.Drawing.Color.White;
 			fullScreen.Name = "fullScreen";
 			fullScreen.Size = new System.Drawing.Size(23, 22);
@@ -1221,7 +1220,7 @@ namespace Microsoft.SpecExplorer.Viewer
 			fullScreen.ToolTipText = "Full Screen";
 			fitToScreen.AccessibleName = "Fit to Screen";
 			fitToScreen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			fitToScreen.Image = Microsoft.SpecExplorer.Properties.Resources.Fixtoscreen;
+			fitToScreen.Image = Microsoft.SpecExplorer.Resource.Fixtoscreen;
 			fitToScreen.ImageTransparentColor = System.Drawing.Color.Magenta;
 			fitToScreen.Name = "fitToScreen";
 			fitToScreen.Size = new System.Drawing.Size(23, 22);
@@ -1229,14 +1228,14 @@ namespace Microsoft.SpecExplorer.Viewer
 			fitToScreen.ToolTipText = "Fit to Screen";
 			manageViews.AccessibleName = "Manage Views";
 			manageViews.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			manageViews.Image = Microsoft.SpecExplorer.Properties.Resources.ManageView;
+			manageViews.Image = Microsoft.SpecExplorer.Resource.ManageView;
 			manageViews.ImageTransparentColor = System.Drawing.Color.White;
 			manageViews.Name = "manageViews";
 			manageViews.Size = new System.Drawing.Size(23, 22);
 			manageViews.Text = "Manage Views";
 			manageViews.ToolTipText = "Manage Views";
 			findState.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			findState.Image = Microsoft.SpecExplorer.Properties.Resources.FindState;
+			findState.Image = Microsoft.SpecExplorer.Resource.FindState;
 			findState.ImageTransparentColor = System.Drawing.Color.White;
 			findState.Name = "findState";
 			findState.Size = new System.Drawing.Size(23, 22);

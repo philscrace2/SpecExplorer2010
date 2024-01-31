@@ -4,7 +4,6 @@ using System.Linq;
 using Microsoft.ActionMachines;
 using Microsoft.GraphTraversal;
 using Microsoft.SpecExplorer.ObjectModel;
-using Microsoft.SpecExplorer.Properties;
 using Microsoft.Xrt;
 
 namespace Microsoft.SpecExplorer
@@ -28,7 +27,7 @@ namespace Microsoft.SpecExplorer
 				value = type.ToType();
 				if (value == null)
 				{
-					throw new ExplorationRuntimeException(string.Format(Resources.CannotResolveTypeFormat, type.FullName));
+					throw new ExplorationRuntimeException(string.Format(Resource.CannotResolveTypeFormat, type.FullName));
 				}
 				resolvedTypes[type.FullName] = value;
 			}
